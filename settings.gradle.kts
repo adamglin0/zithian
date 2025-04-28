@@ -18,4 +18,6 @@ dependencyResolutionManagement {
     }
 }
 
+include(":ui")
+
 rootProject.name = "zithian"

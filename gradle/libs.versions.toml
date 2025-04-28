@@ -1,0 +1,34 @@
+[versions]
+# for build
+androidCompileSdk = "35"
+# kotlin
+kotlin = "2.1.20"
+binaryCompatibilityValidator = "0.17.0"
+# android
+androidGradlePlugin = "8.6.1"
+# compose
+composeMultiplatform = "1.8.0-rc01"
+composeHotReload = "1.0.0-alpha08"
+composeContinuousRoundedCornerShape = "1.0.0"
+# other
+haze = "1.5.2"
+dokka = "2.0.0"
+mavenPublish = "0.31.0"
+[libraries]
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
+compose-continuousRoundedCornerShape = { module = "com.adamglin:compose-continuous-rounded-corner-shape", version.ref = "composeContinuousRoundedCornerShape" }
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
+[plugins]
+# kotlin
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+binaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibilityValidator" }
+# android
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+# compose
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
+compose-hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
+# other
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
