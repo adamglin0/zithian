@@ -14,9 +14,13 @@ composeContinuousRoundedCornerShape = "1.0.0"
 haze = "1.5.2"
 dokka = "2.0.0"
 mavenPublish = "0.31.0"
+detekt = "1.23.8"
 [libraries]
 compose-continuousRoundedCornerShape = { module = "com.adamglin:compose-continuous-rounded-corner-shape", version.ref = "composeContinuousRoundedCornerShape" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
+# dekete
+detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+detekt-rules-compose = { group = "ru.kode", name = "detekt-rules-compose", version = "1.4.0" }
 [plugins]
 # kotlin
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -31,3 +35,4 @@ compose-hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "co
 # other
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

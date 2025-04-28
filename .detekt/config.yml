@@ -1,0 +1,163 @@
+build:
+  maxIssues: 0
+
+formatting:
+  ArgumentListWrapping:
+    active: true
+    maxLineLength: 80
+  IfElseWrapping:
+    active: true
+  IfElseBracing:
+    active: true
+  EnumEntryNameCase:
+    active: true
+  MaximumLineLength:
+    maxLineLength: 166
+  MultiLineIfElse:
+    active: true
+    autoCorrect: true
+  ParameterListWrapping:
+    active: true
+    autoCorrect: true
+    maxLineLength: 80
+  ParameterWrapping:
+    active: true
+    autoCorrect: true
+    maxLineLength: 80
+  NoWildcardImports:
+    active: false
+  NoMultipleSpaces:
+    active: true
+    autoCorrect: false
+  PropertyWrapping:
+    active: true
+  SpacingAroundUnaryOperator:
+    active: true
+    autoCorrect: true
+  Wrapping:
+    active: true
+    maxLineLength: 166
+
+style:
+  DestructuringDeclarationWithTooManyEntries:
+    active: true
+    maxDestructuringEntries: 4
+  UnusedPrivateMember:
+    ignoreAnnotated: ['Preview']
+  MaxLineLength:
+    active: false
+    maxLineLength: 166
+  ReturnCount:
+    active: false
+  WildcardImport:
+    active: false
+  MagicNumber:
+    active: false
+  ThrowsCount:
+    active: false
+  UnusedImports:
+    active: true
+  UnusedParameter:
+    active: true
+  AlsoCouldBeApply:
+    active: true
+  BracesOnIfStatements:
+    active: true
+  BracesOnWhenStatements:
+    active: true
+  CanBeNonNullable:
+    active: true
+  CascadingCallWrapping:
+    active: true
+  ClassOrdering:
+    active: true
+  CollapsibleIfStatements:
+    active: true
+  DataClassShouldBeImmutable:
+    active: true
+  DoubleNegativeLambda:
+    active: true
+  EqualsNullCall:
+    active: true
+  EqualsOnSignatureLine:
+    active: true
+  ExplicitCollectionElementAccessMethod:
+    active: true
+  ExpressionBodySyntax:
+    active: true
+  ForbiddenMethodCall:
+    active: true
+    methods: ['kotlin.io.print', 'kotlin.io.println']
+  MandatoryBracesLoops:
+    active: true
+  MaxChainedCallsOnSameLine:
+    active: true
+    maxChainedCalls: 3
+  MultilineLambdaItParameter:
+    active: true
+  NoTabs:
+    active: true
+  NullableBooleanCheck:
+    active: true
+  OptionalAbstractKeyword:
+    active: true
+  PreferToOverPairSyntax:
+    active: true
+  RedundantVisibilityModifierRule:
+    active: true
+  SpacingBetweenPackageAndImports:
+    active: true
+  TrailingWhitespace:
+    active: true
+  TrimMultilineRawString:
+    active: true
+  UnnecessaryAbstractClass:
+    active: true
+  UnnecessaryBackticks:
+    active: true
+  UnnecessaryBracesAroundTrailingLambda:
+    active: true
+  UnnecessaryLet:
+    active: true
+  UntilInsteadOfRangeTo:
+    active: true
+  UseIfEmptyOrIfBlank:
+    active: true
+  UseIsNullOrEmpty:
+    active: true
+  UseLet:
+    active: true
+  UseSumOfInsteadOfFlatMapSize:
+    active: true
+
+
+complexity:
+  LongParameterList:
+    functionThreshold: 8
+    constructorThreshold: 8
+  ComplexCondition:
+    threshold: 6
+  TooManyFunctions:
+    thresholdInClasses: 40
+    thresholdInFiles: 100
+    thresholdInObjects: 26
+    thresholdInInterfaces: 12
+    ignoreAnnotatedFunctions: ['Preview']
+  CyclomaticComplexMethod:
+    threshold: 26
+  LongMethod:
+    threshold: 90
+
+naming:
+  ConstructorParameterNaming:
+    active: false
+  FunctionNaming:
+    active: true
+    functionPattern: '[a-zA-Z][a-zA-Z0-9]*'
+  TopLevelPropertyNaming:
+    active: true
+    constantPattern: '[A-Z][A-Za-z0-9_]*'
+
+exceptions:
+  TooGenericExceptionCaught:
+    active: false

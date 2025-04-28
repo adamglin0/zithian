@@ -1,0 +1,8 @@
+[tools]
+gradle = "latest"
+
+[tasks.detekt-check]
+dir = "./ui"
+run = """
+gradle detektMetadataCommonMain
+"""
