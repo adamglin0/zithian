@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  detekt-check:
+    name: Detekt Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check for non-markdown file changes
+        id: check_changes
+        run: |
+          # Get the list of changed files
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
+          
+          # Check if any non-markdown files were changed
+          echo "$CHANGED_FILES" | grep -v "\.md$" > /dev/null
+          if [ $? -eq 0 ]; then
+            echo "NON_MARKDOWN_CHANGED=true" >> $GITHUB_OUTPUT
+            echo "Non-markdown files were changed. Will run detekt check."
+          else
+            echo "NON_MARKDOWN_CHANGED=false" >> $GITHUB_OUTPUT
+            echo "Only markdown files were changed. Skipping detekt check."
+          fi
+
+      - name: Set up mise
+        if: steps.check_changes.outputs.NON_MARKDOWN_CHANGED == 'true'
+        uses: jdx/mise-action@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run detekt check
+        if: steps.check_changes.outputs.NON_MARKDOWN_CHANGED == 'true'
+        run: mise run detekt-check
