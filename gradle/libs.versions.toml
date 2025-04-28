@@ -18,7 +18,7 @@ detekt = "1.23.8"
 [libraries]
 compose-continuousRoundedCornerShape = { module = "com.adamglin:compose-continuous-rounded-corner-shape", version.ref = "composeContinuousRoundedCornerShape" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
-# dekete
+# detekt
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 detekt-rules-compose = { group = "ru.kode", name = "detekt-rules-compose", version = "1.4.0" }
 [plugins]
