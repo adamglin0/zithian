@@ -41,9 +41,12 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            // compose
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.ui)
+            // other
+            implementation(libs.compose.continuousRoundedCornerShape)
         }
     }
 }

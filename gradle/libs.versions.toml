@@ -15,7 +15,6 @@ haze = "1.5.2"
 dokka = "2.0.0"
 mavenPublish = "0.31.0"
 [libraries]
-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
 compose-continuousRoundedCornerShape = { module = "com.adamglin:compose-continuous-rounded-corner-shape", version.ref = "composeContinuousRoundedCornerShape" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 [plugins]
