@@ -12,3 +12,6 @@
 gradle.xml
 misc.xml
 vcs.xml
+
+artifacts/
+modules/
