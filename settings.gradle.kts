@@ -19,5 +19,6 @@ dependencyResolutionManagement {
 }
 
 include(":compose")
+include(":example")
 
 rootProject.name = "zithian"

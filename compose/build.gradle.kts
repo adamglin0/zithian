@@ -23,13 +23,13 @@ version = "1.0.0"
 kotlin {
     androidTarget {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_1_8
+            jvmTarget = JvmTarget.JVM_11
         }
     }
 
     jvm {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_1_8
+            jvmTarget = JvmTarget.JVM_11
         }
     }
 
@@ -83,12 +83,16 @@ kotlin {
             implementation(libs.haze)
             implementation(libs.liquid)
             implementation(libs.compose.continuousRoundedCornerShape)
+            implementation(libs.coil.compose)
         }
         all {
             languageSettings {
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
             }
         }
+    }
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
     }
 }
 
@@ -123,4 +127,12 @@ tasks.withType<DetektCreateBaselineTask>().configureEach {
 dependencies {
     detektPlugins(libs.detekt.formatting)
     detektPlugins(libs.detekt.rules.compose)
+}
+
+compose {
+    resources {
+        publicResClass = true
+        generateResClass = always
+        nameOfResClass = "ZithianResources"
+    }
 }

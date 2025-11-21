@@ -1,4 +1,4 @@
-package com.adamglin.zithian.utils
+package com.adamglin.zithian.compose.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity

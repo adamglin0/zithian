@@ -15,11 +15,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.CoilIcon
 import com.adamglin.zithian.compose.Text
+import com.adamglin.zithian.compose.generated.resources.ZithianResources
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import dev.chrisbanes.haze.HazeProgressive
 import dev.chrisbanes.haze.hazeEffect
 import io.github.fletchmckee.liquid.liquid
-import generated.resources.Res
 
 @Composable
 fun ScaffoldScope.TitleWithLeadingAppBar(
@@ -55,7 +55,7 @@ fun ScaffoldScope.TitleWithLeadingAppBar(
         ) {
             CoilIcon(
                 modifier = Modifier.size(27.dp).rotate(180f).clickable { onBack() },
-                uri = Res.getUri("drawable/chevron_down.svg"),
+                uri = ZithianResources.getUri("drawable/chevron_left.svg"),
                 contentDescription = null,
                 tint = ZithianTheme.colors.text3,
             )
