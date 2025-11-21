@@ -1,0 +1,86 @@
+package com.adamglin.zithian.compose
+
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
+import com.adamglin.zithian.compose.theme.ZithianTheme
+
+@Composable
+fun SmallSwitch(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+) = Switch(checked, onCheckedChange, modifier, enabled, interactionSource, 15.dp, 2.dp)
+
+@Composable
+fun Switch(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    dotSize: Dp = 21.dp,
+    contentPadding: Dp = 3.5.dp,
+) {
+
+    val dotColor by animateColorAsState(
+        if (checked) ZithianTheme.colors.background else ZithianTheme.colors.surface
+    )
+
+    val backgroundColor by animateColorAsState(
+        if (checked) ZithianTheme.colors.primary else ZithianTheme.colors.background,
+    )
+
+    val offsetX by animateDpAsState(
+        if (checked) dotSize - contentPadding else 0.dp
+    )
+
+    Row(
+        modifier = modifier
+            .clip(ContinuousRoundedCornerShape(100.dp))
+            .hoverable(interactionSource)
+            .width(dotSize * 2 + contentPadding).background(backgroundColor, ContinuousRoundedCornerShape(100f))
+            .then(
+                if (enabled) Modifier.pointerHoverIcon(PointerIcon.Hand)
+                    .clickable { onCheckedChange(!checked) } else Modifier.alpha(.3f))
+    ) {
+        Box(
+            modifier = Modifier
+                .dropShadow(
+                    CircleShape, Shadow(
+                        radius = 10.dp,
+                        color = ZithianTheme.colors.shadow,
+                    )
+                )
+                .offset(x = offsetX)
+                .padding(contentPadding)
+                .size(dotSize)
+                .background(dotColor, CircleShape)
+        )
+    }
+}

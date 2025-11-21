@@ -18,6 +18,6 @@ dependencyResolutionManagement {
     }
 }
 
-include(":ui")
+include(":compose")
 
 rootProject.name = "zithian"

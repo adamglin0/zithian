@@ -1,0 +1,76 @@
+package com.adamglin.zithian.compose.scaffold
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.adamglin.zithian.compose.CoilIcon
+import com.adamglin.zithian.compose.Text
+import com.adamglin.zithian.compose.theme.ZithianTheme
+import dev.chrisbanes.haze.HazeProgressive
+import dev.chrisbanes.haze.hazeEffect
+import io.github.fletchmckee.liquid.liquid
+import generated.resources.Res
+
+@Composable
+fun ScaffoldScope.TitleWithLeadingAppBar(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    title: String? = null,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .hazeEffect(hazeState) {
+                blurRadius = 6.dp
+                progressive = HazeProgressive.verticalGradient(startIntensity = 1f, endIntensity = 0f)
+            }
+            .statusBarsPadding()
+            .padding(10.dp)
+    ) {
+        val backgroundColor = ZithianTheme.colors.surfacePure.copy(.8f)
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .liquid(liquidState) {
+                    shape = CircleShape
+                    tint = backgroundColor
+                    frost = 5.dp
+                    refraction = 0.15f
+                    curve = 1f
+                    edge = 0.09f
+                    saturation = 1f
+                    dispersion = 0.26f
+                }
+                .padding(5.dp)
+        ) {
+            CoilIcon(
+                modifier = Modifier.size(27.dp).rotate(180f).clickable { onBack() },
+                uri = Res.getUri("drawable/chevron_down.svg"),
+                contentDescription = null,
+                tint = ZithianTheme.colors.text3,
+            )
+        }
+        title?.let {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Center)
+            ) {
+                Text(
+                    text = title,
+                    style = ZithianTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        }
+    }
+}

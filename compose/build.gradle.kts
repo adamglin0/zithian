@@ -16,17 +16,23 @@ plugins {
     alias(libs.plugins.detekt)
 }
 
+group = "com.adamglin.zithian"
+
+version = "1.0.0"
+
 kotlin {
     androidTarget {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_1_8
         }
     }
+
     jvm {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_1_8
         }
     }
+
     iosX64()
     iosArm64()
     iosSimulatorArm64()
@@ -43,6 +49,30 @@ kotlin {
     }
 
     sourceSets {
+        val skikoMain = create("skikoMain")
+        val androidAndJvmMain = create("androidAndJvmMain")
+        skikoMain.dependsOn(commonMain.get())
+        androidAndJvmMain.dependsOn(commonMain.get())
+        jvmMain.configure {
+            dependsOn(androidAndJvmMain)
+            dependsOn(skikoMain)
+        }
+        nativeMain.configure {
+            dependsOn(skikoMain)
+        }
+        androidMain.configure {
+            dependsOn(androidAndJvmMain)
+        }
+        appleMain.configure {
+            dependsOn(nativeMain.get())
+        }
+        iosMain.configure {
+            dependsOn(appleMain.get())
+        }
+        iosX64Main.configure { dependsOn(iosMain.get()) }
+        iosArm64Main.configure { dependsOn(iosMain.get()) }
+        iosSimulatorArm64Main.configure { dependsOn(iosMain.get()) }
+
         commonMain.dependencies {
             // compose
             implementation(libs.compose.runtime)
@@ -50,7 +80,14 @@ kotlin {
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             // other
+            implementation(libs.haze)
+            implementation(libs.liquid)
             implementation(libs.compose.continuousRoundedCornerShape)
+        }
+        all {
+            languageSettings {
+                optIn("kotlinx.cinterop.ExperimentalForeignApi")
+            }
         }
     }
 }
