@@ -3,7 +3,7 @@
 androidCompileSdk = "36"
 # kotlin
 kotlin = "2.2.21"
-binaryCompatibilityValidator = "0.17.0"
+binaryCompatibilityValidator = "0.18.1"
 # android
 androidGradlePlugin = "8.12.3"
 # compose
@@ -12,8 +12,8 @@ composeHotReload = "1.1.0-alpha01"
 composeContinuousRoundedCornerShape = "1.0.6"
 # other
 haze = "1.7.0"
-dokka = "2.0.0"
-mavenPublish = "0.31.0"
+dokka = "2.1.0"
+mavenPublish = "0.35.0"
 detekt = "1.23.8"
 [libraries]
 compose-continuousRoundedCornerShape = { module = "com.adamglin:compose-continuous-rounded-corner-shape", version.ref = "composeContinuousRoundedCornerShape" }
