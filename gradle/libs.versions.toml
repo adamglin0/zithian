@@ -1,17 +1,17 @@
 [versions]
 # for build
-androidCompileSdk = "35"
+androidCompileSdk = "36"
 # kotlin
-kotlin = "2.1.20"
+kotlin = "2.2.21"
 binaryCompatibilityValidator = "0.17.0"
 # android
-androidGradlePlugin = "8.6.1"
+androidGradlePlugin = "8.12.3"
 # compose
-composeMultiplatform = "1.8.0-rc01"
-composeHotReload = "1.0.0-alpha08"
-composeContinuousRoundedCornerShape = "1.0.0"
+composeMultiplatform = "1.10.0-beta02"
+composeHotReload = "1.1.0-alpha01"
+composeContinuousRoundedCornerShape = "1.0.6"
 # other
-haze = "1.5.2"
+haze = "1.7.0"
 dokka = "2.0.0"
 mavenPublish = "0.31.0"
 detekt = "1.23.8"
