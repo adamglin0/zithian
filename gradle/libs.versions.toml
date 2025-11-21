@@ -16,11 +16,19 @@ dokka = "2.1.0"
 mavenPublish = "0.35.0"
 detekt = "1.23.8"
 [libraries]
-compose-continuousRoundedCornerShape = { module = "com.adamglin:compose-continuous-rounded-corner-shape", version.ref = "composeContinuousRoundedCornerShape" }
-haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
-# detekt
+# compose
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "composeMultiplatform" }
+compose-ui-text = { module = "org.jetbrains.compose.ui:ui-text", version.ref = "composeMultiplatform" }
+compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "composeMultiplatform" }
+compose-ui-tooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "composeMultiplatform" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "composeMultiplatform" }
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
+# other
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
 detekt-rules-compose = { group = "ru.kode", name = "detekt-rules-compose", version = "1.4.0" }
+compose-continuousRoundedCornerShape = { module = "com.adamglin:compose-continuous-rounded-corner-shape", version.ref = "composeContinuousRoundedCornerShape" }
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 [plugins]
 # kotlin
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
