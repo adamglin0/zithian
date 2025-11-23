@@ -30,6 +30,7 @@ import com.adamglin.zithian.compose.theme.ZithianTheme
 fun OutlinedTextField(
     state: TextFieldState,
     modifier: Modifier = Modifier,
+    placeholdText: String? = null,
     enabled: Boolean = true,
     readOnly: Boolean = false,
     inputTransformation: InputTransformation? = null,
@@ -60,12 +61,19 @@ fun OutlinedTextField(
         decorator = {
             val shape = ContinuousRoundedCornerShape(20.dp)
             Box(
-                modifier = Modifier.Companion
+                modifier = Modifier
                     .border(1.dp, ZithianTheme.colors.border, shape)
                     .background(ZithianTheme.colors.surface, shape)
                     .padding(20.dp, 12.dp)
             ) {
                 it()
+                if (placeholdText != null && state.text.isEmpty()) {
+                    Text(
+                        text = placeholdText,
+                        style = textStyle,
+                        color = ZithianTheme.colors.text10,
+                    )
+                }
             }
         },
         scrollState,

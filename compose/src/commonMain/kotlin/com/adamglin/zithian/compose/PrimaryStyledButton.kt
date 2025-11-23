@@ -27,8 +27,12 @@ fun PrimaryStyledButton(
     trailing: (@Composable () -> Unit)? = null,
     contentPadding: PaddingValues = PaddingValues(20.dp, 12.dp),
     edgeInsetsInsteadPadding: Dp = 7.dp,
+    enabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val backgroundColor = backgroundColor.copy(alpha = if (enabled) 1f else 0.5f)
+    val foregroundColor = foregroundColor.copy(alpha = if (enabled) 1f else 0.5f)
+
     BasicButton(
         onClick = onClick,
         modifier = modifier,
@@ -42,6 +46,7 @@ fun PrimaryStyledButton(
         trailing = trailing,
         contentPadding = contentPadding,
         edgeInsetsInsteadPadding = edgeInsetsInsteadPadding,
+        enabled = enabled,
         content = content
     )
 }

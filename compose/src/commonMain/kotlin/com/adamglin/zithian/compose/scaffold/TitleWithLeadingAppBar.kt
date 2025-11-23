@@ -54,8 +54,10 @@ fun ScaffoldScope.TitleWithLeadingAppBar(
                 .padding(5.dp)
         ) {
             CoilIcon(
-                modifier = Modifier.size(27.dp).rotate(180f).clickable { onBack() },
-                uri = ZithianResources.getUri("drawable/chevron_left.svg"),
+                modifier = Modifier
+                    .rotate(180f)
+                    .size(27.dp).rotate(180f).clickable { onBack() },
+                uri = ZithianResources.getUri("drawable/ic_chevron_left.svg"),
                 contentDescription = null,
                 tint = ZithianTheme.colors.text3,
             )

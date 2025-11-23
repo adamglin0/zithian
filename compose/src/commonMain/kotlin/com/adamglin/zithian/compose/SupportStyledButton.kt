@@ -16,7 +16,7 @@ fun SupportStyledButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = ContinuousRoundedCornerShape(20.dp),
-    backgroundColor: Color = LocalZithianColors.current.text10,
+    backgroundColor: Color = LocalZithianColors.current.text8,
     foregroundColor: Color = LocalZithianColors.current.text15,
     textStyle: TextStyle = LocalTextStyle.current,
     leading: (@Composable () -> Unit)? = null,

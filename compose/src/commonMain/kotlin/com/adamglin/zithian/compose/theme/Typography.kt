@@ -69,21 +69,26 @@ val ZithianTypography.Companion.compat: ZithianTypography
             )
         ),
         headlineLarge = TextStyle(
-            fontSize = 36.sp, lineHeight = 1.5.em,
+            fontSize = 36.sp,
+            lineHeight = 1.5.em,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
                 trim = LineHeightStyle.Trim.None
             )
         ),
         titleSmall = TextStyle(
-            fontSize = 14.sp, lineHeight = 1.5.em,
+            fontSize = 14.sp,
+            lineHeight = 1.5.em,
+            fontWeight = FontWeight.SemiBold,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
                 trim = LineHeightStyle.Trim.None
             )
         ),
         titleMedium = TextStyle(
-            fontSize = 16.sp, lineHeight = 1.5.em,
+            fontSize = 16.sp,
+            lineHeight = 1.5.em,
+            fontWeight = FontWeight.SemiBold,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
                 trim = LineHeightStyle.Trim.None

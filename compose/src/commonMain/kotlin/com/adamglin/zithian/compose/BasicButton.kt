@@ -41,12 +41,13 @@ fun BasicButton(
     trailing: (@Composable () -> Unit)? = null,
     contentPadding: PaddingValues = PaddingValues(23.dp, 12.dp),
     edgeInsetsInsteadPadding: Dp = 7.dp,
+    enabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
     Row(
         modifier = modifier
             .clip(shape)
-            .clickable { onClick() }
+            .clickable(enabled = enabled, onClick = onClick)
             .pointerHoverIcon(PointerIcon.Hand)
             .background(backgroundColor, shape)
             .then(
