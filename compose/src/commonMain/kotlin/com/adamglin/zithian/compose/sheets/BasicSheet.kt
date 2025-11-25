@@ -37,10 +37,6 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 import io.github.fletchmckee.liquid.rememberLiquidState
 
-interface BasicSheetHeaderScope
-
-fun BasicSheetHeaderScope() = object : BasicSheetHeaderScope {}
-
 internal expect val basicSheetPopupProperties: PopupProperties
 
 @Composable
@@ -112,7 +108,7 @@ internal fun BasicSheet(
 fun BasicSheet(
     isVisible: Boolean,
     onDismissRequest: () -> Unit,
-    header: @Composable context(ScaffoldScope) BasicSheetHeaderScope.() -> Unit,
+    header: @Composable ScaffoldScope.() -> Unit,
     backgroundColor: Color = ZithianTheme.colors.surface,
     content: @Composable ScaffoldScope.() -> Unit,
 ) {
@@ -124,7 +120,7 @@ fun BasicSheet(
         BasicScaffold(
             backgroundColor = backgroundColor,
             header = {
-                header(BasicSheetHeaderScope())
+                header()
             }
         ) { content() }
     }
