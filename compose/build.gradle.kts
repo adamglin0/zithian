@@ -88,6 +88,7 @@ kotlin {
         all {
             languageSettings {
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
+                optIn("kotlin.time.kotlin.time")
             }
         }
     }
