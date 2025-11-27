@@ -9,14 +9,17 @@ plugins {
 kotlin {
     jvm {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
+            jvmTarget = JvmTarget.JVM_21
         }
     }
 
     sourceSets {
         commonMain.dependencies {
             // compose
-            implementation(compose.desktop.currentOs)
+            implementation(compose.desktop.currentOs) {
+                exclude(group = "org.jetbrains.compose.material")
+                exclude(group = "org.jetbrains.compose.material3")
+            }
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.ui)

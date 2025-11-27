@@ -37,9 +37,6 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
-    macosX64()
-    macosArm64()
-
     js(compiler = IR) {
         browser()
     }
@@ -50,9 +47,13 @@ kotlin {
 
     sourceSets {
         val skikoMain = create("skikoMain")
+        val webMain = create("webMain")
         val androidAndJvmMain = create("androidAndJvmMain")
         skikoMain.dependsOn(commonMain.get())
         androidAndJvmMain.dependsOn(commonMain.get())
+        webMain.dependsOn(skikoMain)
+        jsMain.configure { dependsOn(webMain) }
+        wasmJsMain.configure { dependsOn(webMain) }
         jvmMain.configure {
             dependsOn(androidAndJvmMain)
             dependsOn(skikoMain)

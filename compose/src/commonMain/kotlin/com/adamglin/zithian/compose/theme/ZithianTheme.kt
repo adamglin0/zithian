@@ -11,15 +11,16 @@ import com.adamglin.zithian.compose.ZithianScaleIndication
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.LocalHazeStyle
 
-
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun ZithianTheme(
     colors: ZithianColors = ZithianColors.light,
     typography: ZithianTypography = ZithianTypography.compat,
+    interactType: InteractType= InteractType.platformDefault,
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
+        LocalInteractType provides interactType,
         LocalZithianColors provides colors,
         LocalZithianTypography provides typography,
         LocalIndication provides ZithianScaleIndication,

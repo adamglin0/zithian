@@ -2,12 +2,7 @@ package com.adamglin.zithian.compose
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -26,6 +21,12 @@ import com.adamglin.zithian.compose.utils.ifNotNull
 import dev.chrisbanes.haze.HazeState
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquid
+
+data class Dimens(
+    val padding: PaddingValues = PaddingValues(23.dp, 12.dp),
+) {
+
+}
 
 @Composable
 fun BasicButton(
