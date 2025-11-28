@@ -21,13 +21,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.window.singleWindowApplication
 import com.adamglin.zithian.compose.Text
+import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
+import com.adamglin.zithian.compose.theme.platformDefault
 import com.adamglin.zithian.example.components.Buttons
 import com.adamglin.zithian.example.components.Home
+import com.adamglin.zithian.example.components.Other
 
 fun main() {
     singleWindowApplication {
-        ZithianTheme {
+        var interactType by remember { mutableStateOf(InteractType.platformDefault) }
+        ZithianTheme(
+            interactType = interactType
+        ) {
             var selectedTab by retain { mutableStateOf(SideBarTab.HOME) }
             Row {
                 SideBar(
@@ -36,8 +42,13 @@ fun main() {
                 )
                 Box(modifier = Modifier.weight(1f).padding(10.dp)) {
                     when (selectedTab) {
-                        SideBarTab.HOME -> Home()
+                        SideBarTab.HOME -> Home(
+                            interactType = interactType,
+                            onInteractTypeChange = { interactType = it }
+                        )
+
                         SideBarTab.BUTTONS -> Buttons()
+                        SideBarTab.OTHER -> Other()
                     }
                 }
             }
@@ -66,5 +77,6 @@ private fun SideBar(
 
 enum class SideBarTab {
     HOME,
-    BUTTONS
+    BUTTONS,
+    OTHER,
 }

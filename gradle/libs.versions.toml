@@ -11,12 +11,13 @@ composeMultiplatform = "1.10.0-beta02"
 composeHotReload = "1.1.0-alpha01"
 composeContinuousRoundedCornerShape = "1.0.6"
 # other
-haze = "1.7.0"
+haze = "1.7.1"
 dokka = "2.1.0"
 mavenPublish = "0.35.0"
 detekt = "1.23.8"
 liquid = "1.0.1"
 coil = "3.3.0"
+kotlinx-collections-immutable = "0.4.0"
 [libraries]
 # compose
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
@@ -40,6 +41,7 @@ detekt-rules-compose = { group = "ru.kode", name = "detekt-rules-compose", versi
 compose-continuousRoundedCornerShape = { module = "com.adamglin:compose-continuous-rounded-corner-shape", version.ref = "composeContinuousRoundedCornerShape" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 liquid = { module = "io.github.fletchmckee.liquid:liquid", version.ref = "liquid" }
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref="kotlinx-collections-immutable"}
 [plugins]
 # kotlin
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
