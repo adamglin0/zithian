@@ -17,12 +17,14 @@ fun ZithianTheme(
     colors: ZithianColors = ZithianColors.light,
     typography: ZithianTypography = ZithianTypography.compat,
     interactType: InteractType= InteractType.platformDefault,
+    spacing: ZithianSpacing = ZithianSpacing(),
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
         LocalInteractType provides interactType,
         LocalZithianColors provides colors,
         LocalZithianTypography provides typography,
+        LocalZithianSpacing provides spacing,
         LocalIndication provides ZithianScaleIndication,
         LocalTextStyle provides typography.bodyMedium,
         LocalHazeStyle provides HazeStyle(
@@ -44,4 +46,8 @@ object ZithianTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalZithianTypography.current
+    val spacing: ZithianSpacing
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalZithianSpacing.current
 }

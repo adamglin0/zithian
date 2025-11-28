@@ -85,6 +85,8 @@ kotlin {
             implementation(libs.liquid)
             implementation(libs.compose.continuousRoundedCornerShape)
             implementation(libs.coil.compose)
+            implementation(libs.coil.svg)
+            api(libs.kotlinx.collections.immutable)
         }
         all {
             languageSettings {
