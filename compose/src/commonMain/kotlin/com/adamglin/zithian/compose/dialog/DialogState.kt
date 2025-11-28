@@ -1,4 +1,4 @@
-package com.adamglin.zithian.compose
+package com.adamglin.zithian.compose.dialog
 
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.runtime.Composable

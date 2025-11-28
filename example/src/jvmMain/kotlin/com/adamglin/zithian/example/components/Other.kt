@@ -2,7 +2,7 @@ package com.adamglin.zithian.example.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.*
-import com.adamglin.zithian.compose.Picker
+import com.adamglin.zithian.compose.picker.Picker
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable

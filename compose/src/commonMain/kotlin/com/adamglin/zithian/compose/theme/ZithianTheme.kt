@@ -6,8 +6,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
-import com.adamglin.zithian.compose.LocalTextStyle
-import com.adamglin.zithian.compose.ZithianScaleIndication
+import com.adamglin.zithian.compose.text.LocalTextStyle
+import com.adamglin.zithian.compose.indication.ZithianScaleIndication
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.LocalHazeStyle
 

@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.adamglin.zithian.compose.CoilIcon
-import com.adamglin.zithian.compose.Text
+import com.adamglin.zithian.compose.icon.CoilIcon
+import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.generated.resources.ZithianResources
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import dev.chrisbanes.haze.HazeProgressive

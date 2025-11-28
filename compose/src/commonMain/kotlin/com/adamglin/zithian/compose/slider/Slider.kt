@@ -1,4 +1,4 @@
-package com.adamglin.zithian.compose
+package com.adamglin.zithian.compose.slider
 
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background

@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import com.adamglin.zithian.compose.CoilIcon
-import com.adamglin.zithian.compose.PrimaryStyledButton
-import com.adamglin.zithian.compose.Text
+import com.adamglin.zithian.compose.icon.CoilIcon
+import com.adamglin.zithian.compose.button.PrimaryStyledButton
+import com.adamglin.zithian.compose.text.Text
 import zithian.example.generated.resources.Res
 
 @Composable

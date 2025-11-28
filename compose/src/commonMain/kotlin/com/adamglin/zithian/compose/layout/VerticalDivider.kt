@@ -1,4 +1,4 @@
-package com.adamglin.zithian.compose
+package com.adamglin.zithian.compose.layout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer

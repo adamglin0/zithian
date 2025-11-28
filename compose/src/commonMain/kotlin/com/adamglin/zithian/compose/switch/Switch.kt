@@ -1,4 +1,4 @@
-package com.adamglin.zithian.compose
+package com.adamglin.zithian.compose.switch
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState

@@ -1,4 +1,4 @@
-package com.adamglin.zithian.compose
+package com.adamglin.zithian.compose.surface
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
+import com.adamglin.zithian.compose.text.LocalTextStyle
 import com.adamglin.zithian.compose.theme.LocalContentAlpha
 import com.adamglin.zithian.compose.theme.LocalContentColor
 

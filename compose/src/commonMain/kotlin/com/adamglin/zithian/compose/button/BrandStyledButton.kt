@@ -1,4 +1,4 @@
-package com.adamglin.zithian.compose
+package com.adamglin.zithian.compose.button
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
+import com.adamglin.zithian.compose.text.LocalTextStyle
 import com.adamglin.zithian.compose.theme.LocalZithianColors
 
 @Composable
@@ -35,3 +36,4 @@ fun BrandStyledButton(
         content = content
     )
 }
+

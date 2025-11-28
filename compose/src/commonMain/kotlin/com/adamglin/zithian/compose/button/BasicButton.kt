@@ -1,8 +1,13 @@
-package com.adamglin.zithian.compose
+package com.adamglin.zithian.compose.button
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -13,10 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
+import com.adamglin.zithian.compose.text.LocalTextStyle
 import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.LocalContentColor
 import com.adamglin.zithian.compose.theme.LocalInteractType
@@ -81,7 +88,11 @@ fun BasicButton(
     Row(
         modifier = modifier
             .clip(shape)
-            .clickable(enabled = enabled, onClick = onClick)
+            .clickable(
+                enabled = enabled,
+                onClick = onClick,
+                role = Role.Button
+            )
             .then(
                 if (interactType == InteractType.Pointer) {
                     Modifier.pointerHoverIcon(PointerIcon.Hand)
@@ -90,9 +101,6 @@ fun BasicButton(
                 }
             )
             .background(backgroundColor, shape)
-            .then(
-                if (liquidState != null) Modifier.liquid(liquidState) else Modifier
-            )
             .ifNotNull(liquidState) { Modifier.liquid(it) }
             .padding(dimens.contentPadding),
         verticalAlignment = Alignment.CenterVertically,
@@ -102,17 +110,18 @@ fun BasicButton(
             LocalContentColor provides foregroundColor,
             LocalTextStyle provides textStyle,
         ) {
-            leading?.let {
+            if (leading != null) {
                 Box(modifier = Modifier.size(dimens.iconSize)) {
-                    it()
+                    leading()
                 }
             }
             content()
-            trailing?.let {
+            if (trailing != null) {
                 Box(modifier = Modifier.size(dimens.iconSize)) {
-                    it()
+                    trailing()
                 }
             }
         }
     }
 }
+

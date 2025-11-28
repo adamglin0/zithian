@@ -1,4 +1,4 @@
-package com.adamglin.zithian.compose
+package com.adamglin.zithian.compose.button
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -7,24 +7,35 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
+import com.adamglin.zithian.compose.text.LocalTextStyle
 import com.adamglin.zithian.compose.theme.LocalZithianColors
+import dev.chrisbanes.haze.HazeState
+import io.github.fletchmckee.liquid.LiquidState
 
 @Composable
-fun SupportStyledButton(
+fun PrimaryStyledButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    liquidState: LiquidState? = null,
+    hazeState: HazeState? = null,
     shape: Shape = ContinuousRoundedCornerShape(20.dp),
-    backgroundColor: Color = LocalZithianColors.current.text8,
+    backgroundColor: Color = LocalZithianColors.current.primary,
     foregroundColor: Color = LocalZithianColors.current.text15,
     textStyle: TextStyle = LocalTextStyle.current,
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
     dimens: BasicButtonDimens = BasicButtonDefaults.dimens(),
+    enabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val backgroundColor = backgroundColor.copy(alpha = if (enabled) 1f else 0.5f)
+    val foregroundColor = foregroundColor.copy(alpha = if (enabled) 1f else 0.5f)
+
     BasicButton(
         onClick = onClick,
         modifier = modifier,
+        liquidState = liquidState,
+        hazeState = hazeState,
         shape = shape,
         backgroundColor = backgroundColor,
         foregroundColor = foregroundColor,
@@ -32,6 +43,8 @@ fun SupportStyledButton(
         leading = leading,
         trailing = trailing,
         dimens = dimens,
+        enabled = enabled,
         content = content
     )
 }
+

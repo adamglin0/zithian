@@ -1,4 +1,4 @@
-package com.adamglin.zithian.compose
+package com.adamglin.zithian.compose.indication
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring

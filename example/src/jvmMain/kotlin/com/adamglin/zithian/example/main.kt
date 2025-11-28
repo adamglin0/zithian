@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.window.singleWindowApplication
-import com.adamglin.zithian.compose.Text
+import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.adamglin.zithian.compose.theme.platformDefault

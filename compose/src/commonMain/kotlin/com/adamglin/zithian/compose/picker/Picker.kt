@@ -1,4 +1,4 @@
-package com.adamglin.zithian.compose
+package com.adamglin.zithian.compose.picker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.window.Popup
 import com.adamglin.zithian.compose.generated.resources.ZithianResources
+import com.adamglin.zithian.compose.icon.CoilIcon
+import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import kotlinx.collections.immutable.PersistentList
 

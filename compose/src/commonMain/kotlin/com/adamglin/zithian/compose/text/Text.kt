@@ -1,4 +1,4 @@
-package com.adamglin.zithian.compose
+package com.adamglin.zithian.compose.text
 
 /*
  * Copyright 2020 The Android Open Source Project
