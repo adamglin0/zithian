@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
@@ -15,6 +16,7 @@ import androidx.compose.foundation.text.input.OutputTransformation
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -26,7 +28,38 @@ import androidx.compose.ui.unit.dp
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
 import com.adamglin.zithian.compose.text.LocalTextStyle
 import com.adamglin.zithian.compose.text.Text
+import com.adamglin.zithian.compose.theme.InteractType
+import com.adamglin.zithian.compose.theme.LocalInteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
+
+@Immutable
+data class TextFieldDimens(
+    val contentPadding: PaddingValues
+) {
+    companion object {
+        internal val Pointer = TextFieldDimens(
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+        )
+
+        internal val Touch = TextFieldDimens(
+            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp)
+        )
+
+        fun of(interactType: InteractType): TextFieldDimens {
+            return when (interactType) {
+                InteractType.Pointer -> Pointer
+                InteractType.Touch -> Touch
+            }
+        }
+    }
+}
+
+object TextFieldDefaults {
+    @Composable
+    fun dimens(
+        interactType: InteractType = LocalInteractType.current
+    ): TextFieldDimens = TextFieldDimens.of(interactType)
+}
 
 @Composable
 fun OutlinedTextField(
@@ -45,6 +78,7 @@ fun OutlinedTextField(
     cursorBrush: Brush = SolidColor(Color.Black),
     outputTransformation: OutputTransformation? = null,
     scrollState: ScrollState = rememberScrollState(),
+    dimens: TextFieldDimens = TextFieldDefaults.dimens(),
 ) {
     BasicTextField(
         state,
@@ -66,7 +100,7 @@ fun OutlinedTextField(
                 modifier = Modifier
                     .border(1.dp, ZithianTheme.colors.border, shape)
                     .background(ZithianTheme.colors.surface, shape)
-                    .padding(20.dp, 12.dp)
+                    .padding(dimens.contentPadding)
             ) {
                 it()
                 if (placeholdText != null && state.text.isEmpty()) {

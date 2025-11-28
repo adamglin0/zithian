@@ -37,6 +37,7 @@ fun PasswordTextField(
     cursorBrush: Brush = SolidColor(Color.Black),
     textObfuscationMode: TextObfuscationMode = TextObfuscationMode.RevealLastTyped,
     textObfuscationCharacter: Char = '\u2022',
+    dimens: TextFieldDimens = TextFieldDefaults.dimens(),
 ) {
     BasicSecureTextField(
         state,
@@ -54,7 +55,7 @@ fun PasswordTextField(
                 modifier = Modifier.Companion
                     .border(1.dp, ZithianTheme.colors.border, shape)
                     .background(ZithianTheme.colors.surface, shape)
-                    .padding(20.dp, 12.dp)
+                    .padding(dimens.contentPadding)
             ) {
                 it()
             }

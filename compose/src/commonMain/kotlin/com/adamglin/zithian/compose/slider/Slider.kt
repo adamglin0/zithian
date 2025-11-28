@@ -63,6 +63,11 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+import androidx.compose.runtime.Immutable
+import androidx.compose.ui.unit.Dp
+import com.adamglin.zithian.compose.theme.InteractType
+import com.adamglin.zithian.compose.theme.LocalInteractType
+
 @Stable
 class SliderState(
     initialValue: Float,
@@ -86,6 +91,35 @@ class SliderState(
                 value.coerceIn(valueRange)
             }
         }
+}
+
+@Immutable
+data class SliderDimens(
+    val thumbSize: Dp
+) {
+    companion object {
+        internal val Pointer = SliderDimens(
+            thumbSize = 16.dp
+        )
+
+        internal val Touch = SliderDimens(
+            thumbSize = 24.dp
+        )
+
+        fun of(interactType: InteractType): SliderDimens {
+            return when (interactType) {
+                InteractType.Pointer -> Pointer
+                InteractType.Touch -> Touch
+            }
+        }
+    }
+}
+
+object SliderDefaults {
+    @Composable
+    fun dimens(
+        interactType: InteractType = LocalInteractType.current
+    ): SliderDimens = SliderDimens.of(interactType)
 }
 
 @Composable
@@ -358,9 +392,12 @@ private fun scale(a1: Float, b1: Float, x1: Float, a2: Float, b2: Float) = lerp(
 
 @Composable
 fun Thumb(
-    modifier: Modifier = Modifier, shape: Shape = RectangleShape, color: Color = Color.Unspecified
+    modifier: Modifier = Modifier, 
+    shape: Shape = RectangleShape, 
+    color: Color = Color.Unspecified,
+    dimens: SliderDimens = SliderDefaults.dimens()
 ) {
     Box(
-        modifier.clip(shape).background(color).size(24.dp)
+        modifier.clip(shape).background(color).size(dimens.thumbSize)
     )
 }

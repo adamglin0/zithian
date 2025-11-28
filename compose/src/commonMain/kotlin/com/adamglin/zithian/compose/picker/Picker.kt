@@ -13,14 +13,52 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.window.Popup
 import com.adamglin.zithian.compose.generated.resources.ZithianResources
 import com.adamglin.zithian.compose.icon.CoilIcon
 import com.adamglin.zithian.compose.text.Text
+import com.adamglin.zithian.compose.theme.InteractType
+import com.adamglin.zithian.compose.theme.LocalInteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import kotlinx.collections.immutable.PersistentList
+
+@Immutable
+data class PickerDimens(
+    val chevronSize: Dp,
+    val checkBoxSize: Dp,
+    val itemContentPadding: PaddingValues
+) {
+    companion object {
+        internal val Pointer = PickerDimens(
+            chevronSize = 17.dp,
+            checkBoxSize = 19.dp,
+            itemContentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
+        )
+
+        internal val Touch = PickerDimens(
+            chevronSize = 24.dp,
+            checkBoxSize = 24.dp,
+            itemContentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+        )
+
+        fun of(interactType: InteractType): PickerDimens {
+            return when (interactType) {
+                InteractType.Pointer -> Pointer
+                InteractType.Touch -> Touch
+            }
+        }
+    }
+}
+
+object PickerDefaults {
+    @Composable
+    fun dimens(
+        interactType: InteractType = LocalInteractType.current
+    ): PickerDimens = PickerDimens.of(interactType)
+}
 
 interface PickerScope
 
@@ -31,6 +69,7 @@ fun <T> Picker(
     labelFor: (T) -> String,
     onValueChange: (T) -> Unit,
     modifier: Modifier = Modifier,
+    dimens: PickerDimens = PickerDefaults.dimens(),
 ) {
     val labelForSelected = remember(selected) { labelFor(selected) }
     var isDropdownMenuVisible by remember { mutableStateOf(false) }
@@ -42,7 +81,7 @@ fun <T> Picker(
         Text(labelForSelected)
         CoilIcon(
             uri = ZithianResources.getUri("drawable/ic_chevron_left.svg"),
-            modifier = Modifier.size(17.dp).rotate(180f),
+            modifier = Modifier.size(dimens.chevronSize).rotate(180f),
             tint = Color.Black,
             contentDescription = null
         )
@@ -72,7 +111,7 @@ fun <T> Picker(
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(19.dp)
+                                    .size(dimens.checkBoxSize)
                             ) {
                                 if (item == selected) {
                                     CoilIcon(
@@ -83,7 +122,7 @@ fun <T> Picker(
                                 }
                             }
                             Text(
-                                modifier = Modifier.padding(10.dp, 4.dp),
+                                modifier = Modifier.padding(dimens.itemContentPadding),
                                 text = labelFor(item)
                             )
                         }

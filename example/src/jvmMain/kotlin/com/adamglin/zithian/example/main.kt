@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.window.singleWindowApplication
+import com.adamglin.zithian.compose.layout.VerticalDivider
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
@@ -40,7 +41,8 @@ fun main() {
                     selectedTab = selectedTab,
                     onSelect = { selectedTab = it }
                 )
-                Box(modifier = Modifier.weight(1f).padding(10.dp)) {
+                VerticalDivider()
+                Box(modifier = Modifier.weight(1f).padding(16.dp)) {
                     when (selectedTab) {
                         SideBarTab.HOME -> Home(
                             interactType = interactType,
@@ -68,15 +70,15 @@ private fun SideBar(
                     .fillMaxWidth()
                     .clickable { onSelect(tab) }
                     .run { if (tab == selectedTab) background(ZithianTheme.colors.primary) else this }
-                    .padding(4.dp, 2.dp),
-                text = tab.name,
+                    .padding(12.dp, 8.dp),
+                text = tab.displayName,
             )
         }
     }
 }
 
-enum class SideBarTab {
-    HOME,
-    BUTTONS,
-    OTHER,
+enum class SideBarTab(val displayName: String) {
+    HOME("Home"),
+    BUTTONS("Buttons"),
+    OTHER("Components"),
 }
