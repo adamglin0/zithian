@@ -1,37 +1,44 @@
 package com.adamglin.zithian.compose.button
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
-import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
 import com.adamglin.zithian.compose.text.LocalTextStyle
 import com.adamglin.zithian.compose.theme.LocalZithianColors
+import com.adamglin.zithian.compose.theme.ZithianTheme
 
 @Composable
-fun SupportStyledButton(
+fun PrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     dimens: BasicButtonDimens = BasicButtonDefaults.dimens(),
-    backgroundColor: Color = LocalZithianColors.current.text8,
-    foregroundColor: Color = LocalZithianColors.current.text15,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    backgroundColor: Color = LocalZithianColors.current.primary,
+    foregroundColor: Color = LocalZithianColors.current.text14,
+    pressedBackgroundColor: Color = ZithianTheme.colors.primaryBold,
+    pressedForegroundColor: Color = ZithianTheme.colors.text15,
     textStyle: TextStyle = LocalTextStyle.current,
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
+    enabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
     BasicButton(
         onClick = onClick,
         modifier = modifier,
+        dimens = dimens,
+        interactionSource = interactionSource,
         backgroundColor = backgroundColor,
         foregroundColor = foregroundColor,
+        pressedBackgroundColor = pressedBackgroundColor,
+        pressedForegroundColor = pressedForegroundColor,
         textStyle = textStyle,
         leading = leading,
         trailing = trailing,
-        dimens = dimens,
+        enabled = enabled,
         content = content
     )
 }
-

@@ -19,10 +19,16 @@ data class ZithianColors(
 
     // Primary colors (using green from brand colors)
     val primary: Color,
+    val primaryBold: Color,
     val primaryVariant: Color,
     val focusColor: Color,
     val onPrimary: Color,
 
+    // Neutral
+    val neutral: Color,
+    val onNeutral: Color,
+    val neutralBold: Color,
+    val onNeutralBold: Color,
     // Text colors
     val text1: Color, // Primary text
     val text2: Color, // Secondary text
@@ -61,6 +67,11 @@ data class ZithianColors(
 
             // Primary (using green from brand colors)
             primary = BrandColors.blue6, // greenColors.green5
+            primaryBold = BrandColors.blue8,
+            neutral = GrayColors.gray5,
+            onNeutral = GrayColors.gray13,
+            neutralBold = GrayColors.gray6,
+            onNeutralBold = GrayColors.gray13,
             primaryVariant = Color(0xFF008858), // greenColors.green6
             onPrimary = Color.White,
             focusColor = Color(0x7f0DB4D6),
@@ -100,7 +111,12 @@ data class ZithianColors(
 
             // Primary (using green from brand colors)
             primary = BrandColors.blue4, // greenColors.green5
+            primaryBold = Color(0xFF00A0E5),
             primaryVariant = Color(0xFF008858), // greenColors.green6
+            neutral = GrayColors.gray13,
+            onNeutral = GrayColors.gray1,
+            neutralBold = GrayColors.gray10,
+            onNeutralBold = GrayColors.gray1,
             onPrimary = Color.White,
             focusColor = Color(0xffABF1FF),
 

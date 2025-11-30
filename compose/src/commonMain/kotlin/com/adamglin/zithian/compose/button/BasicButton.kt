@@ -1,5 +1,6 @@
 package com.adamglin.zithian.compose.button
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -7,17 +8,18 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.innerShadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
 import com.adamglin.zithian.compose.text.LocalTextStyle
@@ -28,8 +30,6 @@ import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.adamglin.zithian.compose.utils.BorderType
 import com.adamglin.zithian.compose.utils.ifTrue
 import com.adamglin.zithian.compose.utils.interactPointer
-import com.adamglin.zithian.compose.utils.innerBorder
-import com.adamglin.zithian.compose.utils.outerBorder
 import com.adamglin.zithian.compose.utils.zithianBorder
 
 @Immutable
@@ -76,8 +76,10 @@ fun BasicButton(
     modifier: Modifier = Modifier,
     dimens: BasicButtonDimens = BasicButtonDefaults.dimens(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    backgroundColor: Color = Color.Black,
-    foregroundColor: Color = Color.White,
+    backgroundColor: Color = ZithianTheme.colors.text2,
+    foregroundColor: Color = ZithianTheme.colors.text15,
+    pressedBackgroundColor: Color = ZithianTheme.colors.text1,
+    pressedForegroundColor: Color = ZithianTheme.colors.text15,
     textStyle: TextStyle = LocalTextStyle.current,
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
@@ -89,8 +91,23 @@ fun BasicButton(
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isFocused by interactionSource.collectIsFocusedAsState()
+
+    val backgroundColorAnimated by animateColorAsState(
+        when {
+            isPressed -> pressedBackgroundColor
+            else -> backgroundColor
+        }
+    )
+
+    val foregroundColorAnimated by animateColorAsState(
+        when {
+            isPressed -> pressedForegroundColor
+            else -> foregroundColor
+        }
+    )
     Row(
         modifier = modifier
+            .alpha(if (enabled) 1f else .4f)
             .clickable(
                 enabled = enabled,
                 onClick = onClick,
@@ -101,13 +118,18 @@ fun BasicButton(
                 value = { isFocused }
             ) { Modifier.zithianBorder(4.dp, ZithianTheme.colors.focusColor, shape, BorderType.Outside) }
             .interactPointer(interactType)
-            .background(backgroundColor, shape)
+            .background(backgroundColorAnimated, shape)
+            .ifTrue(
+                value = { enabled && isHovered }
+            ) {
+                Modifier.hoverShadow(shape)
+            }
             .padding(dimens.contentPadding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(dimens.iconSpacing, Alignment.CenterHorizontally)
     ) {
         CompositionLocalProvider(
-            LocalContentColor provides foregroundColor,
+            LocalContentColor provides foregroundColorAnimated,
             LocalTextStyle provides textStyle,
         ) {
             if (leading != null) {
@@ -125,3 +147,28 @@ fun BasicButton(
     }
 }
 
+private fun Modifier.hoverShadow(shape: Shape) = this.innerShadow(
+    shape = shape,
+    shadow = Shadow(
+        offset = DpOffset(0.dp, 2.dp),
+        radius = 4.dp,
+        color = Color.Black.copy(alpha = .04f),
+    )
+)
+    .innerShadow(
+        shape = shape,
+        shadow = Shadow(
+            offset = DpOffset(0.dp, 1.dp),
+            radius = 2.dp,
+            color = Color.Black.copy(alpha = .04f),
+        )
+    )
+    .innerShadow(
+        shape = shape,
+        shadow = Shadow(
+            offset = DpOffset(0.dp, 0.dp),
+            radius = 0.dp,
+            spread = 1.dp,
+            color = Color.Black.copy(alpha = .06f),
+        )
+    )
