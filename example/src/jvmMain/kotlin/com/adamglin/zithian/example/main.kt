@@ -25,9 +25,9 @@ import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.adamglin.zithian.compose.theme.platformDefault
-import com.adamglin.zithian.example.components.Buttons
-import com.adamglin.zithian.example.components.Home
-import com.adamglin.zithian.example.components.Other
+import com.adamglin.zithian.example.screens.Buttons
+import com.adamglin.zithian.example.screens.Home
+import com.adamglin.zithian.example.screens.Other
 
 fun main() {
     singleWindowApplication {

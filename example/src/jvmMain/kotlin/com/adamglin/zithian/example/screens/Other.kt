@@ -1,4 +1,4 @@
-package com.adamglin.zithian.example.components
+package com.adamglin.zithian.example.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

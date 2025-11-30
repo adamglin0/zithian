@@ -87,6 +87,7 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.svg)
             api(libs.kotlinx.collections.immutable)
+            api(libs.jbr.api)
         }
         all {
             languageSettings {

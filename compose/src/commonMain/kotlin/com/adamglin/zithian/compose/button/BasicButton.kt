@@ -117,7 +117,7 @@ fun BasicButton(
             .ifTrue(
                 value = { isFocused }
             ) { Modifier.zithianBorder(4.dp, ZithianTheme.colors.focusColor, shape, BorderType.Outside) }
-            .interactPointer(interactType)
+            .interactPointer(interactType,enabled)
             .background(backgroundColorAnimated, shape)
             .ifTrue(
                 value = { enabled && isHovered }
@@ -147,14 +147,15 @@ fun BasicButton(
     }
 }
 
-private fun Modifier.hoverShadow(shape: Shape) = this.innerShadow(
-    shape = shape,
-    shadow = Shadow(
-        offset = DpOffset(0.dp, 2.dp),
-        radius = 4.dp,
-        color = Color.Black.copy(alpha = .04f),
+private fun Modifier.hoverShadow(shape: Shape) = this
+    .innerShadow(
+        shape = shape,
+        shadow = Shadow(
+            offset = DpOffset(0.dp, 2.dp),
+            radius = 4.dp,
+            color = Color.Black.copy(alpha = .04f),
+        )
     )
-)
     .innerShadow(
         shape = shape,
         shadow = Shadow(

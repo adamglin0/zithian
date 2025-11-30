@@ -18,6 +18,7 @@ detekt = "1.23.8"
 liquid = "1.0.1"
 coil = "3.3.0"
 kotlinx-collections-immutable = "0.4.0"
+jbrapi = "1.9.0"
 [libraries]
 # compose
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
@@ -42,6 +43,7 @@ detekt-rules-compose = { group = "ru.kode", name = "detekt-rules-compose", versi
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 liquid = { module = "io.github.fletchmckee.liquid:liquid", version.ref = "liquid" }
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref="kotlinx-collections-immutable"}
+jbr-api = { module = "org.jetbrains.runtime:jbr-api", version.ref = "jbrapi" }
 [plugins]
 # kotlin
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }

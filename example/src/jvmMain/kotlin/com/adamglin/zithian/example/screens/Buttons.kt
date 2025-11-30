@@ -1,4 +1,4 @@
-package com.adamglin.zithian.example.components
+package com.adamglin.zithian.example.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +19,6 @@ fun Buttons() {
     Column(
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-        // Primary Styled Buttons
         BasicText(text = "Primary Buttons")
         FlowRow(
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -27,7 +26,7 @@ fun Buttons() {
         ) {
             PrimaryButton(
                 onClick = {},
-            ) { Text("Cancel") }
+            ) { Text("Night Shift") }
 
             PrimaryButton(
                 onClick = {},
@@ -58,6 +57,11 @@ fun Buttons() {
             ) {
                 Text("With Leading & Trailing")
             }
+
+            PrimaryButton(
+                onClick = {},
+                enabled = false,
+            ) { Text("I am diabled") }
         }
 
         Gap(size = 10.dp)
