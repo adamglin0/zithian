@@ -83,7 +83,7 @@ kotlin {
             // other
             implementation(libs.haze)
             implementation(libs.liquid)
-            implementation(libs.compose.continuousRoundedCornerShape)
+            api(libs.composeContinuousRoundedCornerShape)
             implementation(libs.coil.compose)
             implementation(libs.coil.svg)
             api(libs.kotlinx.collections.immutable)

@@ -17,12 +17,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.window.Popup
+import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
 import com.adamglin.zithian.compose.generated.resources.ZithianResources
 import com.adamglin.zithian.compose.icon.CoilIcon
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.LocalInteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
+import com.adamglin.zithian.compose.utils.shadowBorderWithHover
 import kotlinx.collections.immutable.PersistentList
 
 @Immutable
@@ -90,8 +92,8 @@ fun <T> Picker(
         Popup(onDismissRequest = { isDropdownMenuVisible = false }) {
             Box(
                 modifier = Modifier
-                    .shadow(10.dp)
-                    .background(ZithianTheme.colors.surface)
+                    .shadowBorderWithHover(ContinuousRoundedCornerShape(10.dp))
+                    .background(ZithianTheme.colors.surface, ContinuousRoundedCornerShape(10.dp))
             ) {
                 Column(
                     modifier = Modifier
