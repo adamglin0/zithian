@@ -7,3 +7,9 @@ inline fun <T> Modifier.ifNotNull(
     block: (T) -> Modifier
 ): Modifier =
     if (value != null) this.then(block(value)) else this
+
+inline fun Modifier.ifTrue(
+    value: () -> Boolean,
+    block: () -> Modifier
+): Modifier =
+    if (value()) this.then(block()) else this

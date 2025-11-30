@@ -14,19 +14,17 @@ import com.adamglin.zithian.compose.theme.LocalZithianColors
 fun BrandStyledButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    shape: Shape = ContinuousRoundedCornerShape(20.dp),
+    dimens: BasicButtonDimens = BasicButtonDefaults.dimens(),
     backgroundColor: Color = LocalZithianColors.current.primary,
     foregroundColor: Color = LocalZithianColors.current.text1,
     textStyle: TextStyle = LocalTextStyle.current,
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
-    dimens: BasicButtonDimens = BasicButtonDefaults.dimens(),
     content: @Composable () -> Unit
 ) {
     BasicButton(
         onClick = onClick,
         modifier = modifier,
-        shape = shape,
         backgroundColor = backgroundColor,
         foregroundColor = foregroundColor,
         textStyle = textStyle,

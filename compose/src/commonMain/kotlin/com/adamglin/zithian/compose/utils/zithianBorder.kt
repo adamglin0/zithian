@@ -8,57 +8,108 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.ClipOp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.HazeDefaults.blurRadius
+
+enum class BorderType {
+    Outside, Inside, Center
+}
 
 fun Modifier.zithianBorder(
     width: Dp,
     color: Color,
-    shape: Shape
-) = drawBehind {
+    shape: Shape,
+    type: BorderType = BorderType.Inside
+) = drawWithCache {
     val strokeWidthPx = width.toPx()
 
-    // ⬇️ 创建 "内缩" 的形状，以保证边框完全画在内部
-    val insetSize = Size(
-        size.width - strokeWidthPx,
-        size.height - strokeWidthPx
-    )
+    if (type == BorderType.Outside) {
+        // Outside 模式：使用双倍宽度的 Stroke，并裁剪掉内部
+        // 这种方式利用 Stroke 自然的外部扩展，保证了圆角的同心性，避免了手动计算 inset 导致的圆角错位
+        val outline = shape.createOutline(size, layoutDirection, this)
+        onDrawWithContent {
+            drawContent()
+            drawIntoCanvas { canvas ->
+                canvas.save()
+                
+                // 裁剪掉内部 (Difference)，只保留外部区域
+                when (outline) {
+                    is Outline.Rectangle -> canvas.clipRect(outline.rect, ClipOp.Difference)
+                    is Outline.Rounded -> canvas.clipPath(Path().apply { addRoundRect(outline.roundRect) }, ClipOp.Difference)
+                    is Outline.Generic -> canvas.clipPath(outline.path, ClipOp.Difference)
+                }
+                
+                // 绘制双倍宽度的 Stroke
+                // Stroke 中心在边缘，宽度为 2*width，所以一半在内(被剪掉)，一半在外(保留)，看起来就是宽度为 width 的外部边框
+                drawOutline(
+                    outline = outline,
+                    color = color,
+                    style = Stroke(width = strokeWidthPx * 2)
+                )
+                
+                canvas.restore()
+            }
+        }
+    } else {
+        val halfStroke = strokeWidthPx / 2f
+        val inset = if (type == BorderType.Inside) halfStroke else 0f // Center 不偏移
 
-    // 注意：如果宽或高变成负值（极端情况），直接返回
-    if (insetSize.width <= 0f || insetSize.height <= 0f) return@drawBehind
+        val insetSize = Size(
+            size.width - 2 * inset,
+            size.height - 2 * inset
+        )
 
-    val outline = shape.createOutline(
-        insetSize,
-        layoutDirection,
-        this
-    )
-
-    // ⬇️ 将路径平移 strokeWidth/2，使其回到视觉中心
-    val translate = strokeWidthPx / 2
-
-    if (outline is Outline.Generic) {
-        withTransform({
-            translate(left = translate, top = translate)
-        }) {
-            drawPath(
-                outline.path,
-                color = color,
-                style = Stroke(width = strokeWidthPx)
+        // Prevent negative sizes (can happen with Inside type and large border)
+        if (insetSize.width <= 0f || insetSize.height <= 0f) {
+            onDrawWithContent {
+                drawContent()
+            }
+        } else {
+            val outline = shape.createOutline(
+                insetSize,
+                layoutDirection,
+                this
             )
+
+            onDrawWithContent {
+                drawContent()
+                withTransform({
+                    translate(left = inset, top = inset)
+                }) {
+                    drawOutline(
+                        outline = outline,
+                        color = color,
+                        style = Stroke(width = strokeWidthPx)
+                    )
+                }
+            }
         }
     }
 }
+
+fun Modifier.innerBorder(
+    width: Dp,
+    color: Color,
+    shape: Shape
+) = zithianBorder(width, color, shape, BorderType.Inside)
+
+fun Modifier.outerBorder(
+    width: Dp,
+    color: Color,
+    shape: Shape
+) = zithianBorder(width, color, shape, BorderType.Outside)
 
 fun Modifier.shadowBorderWithHover(shape: Shape) = composed {
     val interactionSource = remember { MutableInteractionSource() }
