@@ -25,9 +25,10 @@ import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.adamglin.zithian.compose.theme.platformDefault
-import com.adamglin.zithian.example.screens.Buttons
-import com.adamglin.zithian.example.screens.Home
-import com.adamglin.zithian.example.screens.Other
+import com.adamglin.zithian.example.screens.screens.Buttons
+import com.adamglin.zithian.example.screens.screens.Home
+import com.adamglin.zithian.example.screens.screens.Other
+import com.adamglin.zithian.example.screens.screens.Texts
 
 fun main() {
     singleWindowApplication {
@@ -51,6 +52,7 @@ fun main() {
 
                         SideBarTab.BUTTONS -> Buttons()
                         SideBarTab.OTHER -> Other()
+                        SideBarTab.Texts -> Texts()
                     }
                 }
             }
@@ -79,6 +81,7 @@ private fun SideBar(
 
 enum class SideBarTab(val displayName: String) {
     HOME("Home"),
+    Texts("Texts"),
     BUTTONS("Buttons"),
     OTHER("Components"),
 }
