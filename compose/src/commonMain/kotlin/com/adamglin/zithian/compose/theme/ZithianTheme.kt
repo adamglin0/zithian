@@ -7,7 +7,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.text.LocalTextStyle
-import com.adamglin.zithian.compose.indication.ZithianScaleIndication
+import com.adamglin.zithian.compose.indication.ZithianNoneIndication
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.LocalHazeStyle
 
@@ -16,9 +16,9 @@ import dev.chrisbanes.haze.LocalHazeStyle
 fun ZithianTheme(
     colors: ZithianColors = ZithianColors.light,
     typography: ZithianTypography = ZithianTypography.compat,
-    interactType: InteractType = InteractType.platformDefault,
     spacing: ZithianSpacing = ZithianSpacing(),
     shapes: ZithianShapes = ZithianShapes(),
+    interactType: InteractType = InteractType.platformDefault,
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
@@ -26,7 +26,10 @@ fun ZithianTheme(
         LocalZithianColors provides colors,
         LocalZithianTypography provides typography,
         LocalZithianSpacing provides spacing,
-        LocalIndication provides ZithianScaleIndication,
+        LocalIndication provides when(interactType){
+            InteractType.Touch -> ZithianNoneIndication
+            InteractType.Pointer -> ZithianNoneIndication
+        },
         LocalTextStyle provides typography.bodyMedium,
         LocalZithianShapes provides shapes,
         LocalHazeStyle provides HazeStyle(
