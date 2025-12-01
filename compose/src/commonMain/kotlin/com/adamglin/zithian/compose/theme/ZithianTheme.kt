@@ -8,6 +8,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.text.LocalTextStyle
 import com.adamglin.zithian.compose.indication.ZithianNoneIndication
+import com.adamglin.zithian.compose.indication.ZithianScaleIndication
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.LocalHazeStyle
 
@@ -26,9 +27,9 @@ fun ZithianTheme(
         LocalZithianColors provides colors,
         LocalZithianTypography provides typography,
         LocalZithianSpacing provides spacing,
-        LocalIndication provides when(interactType){
-            InteractType.Touch -> ZithianNoneIndication
-            InteractType.Pointer -> ZithianNoneIndication
+        LocalIndication provides when (interactType) {
+            InteractType.Touch -> ZithianScaleIndication
+            InteractType.Pointer -> ZithianNoneIndication(colors)
         },
         LocalTextStyle provides typography.bodyMedium,
         LocalZithianShapes provides shapes,

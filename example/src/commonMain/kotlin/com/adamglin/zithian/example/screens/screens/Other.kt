@@ -1,6 +1,8 @@
 package com.adamglin.zithian.example.screens.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -10,13 +12,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import com.adamglin.zithian.compose.dropdown.DropdownMenu
+import com.adamglin.zithian.compose.dropdown.DropdownMenuAnchor
 import com.adamglin.zithian.compose.dropdown.SimpleDropdownMenuItem
 import com.adamglin.zithian.compose.layout.Gap
 import com.adamglin.zithian.compose.layout.HorizontalDivider
-import com.adamglin.zithian.compose.picker.Picker
 import com.adamglin.zithian.compose.slider.Slider
 import com.adamglin.zithian.compose.slider.SliderDefaults
 import com.adamglin.zithian.compose.slider.Thumb
@@ -27,7 +30,6 @@ import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.textfield.OutlinedTextField
 import com.adamglin.zithian.compose.textfield.PasswordTextField
 import com.adamglin.zithian.compose.theme.ZithianTheme
-import kotlinx.collections.immutable.toPersistentList
 
 @Composable
 fun Other() {
@@ -35,31 +37,36 @@ fun Other() {
         modifier = Modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        SectionTitle("Dropdown Menu")
-        val candidates = listOf("Adobe RGB 1998-S", "MSI PAG272QR", "Display P3")
-        var selected by remember { mutableStateOf(candidates.first()) }
-        DropdownMenu(
-            modifier = Modifier.width(IntrinsicSize.Max)
-        ) {
-            candidates.fastForEach { candidate ->
-                SimpleDropdownMenuItem(
-                    isSelected = candidate == selected,
-                    onClick = { selected = candidate },
-                ) { Text(candidate) }
+        SectionTitle("DropdownMenuAnchor")
+        var mode by remember { mutableStateOf(Mode.Auto) }
+        DropdownMenuAnchor {
+            current {
+                val interactionSource = remember { MutableInteractionSource() }
+                Text(
+                    modifier = Modifier
+                        .clickable(
+                            role = Role.Button,
+                            interactionSource = interactionSource
+                        ) { isMenuVisible = true },
+                    text = "Current mode: ${mode.name}"
+                )
+            }
+            menu {
+                DropdownMenu {
+                    Mode.entries.fastForEach { candidate ->
+                        SimpleDropdownMenuItem(
+                            isSelected = candidate == mode,
+                            onClick = {
+                                mode = candidate
+                                isMenuVisible = false
+                            },
+                        ) { Text(candidate.name) }
+                    }
+                }
             }
         }
-        // Picker
-        SectionTitle("Picker")
-        var mode by remember { mutableStateOf(Mode.Auto) }
-        Picker(
-            selected = mode,
-            candidates = Mode.entries.toPersistentList(),
-            labelFor = { it.name },
-            onValueChange = { mode = it }
-        )
-
         HorizontalDivider()
-
+        SectionTitle("Dialogs")
         // Switch
         SectionTitle("Switch")
         Row(
@@ -225,7 +232,10 @@ private fun SectionTitle(title: String) {
 }
 
 private enum class Mode {
+    VeryLowPower,
     LowPower,
     Auto,
     HighPower,
+    VeryHighPower,
+    ExtraHighPower,
 }

@@ -27,10 +27,8 @@ import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.LocalContentColor
 import com.adamglin.zithian.compose.theme.LocalInteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
-import com.adamglin.zithian.compose.utils.BorderType
 import com.adamglin.zithian.compose.utils.ifTrue
 import com.adamglin.zithian.compose.utils.interactPointer
-import com.adamglin.zithian.compose.utils.zithianBorder
 
 @Immutable
 data class BasicButtonDimens(
@@ -114,10 +112,7 @@ fun BasicButton(
                 interactionSource = interactionSource,
                 role = Role.Button
             )
-            .ifTrue(
-                value = { isFocused }
-            ) { Modifier.zithianBorder(4.dp, ZithianTheme.colors.focusColor, shape, BorderType.Outside) }
-            .interactPointer(interactType,enabled)
+            .interactPointer(interactType, enabled)
             .background(backgroundColorAnimated, shape)
             .ifTrue(
                 value = { enabled && isHovered }
