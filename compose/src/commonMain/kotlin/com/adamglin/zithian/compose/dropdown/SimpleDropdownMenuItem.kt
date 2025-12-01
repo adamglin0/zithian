@@ -47,24 +47,24 @@ fun SimpleDropdownMenuItem(
         isHovered -> hoveredForegroundColor
         else -> foregroundColor
     }
-    Row(
-        modifier = modifier
-            .clickable(
-                interactionSource = interactionSource,
-                onClick = onClick
-            )
-            .background(backgroundColor, shape)
-            .interactPointer(interactType, enabled)
-            // To achieve visual balance, the value of end padding should be much larger.
-            .padding(2.dp, 2.dp, 10.dp, 2.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(2.dp),
+    CompositionLocalProvider(
+        LocalContentColor provides foregroundColor,
     ) {
-        SelectedIndicator(isSelected)
-        Box(modifier = Modifier.weight(1f)) {
-            CompositionLocalProvider(
-                LocalContentColor provides foregroundColor,
-            ) {
+        Row(
+            modifier = modifier
+                .clickable(
+                    interactionSource = interactionSource,
+                    onClick = onClick
+                )
+                .background(backgroundColor, shape)
+                .interactPointer(interactType, enabled)
+                // To achieve visual balance, the value of end padding should be much larger.
+                .padding(2.dp, 2.dp, 10.dp, 2.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            SelectedIndicator(isSelected)
+            Box(modifier = Modifier.weight(1f)) {
                 content()
             }
         }
