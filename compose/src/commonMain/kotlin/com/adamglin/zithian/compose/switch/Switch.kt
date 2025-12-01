@@ -6,12 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -22,14 +17,14 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.shadow.Shadow
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
 import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.LocalInteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
+import com.adamglin.zithian.compose.utils.ifTrue
 
 @Immutable
 data class SwitchDimens(
@@ -109,18 +104,12 @@ fun Switch(
             .clip(ContinuousRoundedCornerShape(100.dp))
             .hoverable(interactionSource)
             .width(dotSize * 2 + contentPadding).background(backgroundColor, ContinuousRoundedCornerShape(100f))
-            .then(
-                if (enabled) {
-                    val m = Modifier.clickable { onCheckedChange(!checked) }
-                    if (interactType == InteractType.Pointer) {
-                        m.pointerHoverIcon(PointerIcon.Hand)
-                    } else {
-                        m
-                    }
-                } else {
-                    Modifier.alpha(.3f)
-                }
-            )
+            .ifTrue(enabled) {
+                Modifier.clickable(role = Role.Switch) { onCheckedChange(!checked) }
+            }
+            .ifTrue(!enabled) {
+                Modifier.alpha(.3f)
+            }
     ) {
         Box(
             modifier = Modifier
