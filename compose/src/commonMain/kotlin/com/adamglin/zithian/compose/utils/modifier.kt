@@ -13,3 +13,9 @@ inline fun Modifier.ifTrue(
     block: () -> Modifier
 ): Modifier =
     if (value()) this.then(block()) else this
+
+inline fun Modifier.ifTrue(
+    value: Boolean,
+    block: () -> Modifier
+): Modifier =
+    if (value) this.then(block()) else this

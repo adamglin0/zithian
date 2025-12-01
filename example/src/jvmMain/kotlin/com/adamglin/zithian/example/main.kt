@@ -19,6 +19,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
 import androidx.compose.ui.window.singleWindowApplication
 import com.adamglin.zithian.compose.layout.VerticalDivider
 import com.adamglin.zithian.compose.text.Text
@@ -31,28 +33,32 @@ import com.adamglin.zithian.example.screens.screens.Other
 import com.adamglin.zithian.example.screens.screens.Texts
 
 fun main() {
-    singleWindowApplication {
-        var interactType by remember { mutableStateOf(InteractType.platformDefault) }
-        ZithianTheme(
-            interactType = interactType
-        ) {
-            var selectedTab by retain { mutableStateOf(SideBarTab.HOME) }
-            Row {
-                SideBar(
-                    selectedTab = selectedTab,
-                    onSelect = { selectedTab = it }
-                )
-                VerticalDivider()
-                Box(modifier = Modifier.weight(1f).padding(16.dp)) {
-                    when (selectedTab) {
-                        SideBarTab.HOME -> Home(
-                            interactType = interactType,
-                            onInteractTypeChange = { interactType = it }
-                        )
+//    System.setProperty("compose.swing.render.on.graphics", "true")
+//    System.setProperty("compose.layers.type", "COMPONENT")
+    application {
+        Window(onCloseRequest = ::exitApplication) {
+            var interactType by remember { mutableStateOf(InteractType.platformDefault) }
+            ZithianTheme(
+                interactType = interactType
+            ) {
+                var selectedTab by retain { mutableStateOf(SideBarTab.HOME) }
+                Row {
+                    SideBar(
+                        selectedTab = selectedTab,
+                        onSelect = { selectedTab = it }
+                    )
+                    VerticalDivider()
+                    Box(modifier = Modifier.weight(1f).padding(16.dp)) {
+                        when (selectedTab) {
+                            SideBarTab.HOME -> Home(
+                                interactType = interactType,
+                                onInteractTypeChange = { interactType = it }
+                            )
 
-                        SideBarTab.BUTTONS -> Buttons()
-                        SideBarTab.OTHER -> Other()
-                        SideBarTab.Texts -> Texts()
+                            SideBarTab.BUTTONS -> Buttons()
+                            SideBarTab.OTHER -> Other()
+                            SideBarTab.Texts -> Texts()
+                        }
                     }
                 }
             }

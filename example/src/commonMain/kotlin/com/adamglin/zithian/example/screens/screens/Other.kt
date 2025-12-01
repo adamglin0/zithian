@@ -1,25 +1,19 @@
 package com.adamglin.zithian.example.screens.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEach
+import com.adamglin.zithian.compose.dropdown.DropdownMenu
+import com.adamglin.zithian.compose.dropdown.SimpleDropdownMenuItem
 import com.adamglin.zithian.compose.layout.Gap
 import com.adamglin.zithian.compose.layout.HorizontalDivider
 import com.adamglin.zithian.compose.picker.Picker
@@ -41,6 +35,19 @@ fun Other() {
         modifier = Modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        SectionTitle("Dropdown Menu")
+        val candidates = listOf("Adobe RGB 1998-S", "MSI PAG272QR", "Display P3")
+        var selected by remember { mutableStateOf(candidates.first()) }
+        DropdownMenu(
+            modifier = Modifier.width(IntrinsicSize.Max)
+        ) {
+            candidates.fastForEach { candidate ->
+                SimpleDropdownMenuItem(
+                    isSelected = candidate == selected,
+                    onClick = { selected = candidate },
+                ) { Text(candidate) }
+            }
+        }
         // Picker
         SectionTitle("Picker")
         var mode by remember { mutableStateOf(Mode.Auto) }
