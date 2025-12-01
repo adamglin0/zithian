@@ -23,7 +23,7 @@ import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.adamglin.zithian.compose.utils.interactPointer
 
 @Composable
-fun SimpleDropdownMenuItem(
+fun DropdownMenuScope.SimpleDropdownMenuItem(
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -35,7 +35,9 @@ fun SimpleDropdownMenuItem(
     hoveredForegroundColor: Color = ZithianTheme.colors.onPrimary,
     content: @Composable () -> Unit,
 ) {
-    val shape = ContinuousRoundedCornerShape(8.dp)
+    val shape = ContinuousRoundedCornerShape(
+        size = (dimens.borderRadius - dimens.padding).coerceAtLeast(0.dp)
+    )
     val interactType = LocalInteractType.current
     val isHovered by interactionSource.collectIsHoveredAsState()
 

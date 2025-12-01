@@ -6,15 +6,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Immutable
-data class ZithianSpacing(
-    val none: Dp = 0.dp,
+data class ZithianShapes(
     val extraSmall: Dp = 2.dp,
-    val small: Dp = 4.dp,
+    val small: Dp = 5.dp,
     val medium: Dp = 10.dp,
-    val large: Dp = 20.dp,
-    val extraLarge: Dp = 32.dp,
-    val extraExtraLarge: Dp = 36.dp
+    val large: Dp = 15.dp,
+    val extraLarge: Dp = 20.dp,
 )
 
-val LocalZithianSpacing = staticCompositionLocalOf { ZithianSpacing() }
+val LocalZithianShapes = staticCompositionLocalOf { ZithianShapes() }
 

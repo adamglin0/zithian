@@ -16,8 +16,9 @@ import dev.chrisbanes.haze.LocalHazeStyle
 fun ZithianTheme(
     colors: ZithianColors = ZithianColors.light,
     typography: ZithianTypography = ZithianTypography.compat,
-    interactType: InteractType= InteractType.platformDefault,
+    interactType: InteractType = InteractType.platformDefault,
     spacing: ZithianSpacing = ZithianSpacing(),
+    shapes: ZithianShapes = ZithianShapes(),
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
@@ -27,6 +28,7 @@ fun ZithianTheme(
         LocalZithianSpacing provides spacing,
         LocalIndication provides ZithianScaleIndication,
         LocalTextStyle provides typography.bodyMedium,
+        LocalZithianShapes provides shapes,
         LocalHazeStyle provides HazeStyle(
             backgroundColor = colors.background,
             tint = null,
@@ -50,4 +52,9 @@ object ZithianTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalZithianSpacing.current
+
+    val shapes: ZithianShapes
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalZithianShapes.current
 }
