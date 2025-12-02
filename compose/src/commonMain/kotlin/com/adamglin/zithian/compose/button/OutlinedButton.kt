@@ -6,30 +6,34 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
+import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
 import com.adamglin.zithian.compose.text.LocalTextStyle
-import com.adamglin.zithian.compose.theme.LocalContentColor
 import com.adamglin.zithian.compose.theme.LocalZithianColors
 import com.adamglin.zithian.compose.theme.ZithianTheme
+import com.adamglin.zithian.compose.utils.innerBorder
 
 @Composable
-fun SubtleButton(
+fun OutlinedButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     dimens: BasicButtonDimens = BasicButtonDefaults.dimens(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    backgroundColor: Color = Color.Unspecified,
-    foregroundColor: Color = LocalContentColor.current,
-    pressedBackgroundColor: Color = ZithianTheme.colors.subtlePressed,
-    pressedForegroundColor: Color = foregroundColor,
+    backgroundColor: Color = LocalZithianColors.current.surface,
+    foregroundColor: Color = LocalZithianColors.current.onSurface,
+    pressedBackgroundColor: Color = ZithianTheme.colors.neutralBold,
+    pressedForegroundColor: Color = ZithianTheme.colors.onNeutralBold,
+    borderColor: Color = ZithianTheme.colors.border,
     textStyle: TextStyle = LocalTextStyle.current,
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
     enabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val shape = remember(dimens.cornerRadius) { ContinuousRoundedCornerShape(dimens.cornerRadius) }
     BasicButton(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier.innerBorder(1.dp, borderColor, shape),
         dimens = dimens,
         interactionSource = interactionSource,
         backgroundColor = backgroundColor,

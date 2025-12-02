@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import com.adamglin.zithian.compose.button.NeutralButton
-import com.adamglin.zithian.compose.button.PrimaryButton
-import com.adamglin.zithian.compose.button.TextButton
-import com.adamglin.zithian.compose.icon.CoilIcon
+import com.adamglin.zithian.compose.button.*
+import com.adamglin.zithian.compose.icon.*
 import com.adamglin.zithian.compose.layout.Gap
 import com.adamglin.zithian.compose.text.Text
 import zithian.example.generated.resources.Res
@@ -91,6 +89,52 @@ fun Buttons() {
 
         Gap(size = 10.dp)
 
+        BasicText(text = "Subtle Buttons")
+        FlowRow(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            SubtleButton(
+                onClick = {},
+            ) { Text("Subtle Button") }
+
+            SubtleButton(
+                onClick = {},
+                leading = {
+                    CoilIcon(
+                        uri = Res.getUri("drawable/ic_folder_filled.svg"),
+                        contentDescription = null,
+                    )
+                }
+            ) {
+                Text("With Icon")
+            }
+        }
+
+        Gap(size = 10.dp)
+
+        BasicText(text = "Outlined Buttons")
+        FlowRow(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            OutlinedButton(
+                onClick = {},
+            ) { Text("Outlined Button") }
+
+            OutlinedButton(
+                onClick = {},
+                leading = {
+                    CoilIcon(
+                        uri = Res.getUri("drawable/ic_folder_filled.svg"),
+                        contentDescription = null,
+                    )
+                }
+            ) {
+                Text("With Icon")
+            }
+        }
+
         Gap(size = 10.dp)
 
         // Text Buttons
@@ -113,6 +157,52 @@ fun Buttons() {
                 }
             ) {
                 Text("With Icon")
+            }
+        }
+        BasicText(text = "Icon Buttons")
+        FlowRow(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            BasicIconButton(
+                onClick = {},
+            ) {
+                CoilIcon(
+                    uri = Res.getUri("drawable/ic_folder_filled.svg"),
+                    contentDescription = null,
+                )
+            }
+            NeutralIconButton(
+                onClick = {},
+            ) {
+                CoilIcon(
+                    uri = Res.getUri("drawable/ic_folder_filled.svg"),
+                    contentDescription = null,
+                )
+            }
+            PrimaryIconButton(
+                onClick = {},
+            ) {
+                CoilIcon(
+                    uri = Res.getUri("drawable/ic_folder_filled.svg"),
+                    contentDescription = null,
+                )
+            }
+            SubtleIconButton(
+                onClick = {},
+            ) {
+                CoilIcon(
+                    uri = Res.getUri("drawable/ic_folder_filled.svg"),
+                    contentDescription = null,
+                )
+            }
+            OutlinedIconButton(
+                onClick = {},
+            ) {
+                CoilIcon(
+                    uri = Res.getUri("drawable/ic_folder_filled.svg"),
+                    contentDescription = null,
+                )
             }
         }
     }

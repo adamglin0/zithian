@@ -1,0 +1,111 @@
+package com.adamglin.zithian.compose.icon
+
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
+import com.adamglin.zithian.compose.theme.InteractType
+import com.adamglin.zithian.compose.theme.LocalContentColor
+import com.adamglin.zithian.compose.theme.LocalInteractType
+import com.adamglin.zithian.compose.utils.ifTrue
+import com.adamglin.zithian.compose.utils.interactPointer
+import com.adamglin.zithian.compose.utils.shadowBorderWithHover
+
+@Immutable
+data class IconButtonDimens(
+    val contentPadding: PaddingValues,
+    val cornerRadius: Dp,
+    val iconSize: Dp,
+) {
+    companion object {
+        internal val Pointer = IconButtonDimens(
+            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp),
+            cornerRadius = 10.dp,
+            iconSize = 17.dp,
+        )
+
+        internal val Touch = IconButtonDimens(
+            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
+            cornerRadius = 20.dp,
+            iconSize = 24.dp,
+        )
+
+        fun of(interactType: InteractType): IconButtonDimens {
+            return when (interactType) {
+                InteractType.Pointer -> Pointer
+                InteractType.Touch -> Touch
+            }
+        }
+    }
+}
+
+internal object IconButtonDefaults {
+    @Composable
+    fun dimens(
+        interactType: InteractType = LocalInteractType.current
+    ): IconButtonDimens = IconButtonDimens.of(interactType)
+}
+
+@Composable
+fun IconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    dimens: IconButtonDimens = IconButtonDefaults.dimens(),
+    backgroundColor: Color = Color.Transparent,
+    foregroundColor: Color = Color.Unspecified,
+    pressedBackgroundColor: Color = Color.Transparent,
+    pressedForegroundColor: Color = foregroundColor,
+    enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    content: @Composable () -> Unit,
+) {
+    val interactType = LocalInteractType.current
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val isHovered by interactionSource.collectIsHoveredAsState()
+    val animatedBackgroundColor = if (isPressed) pressedBackgroundColor else backgroundColor
+    val animatedForegroundColor = if (isPressed) pressedForegroundColor else foregroundColor
+    val shape = ContinuousRoundedCornerShape(dimens.cornerRadius)
+
+    Box(
+        modifier = modifier
+            .alpha(if (enabled) 1f else .4f)
+            .ifTrue(enabled && isHovered) {
+                Modifier.alpha(0.95f)
+            }
+            .clickable(
+                enabled = enabled,
+                role = Role.Button,
+                onClick = onClick,
+                interactionSource = interactionSource,
+            )
+            .interactPointer(interactType, enabled)
+            .background(animatedBackgroundColor, shape)
+            .padding(dimens.contentPadding),
+        contentAlignment = Alignment.Center
+    ) {
+        CompositionLocalProvider(LocalContentColor provides animatedForegroundColor) {
+            Box(modifier = Modifier.size(dimens.iconSize)) {
+                content()
+            }
+        }
+    }
+}

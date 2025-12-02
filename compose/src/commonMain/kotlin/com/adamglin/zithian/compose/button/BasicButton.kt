@@ -61,7 +61,7 @@ data class BasicButtonDimens(
     }
 }
 
-object BasicButtonDefaults {
+internal object BasicButtonDefaults {
     @Composable
     fun dimens(
         interactType: InteractType = LocalInteractType.current
@@ -90,19 +90,16 @@ fun BasicButton(
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isFocused by interactionSource.collectIsFocusedAsState()
 
-    val backgroundColorAnimated by animateColorAsState(
-        when {
-            isPressed -> pressedBackgroundColor
-            else -> backgroundColor
-        }
-    )
+    val backgroundColorAnimated = when {
+        isPressed -> pressedBackgroundColor
+        else -> backgroundColor
+    }
 
-    val foregroundColorAnimated by animateColorAsState(
-        when {
-            isPressed -> pressedForegroundColor
-            else -> foregroundColor
-        }
-    )
+    val foregroundColorAnimated = when {
+        isPressed -> pressedForegroundColor
+        else -> foregroundColor
+    }
+
     Row(
         modifier = modifier
             .alpha(if (enabled) 1f else .4f)

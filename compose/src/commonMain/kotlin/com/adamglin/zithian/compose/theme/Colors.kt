@@ -14,7 +14,9 @@ data class ZithianColors(
     val greenColors: GreenColors = GreenColors,
     // Background colors
     val background: Color,
+    val onBackground: Color,
     val surface: Color,
+    val onSurface: Color,
     val surfacePure: Color,
 
     // Primary colors (using green from brand colors)
@@ -48,13 +50,18 @@ data class ZithianColors(
 
     // Common functional colors
     val success: Color,
+    val onSuccess: Color,
     val error: Color,
+    val onError: Color,
     val warning: Color,
+    val onWarning: Color,
     val link: Color,
 
     // Border and divider
     val border: Color,
     val divider: Color,
+
+    val subtlePressed: Color,
 
     val shadow: Color = Color.Black.copy(alpha = 0.05f),
 ) {
@@ -62,7 +69,9 @@ data class ZithianColors(
         val light = ZithianColors(
             // Background
             background = GrayColors.gray2,
+            onBackground = GrayColors.gray14,
             surface = Color(0xFFFAFAFA),
+            onSurface = GrayColors.gray14,
             surfacePure = Color.White,
 
             // Primary (using green from brand colors)
@@ -94,19 +103,25 @@ data class ZithianColors(
 
             // Functional colors
             success = Color(0xFF2ba471), // Same as primary green
+            onSuccess = Color.White,
             error = Color(0xFFd54941), // redColors.red6
+            onError = Color.White,
             warning = Color(0xFFe37318), // orangeColors.orange5
+            onWarning = Color.White,
             link = Color(0xFF0052d9), // brandColors.blue7
 
             // Border and divider
             border = Color(0xFFE8E8E8),
             divider = Color(0xFFF0F0F1),
+            subtlePressed = GrayColors.gray2,
         )
 
         val dark = ZithianColors(
             // Background
             background = Color.Black,
+            onBackground = GrayColors.white,
             surface = GrayColors.gray13,
+            onSurface = GrayColors.white,
             surfacePure = GrayColors.gray10,
 
             // Primary (using green from brand colors)
@@ -140,13 +155,17 @@ data class ZithianColors(
 
             // Functional colors
             success = Color(0xFF2ba471), // Same as primary green
+            onSuccess = Color.White,
             error = Color(0xFFd54941), // redColors.red6
+            onError = Color.White,
             warning = Color(0xFFe37318), // orangeColors.orange5
+            onWarning = Color.White,
             link = Color(0xFF0052d9), // brandColors.blue7
 
             // Border and divider
             border = Color(0xFF797979),
             divider = Color(0xFF6D6D6D),
+            subtlePressed = GrayColors.gray12,
         )
     }
 }
