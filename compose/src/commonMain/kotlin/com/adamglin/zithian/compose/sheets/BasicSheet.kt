@@ -87,6 +87,11 @@ internal fun BasicSheet(
                             .background(backgroundColor, shape)
                             .align(Alignment.BottomCenter)
                             .hazeSource(hazeState)
+                            .clickable(
+                                interactionSource = null,
+                                indication = null,
+                                onClick = {}
+                            )
                     ) {
                         AnimatedContent(Unit) {
                             Box(
