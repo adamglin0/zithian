@@ -29,6 +29,6 @@ fun Loader(
     CoilIcon(
         uri = ZithianResources.getUri("drawable/ic_loader.svg"),
         contentDescription = "loader",
-        modifier = modifier.size(21.dp).rotate(rotation),
+        modifier = modifier.rotate(rotation),
     )
 }
