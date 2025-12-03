@@ -102,7 +102,6 @@ fun OutlinedTextField(
                     .background(ZithianTheme.colors.surface, shape)
                     .padding(dimens.contentPadding)
             ) {
-                it()
                 if (placeholdText != null && state.text.isEmpty()) {
                     Text(
                         text = placeholdText,
@@ -110,6 +109,7 @@ fun OutlinedTextField(
                         color = ZithianTheme.colors.text10,
                     )
                 }
+                it()
             }
         },
         scrollState,
