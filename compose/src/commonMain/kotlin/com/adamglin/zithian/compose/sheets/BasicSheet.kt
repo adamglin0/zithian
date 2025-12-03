@@ -3,6 +3,7 @@ package com.adamglin.zithian.compose.sheets
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -46,7 +47,6 @@ internal fun BasicSheet(
     backgroundColor: Color = ZithianTheme.colors.surface,
     content: @Composable () -> Unit,
 ) {
-    rememberLiquidState()
     Popup(
         onDismissRequest = { onDismissRequest() },
         properties = basicSheetPopupProperties,
@@ -80,7 +80,7 @@ internal fun BasicSheet(
         AnimatedVisibility(
             visible = isVisible,
             enter = slideInVertically(animationSpec = spring(stiffness = Spring.StiffnessHigh)) { it },
-            exit = slideOutVertically(animationSpec = spring(stiffness = Spring.StiffnessHigh)) { it }
+            exit = slideOutVertically { it }
         ) {
             Box(
                 modifier = Modifier
