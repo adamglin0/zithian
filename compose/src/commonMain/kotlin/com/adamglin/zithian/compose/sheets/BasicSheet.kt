@@ -88,7 +88,13 @@ internal fun BasicSheet(
                             .align(Alignment.BottomCenter)
                             .hazeSource(hazeState)
                     ) {
-                        content()
+                        AnimatedContent(Unit) {
+                            Box(
+                                modifier = Modifier.animateContentSize()
+                            ) {
+                                content()
+                            }
+                        }
                     }
                 }
             }
