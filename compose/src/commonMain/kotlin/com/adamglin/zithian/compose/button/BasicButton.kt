@@ -101,7 +101,7 @@ fun BasicButton(
     }
 
     Row(
-        modifier = modifier
+        modifier = Modifier
             .alpha(if (enabled) 1f else .4f)
             .clickable(
                 enabled = enabled,
@@ -109,6 +109,7 @@ fun BasicButton(
                 interactionSource = interactionSource,
                 role = Role.Button
             )
+            .then(modifier)
             .interactPointer(interactType, enabled)
             .background(backgroundColorAnimated, shape)
             .ifTrue(
