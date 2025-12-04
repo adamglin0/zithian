@@ -1,11 +1,11 @@
 package com.adamglin.zithian.compose.scaffold
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.adamglin.zithian.compose.generated.resources.ZithianResources
 import com.adamglin.zithian.compose.icon.CoilIcon
 import com.adamglin.zithian.compose.text.Text
-import com.adamglin.zithian.compose.generated.resources.ZithianResources
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import dev.chrisbanes.haze.HazeProgressive
 import dev.chrisbanes.haze.hazeEffect
@@ -62,17 +62,17 @@ fun ScaffoldScope.TitleWithLeadingAppBar(
                 tint = ZithianTheme.colors.text3,
             )
         }
-        title?.let {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.Center)
-            ) {
-                Text(
-                    text = title,
-                    style = ZithianTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            }
+        AnimatedContent(
+            targetState = title,
+            transitionSpec = { fadeIn() togetherWith fadeOut() },
+            modifier = Modifier.align(Alignment.Center),
+        ) {
+            Text(
+                modifier = Modifier,
+                text = it ?: "",
+                style = ZithianTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
         }
     }
 }
