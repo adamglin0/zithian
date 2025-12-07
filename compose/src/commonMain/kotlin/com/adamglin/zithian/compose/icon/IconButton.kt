@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
@@ -104,6 +105,7 @@ internal fun IconButton(
             .interactPointer(interactType, enabled)
             .ifNotNull(liquidState) {
                 Modifier.liquid(it) {
+                    this.shape = RoundedCornerShape(dimens.cornerRadius)
                     tint = if (backgroundColor == Color.Transparent) Color.Transparent
                     else backgroundColor.copy(.8f)
                     edge = 0.02f

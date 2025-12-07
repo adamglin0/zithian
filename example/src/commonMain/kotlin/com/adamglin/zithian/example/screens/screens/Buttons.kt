@@ -26,7 +26,7 @@ fun Buttons() {
     val liquidState = rememberLiquidState()
     AsyncImage(
         modifier = Modifier.fillMaxSize().liquefiable(liquidState),
-        model = Res.getUri("drawable/img_background_1.jpeg"),
+        model = Res.getUri("drawable/img_background_1.png"),
         contentScale = ContentScale.Crop,
         contentDescription = null,
     )

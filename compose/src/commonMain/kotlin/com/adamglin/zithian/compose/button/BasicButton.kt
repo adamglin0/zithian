@@ -6,10 +6,13 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.innerShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -103,6 +106,7 @@ fun BasicButton(
 
     Row(
         modifier = Modifier
+            .clip(shape)
             .alpha(if (enabled) 1f else .4f)
             .clickable(
                 enabled = enabled,
@@ -114,6 +118,7 @@ fun BasicButton(
             .interactPointer(interactType, enabled)
             .ifNotNull(liquidState) {
                 Modifier.liquid(it) {
+                    this.shape = RoundedCornerShape(dimens.cornerRadius)
                     tint = if (backgroundColor == Color.Transparent) Color.Transparent
                     else backgroundColorAnimated.copy(.8f)
                     edge = 0.02f
