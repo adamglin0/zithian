@@ -27,6 +27,7 @@ kotlin {
             // other
             implementation(projects.zithian.compose)
             implementation(libs.coil.compose)
+            implementation(libs.liquid)
         }
     }
 }

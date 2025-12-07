@@ -4,7 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -14,17 +17,23 @@ import com.adamglin.zithian.compose.button.*
 import com.adamglin.zithian.compose.icon.*
 import com.adamglin.zithian.compose.layout.Gap
 import com.adamglin.zithian.compose.text.Text
+import io.github.fletchmckee.liquid.liquefiable
+import io.github.fletchmckee.liquid.rememberLiquidState
 import zithian.example.generated.resources.Res
 
 @Composable
 fun Buttons() {
+    val liquidState = rememberLiquidState()
     AsyncImage(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().liquefiable(liquidState),
         model = Res.getUri("drawable/img_background_1.jpeg"),
         contentScale = ContentScale.Crop,
         contentDescription = null,
     )
     Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         BasicText(text = "Primary Buttons")
@@ -34,6 +43,7 @@ fun Buttons() {
         ) {
             PrimaryButton(
                 onClick = {},
+                liquidState = liquidState,
             ) { Text("Night Shift") }
 
             PrimaryButton(
