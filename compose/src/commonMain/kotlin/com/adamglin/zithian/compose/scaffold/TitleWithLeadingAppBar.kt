@@ -37,17 +37,17 @@ fun ScaffoldScope.TitleWithLeadingAppBar(
             .statusBarsPadding()
             .padding(10.dp)
     ) {
-        val backgroundColor = ZithianTheme.colors.surfacePure.copy(.8f)
+        val backgroundColor = ZithianTheme.colors.surfacePure.copy(.2f)
         Box(
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .liquid(liquidState) {
                     shape = CircleShape
                     tint = backgroundColor
-                    frost = 5.dp
+                    frost = 0.dp
                     refraction = 0.15f
-                    curve = 1f
-                    edge = 0.09f
+                    curve = 0.25f
+                    edge = 0.02f
                     saturation = 1f
                     dispersion = 0.26f
                 }
