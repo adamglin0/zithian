@@ -3,9 +3,13 @@ package com.adamglin.zithian.example.screens.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.adamglin.zithian.compose.button.*
 import com.adamglin.zithian.compose.icon.*
 import com.adamglin.zithian.compose.layout.Gap
@@ -14,6 +18,12 @@ import zithian.example.generated.resources.Res
 
 @Composable
 fun Buttons() {
+    AsyncImage(
+        modifier = Modifier.fillMaxSize(),
+        model = Res.getUri("drawable/img_background_1.jpeg"),
+        contentScale = ContentScale.Crop,
+        contentDescription = null,
+    )
     Column(
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {

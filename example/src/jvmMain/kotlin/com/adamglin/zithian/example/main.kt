@@ -53,7 +53,7 @@ fun main() {
                         onSelect = { selectedTab = it }
                     )
                     VerticalDivider()
-                    Box(modifier = Modifier.weight(1f).padding(16.dp)) {
+                    Box(modifier = Modifier.weight(1f)) {
                         when (selectedTab) {
                             SideBarTab.HOME -> Home(
                                 interactType = interactType,
