@@ -33,6 +33,7 @@ import com.adamglin.zithian.compose.text.LocalTextStyle
 import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.LocalInteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
+import io.github.fletchmckee.liquid.LiquidState
 
 @Immutable
 data class TextButtonDimens(
@@ -70,13 +71,14 @@ object TextButtonDefaults {
 fun TextButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    dimens: TextButtonDimens = TextButtonDefaults.dimens(),
     shape: Shape = ContinuousRoundedCornerShape(20.dp),
     textStyle: TextStyle = LocalTextStyle.current,
     color: Color = ZithianTheme.colors.link,
     hoverTextStyle: TextStyle = textStyle.copy(textDecoration = TextDecoration.Underline),
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
-    dimens: TextButtonDimens = TextButtonDefaults.dimens(),
+    liquidState: LiquidState? = null,
     content: @Composable () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }

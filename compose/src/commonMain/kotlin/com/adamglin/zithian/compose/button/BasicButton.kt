@@ -27,8 +27,11 @@ import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.LocalContentColor
 import com.adamglin.zithian.compose.theme.LocalInteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
+import com.adamglin.zithian.compose.utils.ifNotNull
 import com.adamglin.zithian.compose.utils.ifTrue
 import com.adamglin.zithian.compose.utils.interactPointer
+import io.github.fletchmckee.liquid.LiquidState
+import io.github.fletchmckee.liquid.liquid
 
 @Immutable
 data class BasicButtonDimens(
@@ -82,6 +85,7 @@ fun BasicButton(
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
     enabled: Boolean = true,
+    liquidState: LiquidState? = null,
     content: @Composable () -> Unit
 ) {
     val interactType = LocalInteractType.current
@@ -111,7 +115,15 @@ fun BasicButton(
             )
             .then(modifier)
             .interactPointer(interactType, enabled)
-            .background(backgroundColorAnimated, shape)
+            .ifNotNull(liquidState) {
+                Modifier.liquid(it) {
+                    tint = backgroundColorAnimated.copy(.8f)
+                    edge = 0.02f
+                }
+            }
+            .ifTrue(liquidState == null) {
+                Modifier.background(backgroundColorAnimated, shape)
+            }
             .ifTrue(
                 value = { enabled && isHovered }
             ) {

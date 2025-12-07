@@ -9,6 +9,7 @@ import androidx.compose.ui.text.TextStyle
 import com.adamglin.zithian.compose.text.LocalTextStyle
 import com.adamglin.zithian.compose.theme.LocalZithianColors
 import com.adamglin.zithian.compose.theme.ZithianTheme
+import io.github.fletchmckee.liquid.LiquidState
 
 @Composable
 fun PrimaryButton(
@@ -24,6 +25,7 @@ fun PrimaryButton(
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
     enabled: Boolean = true,
+    liquidState: LiquidState? = null,
     content: @Composable () -> Unit
 ) {
     BasicButton(
@@ -39,6 +41,7 @@ fun PrimaryButton(
         leading = leading,
         trailing = trailing,
         enabled = enabled,
+        liquidState = liquidState,
         content = content
     )
 }
