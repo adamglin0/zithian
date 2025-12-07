@@ -8,10 +8,13 @@ import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.interaction.InteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.drawscope.ContentDrawScope
-import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasureResult
+import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.node.DelegatableNode
-import androidx.compose.ui.node.DrawModifierNode
+import androidx.compose.ui.node.LayoutModifierNode
+import androidx.compose.ui.node.invalidatePlacement
+import androidx.compose.ui.unit.Constraints
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -25,15 +28,19 @@ internal object ZithianScaleIndication : IndicationNodeFactory {
 
     private class ScaleIndicationNode(
         private val interactionSource: InteractionSource
-    ) : Modifier.Node(), DrawModifierNode {
+    ) : Modifier.Node(), LayoutModifierNode {
         private val animatedScalePercent = Animatable(1f)
 
         private suspend fun animateToPressed() {
-            animatedScalePercent.animateTo(0.96f, spring())
+            animatedScalePercent.animateTo(0.95f, spring()) {
+                invalidatePlacement()
+            }
         }
 
         private suspend fun animateToResting() {
-            animatedScalePercent.animateTo(1f, tween())
+            animatedScalePercent.animateTo(1f, tween()) {
+                invalidatePlacement()
+            }
         }
 
         override fun onAttach() {
@@ -51,11 +58,13 @@ internal object ZithianScaleIndication : IndicationNodeFactory {
             }
         }
 
-        override fun ContentDrawScope.draw() {
-            scale(
-                scale = animatedScalePercent.value
-            ) {
-                this@draw.drawContent()
+        override fun MeasureScope.measure(measurable: Measurable, constraints: Constraints): MeasureResult {
+            val placeable = measurable.measure(constraints)
+            return layout(placeable.width, placeable.height) {
+                placeable.placeWithLayer(0, 0) {
+                    scaleX = animatedScalePercent.value
+                    scaleY = animatedScalePercent.value
+                }
             }
         }
     }
