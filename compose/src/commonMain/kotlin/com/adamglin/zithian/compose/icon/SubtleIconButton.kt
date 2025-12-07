@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.adamglin.zithian.compose.theme.LocalZithianColors
 import com.adamglin.zithian.compose.theme.ZithianTheme
+import io.github.fletchmckee.liquid.LiquidState
 
 @Composable
 fun SubtleIconButton(
@@ -12,6 +13,7 @@ fun SubtleIconButton(
     modifier: Modifier = Modifier,
     dimens: IconButtonDimens = IconButtonDefaults.dimens(),
     enabled: Boolean = true,
+    liquidState: LiquidState? = null,
     content: @Composable () -> Unit,
 ) {
     val foregroundColor = LocalZithianColors.current.text14
@@ -24,6 +26,7 @@ fun SubtleIconButton(
         pressedBackgroundColor = ZithianTheme.colors.subtlePressed,
         pressedForegroundColor = foregroundColor,
         enabled = enabled,
+        liquidState = liquidState,
         content = content
     )
 }

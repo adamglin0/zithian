@@ -9,6 +9,7 @@ import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerS
 import com.adamglin.zithian.compose.theme.LocalZithianColors
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.adamglin.zithian.compose.utils.innerBorder
+import io.github.fletchmckee.liquid.LiquidState
 
 @Composable
 fun OutlinedIconButton(
@@ -16,6 +17,7 @@ fun OutlinedIconButton(
     modifier: Modifier = Modifier,
     dimens: IconButtonDimens = IconButtonDefaults.dimens(),
     enabled: Boolean = true,
+    liquidState: LiquidState? = null,
     content: @Composable () -> Unit,
 ) {
     val shape = remember(dimens.cornerRadius) { ContinuousRoundedCornerShape(dimens.cornerRadius) }
@@ -28,6 +30,7 @@ fun OutlinedIconButton(
         pressedBackgroundColor = ZithianTheme.colors.neutralBold,
         pressedForegroundColor = ZithianTheme.colors.onNeutralBold,
         enabled = enabled,
+        liquidState = liquidState,
         content = content
     )
 }

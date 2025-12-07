@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.adamglin.zithian.compose.theme.LocalZithianColors
 import com.adamglin.zithian.compose.theme.ZithianTheme
+import io.github.fletchmckee.liquid.LiquidState
 
 @Composable
 fun NeutralIconButton(
@@ -11,6 +12,7 @@ fun NeutralIconButton(
     modifier: Modifier = Modifier,
     dimens: IconButtonDimens = IconButtonDefaults.dimens(),
     enabled: Boolean = true,
+    liquidState: LiquidState? = null,
     content: @Composable () -> Unit,
 ) {
     IconButton(
@@ -22,6 +24,7 @@ fun NeutralIconButton(
         pressedBackgroundColor = ZithianTheme.colors.neutralBold,
         pressedForegroundColor = ZithianTheme.colors.onNeutralBold,
         enabled = enabled,
+        liquidState = liquidState,
         content = content
     )
 }

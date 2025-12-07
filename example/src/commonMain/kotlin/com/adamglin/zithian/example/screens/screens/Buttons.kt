@@ -197,6 +197,7 @@ fun Buttons() {
         ) {
             BasicIconButton(
                 onClick = {},
+                liquidState = liquidState,
             ) {
                 CoilIcon(
                     uri = Res.getUri("drawable/ic_folder_filled.svg"),
@@ -205,6 +206,7 @@ fun Buttons() {
             }
             NeutralIconButton(
                 onClick = {},
+                liquidState = liquidState,
             ) {
                 CoilIcon(
                     uri = Res.getUri("drawable/ic_folder_filled.svg"),
@@ -213,6 +215,7 @@ fun Buttons() {
             }
             PrimaryIconButton(
                 onClick = {},
+                liquidState = liquidState,
             ) {
                 CoilIcon(
                     uri = Res.getUri("drawable/ic_folder_filled.svg"),
@@ -221,6 +224,7 @@ fun Buttons() {
             }
             SubtleIconButton(
                 onClick = {},
+                liquidState = liquidState,
             ) {
                 CoilIcon(
                     uri = Res.getUri("drawable/ic_folder_filled.svg"),
@@ -229,6 +233,7 @@ fun Buttons() {
             }
             OutlinedIconButton(
                 onClick = {},
+                liquidState = liquidState,
             ) {
                 CoilIcon(
                     uri = Res.getUri("drawable/ic_folder_filled.svg"),

@@ -3,6 +3,7 @@ package com.adamglin.zithian.compose.icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.adamglin.zithian.compose.theme.ZithianTheme
+import io.github.fletchmckee.liquid.LiquidState
 
 @Composable
 fun PrimaryIconButton(
@@ -10,6 +11,7 @@ fun PrimaryIconButton(
     modifier: Modifier = Modifier,
     dimens: IconButtonDimens = IconButtonDefaults.dimens(),
     enabled: Boolean = true,
+    liquidState: LiquidState? = null,
     content: @Composable () -> Unit,
 ) {
     IconButton(
@@ -21,6 +23,7 @@ fun PrimaryIconButton(
         pressedBackgroundColor = ZithianTheme.colors.primaryBold,
         pressedForegroundColor = ZithianTheme.colors.text15,
         enabled = enabled,
+        liquidState = liquidState,
         content = content
     )
 }

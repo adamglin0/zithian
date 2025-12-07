@@ -26,9 +26,12 @@ import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerS
 import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.LocalContentColor
 import com.adamglin.zithian.compose.theme.LocalInteractType
+import com.adamglin.zithian.compose.utils.ifNotNull
 import com.adamglin.zithian.compose.utils.ifTrue
 import com.adamglin.zithian.compose.utils.interactPointer
 import com.adamglin.zithian.compose.utils.shadowBorderWithHover
+import io.github.fletchmckee.liquid.LiquidState
+import io.github.fletchmckee.liquid.liquid
 
 @Immutable
 data class IconButtonDimens(
@@ -66,7 +69,7 @@ internal object IconButtonDefaults {
 }
 
 @Composable
-fun IconButton(
+internal fun IconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     dimens: IconButtonDimens = IconButtonDefaults.dimens(),
@@ -76,6 +79,7 @@ fun IconButton(
     pressedForegroundColor: Color = foregroundColor,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    liquidState: LiquidState? = null,
     content: @Composable () -> Unit,
 ) {
     val interactType = LocalInteractType.current
@@ -98,7 +102,16 @@ fun IconButton(
                 interactionSource = interactionSource,
             )
             .interactPointer(interactType, enabled)
-            .background(animatedBackgroundColor, shape)
+            .ifNotNull(liquidState) {
+                Modifier.liquid(it) {
+                    tint = if (backgroundColor == Color.Transparent) Color.Transparent
+                    else backgroundColor.copy(.8f)
+                    edge = 0.02f
+                }
+            }
+            .ifTrue(liquidState == null) {
+                Modifier.background(backgroundColor, shape)
+            }
             .padding(dimens.contentPadding),
         contentAlignment = Alignment.Center
     ) {
