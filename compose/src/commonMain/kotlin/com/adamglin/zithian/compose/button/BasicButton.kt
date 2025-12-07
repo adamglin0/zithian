@@ -51,7 +51,7 @@ data class BasicButtonDimens(
         internal val Touch = BasicButtonDimens(
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
             iconSpacing = 12.dp,
-            cornerRadius = 20.dp,
+            cornerRadius = 30.dp,
             iconSize = 24.dp,
         )
 
@@ -92,7 +92,6 @@ fun BasicButton(
     val shape = remember(dimens.cornerRadius) { ContinuousRoundedCornerShape(dimens.cornerRadius) }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val isFocused by interactionSource.collectIsFocusedAsState()
 
     val backgroundColorAnimated = when {
         isPressed -> pressedBackgroundColor
@@ -117,7 +116,8 @@ fun BasicButton(
             .interactPointer(interactType, enabled)
             .ifNotNull(liquidState) {
                 Modifier.liquid(it) {
-                    tint = backgroundColorAnimated.copy(.8f)
+                    tint = if (backgroundColor == Color.Transparent) Color.Transparent
+                    else backgroundColorAnimated.copy(.8f)
                     edge = 0.02f
                 }
             }
@@ -125,7 +125,7 @@ fun BasicButton(
                 Modifier.background(backgroundColorAnimated, shape)
             }
             .ifTrue(
-                value = { enabled && isHovered }
+                value = { interactType == InteractType.Pointer && enabled && isHovered }
             ) {
                 Modifier.hoverShadow(shape)
             }

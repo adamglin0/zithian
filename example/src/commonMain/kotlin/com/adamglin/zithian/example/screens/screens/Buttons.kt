@@ -48,6 +48,7 @@ fun Buttons() {
 
             PrimaryButton(
                 onClick = {},
+                liquidState = liquidState,
                 leading = {
                     CoilIcon(
                         uri = Res.getUri("drawable/ic_folder_filled.svg"),
@@ -60,6 +61,7 @@ fun Buttons() {
 
             PrimaryButton(
                 onClick = {},
+                liquidState = liquidState,
                 leading = {
                     CoilIcon(
                         uri = Res.getUri("drawable/ic_folder_filled.svg"),
@@ -78,6 +80,7 @@ fun Buttons() {
 
             PrimaryButton(
                 onClick = {},
+                liquidState = liquidState,
                 enabled = false,
             ) { Text("I am diabled") }
         }
@@ -92,10 +95,12 @@ fun Buttons() {
         ) {
             NeutralButton(
                 onClick = {},
+                liquidState = liquidState,
             ) { Text("Brand Button") }
 
             NeutralButton(
                 onClick = {},
+                liquidState = liquidState,
                 leading = {
                     CoilIcon(
                         uri = Res.getUri("drawable/ic_folder_filled.svg"),
@@ -116,10 +121,12 @@ fun Buttons() {
         ) {
             SubtleButton(
                 onClick = {},
+                liquidState = liquidState,
             ) { Text("Subtle Button") }
 
             SubtleButton(
                 onClick = {},
+                liquidState = liquidState,
                 leading = {
                     CoilIcon(
                         uri = Res.getUri("drawable/ic_folder_filled.svg"),
@@ -140,10 +147,12 @@ fun Buttons() {
         ) {
             OutlinedButton(
                 onClick = {},
+                liquidState = liquidState,
             ) { Text("Outlined Button") }
 
             OutlinedButton(
                 onClick = {},
+                liquidState = liquidState,
                 leading = {
                     CoilIcon(
                         uri = Res.getUri("drawable/ic_folder_filled.svg"),
@@ -165,10 +174,12 @@ fun Buttons() {
         ) {
             TextButton(
                 onClick = {},
+                liquidState = liquidState,
             ) { Text("Text Button") }
 
             TextButton(
                 onClick = {},
+                liquidState = liquidState,
                 leading = {
                     CoilIcon(
                         uri = Res.getUri("drawable/ic_folder_filled.svg"),

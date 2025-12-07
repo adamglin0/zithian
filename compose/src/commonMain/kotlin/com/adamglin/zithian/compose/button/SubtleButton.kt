@@ -18,7 +18,7 @@ fun SubtleButton(
     modifier: Modifier = Modifier,
     dimens: BasicButtonDimens = BasicButtonDefaults.dimens(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    backgroundColor: Color = Color.Unspecified,
+    backgroundColor: Color = Color.Transparent,
     foregroundColor: Color = LocalContentColor.current,
     pressedBackgroundColor: Color = ZithianTheme.colors.subtlePressed,
     pressedForegroundColor: Color = foregroundColor,
