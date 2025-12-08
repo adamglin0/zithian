@@ -1,6 +1,5 @@
 package com.adamglin.zithian.compose.icon
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -30,7 +29,6 @@ import com.adamglin.zithian.compose.theme.LocalInteractType
 import com.adamglin.zithian.compose.utils.ifNotNull
 import com.adamglin.zithian.compose.utils.ifTrue
 import com.adamglin.zithian.compose.utils.interactPointer
-import com.adamglin.zithian.compose.utils.shadowBorderWithHover
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquid
 
@@ -42,14 +40,14 @@ data class IconButtonDimens(
 ) {
     companion object {
         internal val Pointer = IconButtonDimens(
-            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp),
-            cornerRadius = 10.dp,
+            contentPadding = PaddingValues(10.dp),
+            cornerRadius = 100.dp,
             iconSize = 17.dp,
         )
 
         internal val Touch = IconButtonDimens(
-            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 12.dp),
-            cornerRadius = 20.dp,
+            contentPadding = PaddingValues(10.dp),
+            cornerRadius = 100.dp,
             iconSize = 24.dp,
         )
 
@@ -86,8 +84,8 @@ internal fun IconButton(
     val interactType = LocalInteractType.current
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val animatedBackgroundColor = if (isPressed) pressedBackgroundColor else backgroundColor
-    val animatedForegroundColor = if (isPressed) pressedForegroundColor else foregroundColor
+    val internalBackgroundColor = if (isPressed) pressedBackgroundColor else backgroundColor
+    val internalForegroundColor = if (isPressed) pressedForegroundColor else foregroundColor
     val shape = ContinuousRoundedCornerShape(dimens.cornerRadius)
 
     Box(
@@ -117,7 +115,7 @@ internal fun IconButton(
             .padding(dimens.contentPadding),
         contentAlignment = Alignment.Center
     ) {
-        CompositionLocalProvider(LocalContentColor provides animatedForegroundColor) {
+        CompositionLocalProvider(LocalContentColor provides internalForegroundColor) {
             Box(modifier = Modifier.size(dimens.iconSize)) {
                 content()
             }
