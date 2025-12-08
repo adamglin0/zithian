@@ -7,7 +7,7 @@ binaryCompatibilityValidator = "0.18.1"
 # android
 androidGradlePlugin = "8.12.3"
 # compose
-composeMultiplatform = "1.10.0-beta02"
+composeMultiplatform = "1.10.0-rc01"
 composeHotReload = "1.1.0-alpha02"
 composeContinuousRoundedCornerShape = "1.0.6"
 # other
