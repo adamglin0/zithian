@@ -35,6 +35,7 @@ import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.adamglin.zithian.compose.theme.platformDefault
 import com.adamglin.zithian.example.screens.screens.Buttons
 import com.adamglin.zithian.example.screens.screens.Home
+import com.adamglin.zithian.example.screens.screens.Inputs
 import com.adamglin.zithian.example.screens.screens.Other
 import com.adamglin.zithian.example.screens.screens.Texts
 import kotlinx.coroutines.delay
@@ -61,6 +62,7 @@ fun main() {
                             )
 
                             SideBarTab.BUTTONS -> Buttons()
+                            SideBarTab.INPUTS -> Inputs()
                             SideBarTab.OTHER -> Other()
                             SideBarTab.Texts -> Texts()
                         }
@@ -94,5 +96,6 @@ enum class SideBarTab(val displayName: String) {
     HOME("Home"),
     Texts("Texts"),
     BUTTONS("Buttons"),
+    INPUTS("Inputs"),
     OTHER("Components"),
 }
