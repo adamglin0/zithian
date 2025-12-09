@@ -38,6 +38,7 @@ import com.adamglin.zithian.example.screens.screens.Home
 import com.adamglin.zithian.example.screens.screens.Inputs
 import com.adamglin.zithian.example.screens.screens.Other
 import com.adamglin.zithian.example.screens.screens.Texts
+import com.adamglin.zithian.example.screens.screens.Sheets
 import kotlinx.coroutines.delay
 
 fun main() {
@@ -63,6 +64,7 @@ fun main() {
 
                             SideBarTab.BUTTONS -> Buttons()
                             SideBarTab.INPUTS -> Inputs()
+                            SideBarTab.SHEETS -> Sheets()
                             SideBarTab.OTHER -> Other()
                             SideBarTab.Texts -> Texts()
                         }
@@ -97,5 +99,6 @@ enum class SideBarTab(val displayName: String) {
     Texts("Texts"),
     BUTTONS("Buttons"),
     INPUTS("Inputs"),
+    SHEETS("Sheets"),
     OTHER("Components"),
 }
