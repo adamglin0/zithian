@@ -65,11 +65,32 @@ data class BasicButtonDimens(
     }
 }
 
+@Immutable
+data class BasicButtonColors(
+    val backgroundColor: Color,
+    val foregroundColor: Color,
+    val pressedBackgroundColor: Color,
+    val pressedForegroundColor: Color
+)
+
 internal object BasicButtonDefaults {
     @Composable
     fun dimens(
         interactType: InteractType = LocalInteractType.current
     ): BasicButtonDimens = BasicButtonDimens.of(interactType)
+
+    @Composable
+    fun colors(
+        backgroundColor: Color = ZithianTheme.colors.text2,
+        foregroundColor: Color = ZithianTheme.colors.text15,
+        pressedBackgroundColor: Color = ZithianTheme.colors.text1,
+        pressedForegroundColor: Color = foregroundColor
+    ) = BasicButtonColors(
+        backgroundColor = backgroundColor,
+        foregroundColor = foregroundColor,
+        pressedBackgroundColor = pressedBackgroundColor,
+        pressedForegroundColor = pressedForegroundColor
+    )
 }
 
 @Composable
@@ -78,10 +99,7 @@ fun BasicButton(
     modifier: Modifier = Modifier,
     dimens: BasicButtonDimens = BasicButtonDefaults.dimens(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    backgroundColor: Color = ZithianTheme.colors.text2,
-    foregroundColor: Color = ZithianTheme.colors.text15,
-    pressedBackgroundColor: Color = ZithianTheme.colors.text1,
-    pressedForegroundColor: Color = ZithianTheme.colors.text15,
+    colors: BasicButtonColors = BasicButtonDefaults.colors(),
     textStyle: TextStyle = LocalTextStyle.current,
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
@@ -95,13 +113,13 @@ fun BasicButton(
     val isHovered by interactionSource.collectIsHoveredAsState()
 
     val backgroundColorAnimated = when {
-        isPressed -> pressedBackgroundColor
-        else -> backgroundColor
+        isPressed -> colors.pressedBackgroundColor
+        else -> colors.backgroundColor
     }
 
     val foregroundColorAnimated = when {
-        isPressed -> pressedForegroundColor
-        else -> foregroundColor
+        isPressed -> colors.pressedForegroundColor
+        else -> colors.foregroundColor
     }
 
     Row(
@@ -119,7 +137,7 @@ fun BasicButton(
             .ifNotNull(liquidState) {
                 Modifier.liquid(it) {
                     this.shape = RoundedCornerShape(dimens.cornerRadius)
-                    tint = if (backgroundColor == Color.Transparent) Color.Transparent
+                    tint = if (colors.backgroundColor == Color.Transparent) Color.Transparent
                     else backgroundColorAnimated.copy(.8f)
                     edge = 0.02f
                 }

@@ -8,7 +8,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import com.adamglin.zithian.compose.text.LocalTextStyle
 import com.adamglin.zithian.compose.theme.LocalContentColor
-import com.adamglin.zithian.compose.theme.LocalZithianColors
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import io.github.fletchmckee.liquid.LiquidState
 
@@ -18,10 +17,11 @@ fun SubtleButton(
     modifier: Modifier = Modifier,
     dimens: BasicButtonDimens = BasicButtonDefaults.dimens(),
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    backgroundColor: Color = Color.Transparent,
-    foregroundColor: Color = LocalContentColor.current,
-    pressedBackgroundColor: Color = ZithianTheme.colors.subtlePressed,
-    pressedForegroundColor: Color = foregroundColor,
+    colors: BasicButtonColors = BasicButtonDefaults.colors(
+        backgroundColor = Color.Transparent,
+        foregroundColor = LocalContentColor.current,
+        pressedBackgroundColor = ZithianTheme.colors.subtlePressed
+    ),
     textStyle: TextStyle = LocalTextStyle.current,
     leading: (@Composable () -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
@@ -34,10 +34,7 @@ fun SubtleButton(
         modifier = modifier,
         dimens = dimens,
         interactionSource = interactionSource,
-        backgroundColor = backgroundColor,
-        foregroundColor = foregroundColor,
-        pressedBackgroundColor = pressedBackgroundColor,
-        pressedForegroundColor = pressedForegroundColor,
+        colors = colors,
         textStyle = textStyle,
         leading = leading,
         trailing = trailing,

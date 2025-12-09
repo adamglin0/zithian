@@ -21,10 +21,12 @@ fun SubtleIconButton(
         onClick = onClick,
         modifier = modifier,
         dimens = dimens,
-        backgroundColor = Color.Transparent,
-        foregroundColor = foregroundColor,
-        pressedBackgroundColor = ZithianTheme.colors.subtlePressed,
-        pressedForegroundColor = foregroundColor,
+        colors = IconButtonDefaults.colors(
+            backgroundColor = Color.Transparent,
+            foregroundColor = foregroundColor,
+            pressedBackgroundColor = ZithianTheme.colors.subtlePressed,
+            pressedForegroundColor = foregroundColor
+        ),
         enabled = enabled,
         liquidState = liquidState,
         content = content

@@ -18,10 +18,12 @@ fun PrimaryIconButton(
         onClick = onClick,
         modifier = modifier,
         dimens = dimens,
-        backgroundColor = ZithianTheme.colors.primary,
-        foregroundColor = ZithianTheme.colors.onPrimary,
-        pressedBackgroundColor = ZithianTheme.colors.primaryBold,
-        pressedForegroundColor = ZithianTheme.colors.text15,
+        colors = IconButtonDefaults.colors(
+            backgroundColor = ZithianTheme.colors.primary,
+            foregroundColor = ZithianTheme.colors.onPrimary,
+            pressedBackgroundColor = ZithianTheme.colors.primaryBold,
+            pressedForegroundColor = ZithianTheme.colors.text15
+        ),
         enabled = enabled,
         liquidState = liquidState,
         content = content

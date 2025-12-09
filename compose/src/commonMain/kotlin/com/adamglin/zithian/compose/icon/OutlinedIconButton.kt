@@ -25,10 +25,12 @@ fun OutlinedIconButton(
         onClick = onClick,
         modifier = modifier.innerBorder(1.dp, ZithianTheme.colors.border, shape),
         dimens = dimens,
-        backgroundColor = LocalZithianColors.current.surface,
-        foregroundColor = LocalZithianColors.current.onSurface,
-        pressedBackgroundColor = ZithianTheme.colors.neutralBold,
-        pressedForegroundColor = ZithianTheme.colors.onNeutralBold,
+        colors = IconButtonDefaults.colors(
+            backgroundColor = LocalZithianColors.current.surface,
+            foregroundColor = LocalZithianColors.current.onSurface,
+            pressedBackgroundColor = ZithianTheme.colors.neutralBold,
+            pressedForegroundColor = ZithianTheme.colors.onNeutralBold
+        ),
         enabled = enabled,
         liquidState = liquidState,
         content = content

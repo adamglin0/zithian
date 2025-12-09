@@ -19,13 +19,14 @@ fun NeutralIconButton(
         onClick = onClick,
         modifier = modifier,
         dimens = dimens,
-        backgroundColor = LocalZithianColors.current.neutral,
-        foregroundColor = LocalZithianColors.current.onNeutral,
-        pressedBackgroundColor = ZithianTheme.colors.neutralBold,
-        pressedForegroundColor = ZithianTheme.colors.onNeutralBold,
+        colors = IconButtonDefaults.colors(
+            backgroundColor = LocalZithianColors.current.neutral,
+            foregroundColor = LocalZithianColors.current.onNeutral,
+            pressedBackgroundColor = ZithianTheme.colors.neutralBold,
+            pressedForegroundColor = ZithianTheme.colors.onNeutralBold
+        ),
         enabled = enabled,
         liquidState = liquidState,
         content = content
     )
 }
-

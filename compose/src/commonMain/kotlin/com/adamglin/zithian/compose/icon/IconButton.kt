@@ -60,11 +60,32 @@ data class IconButtonDimens(
     }
 }
 
+@Immutable
+data class IconButtonColors(
+    val backgroundColor: Color,
+    val foregroundColor: Color,
+    val pressedBackgroundColor: Color,
+    val pressedForegroundColor: Color
+)
+
 internal object IconButtonDefaults {
     @Composable
     fun dimens(
         interactType: InteractType = LocalInteractType.current
     ): IconButtonDimens = IconButtonDimens.of(interactType)
+
+    @Composable
+    fun colors(
+        backgroundColor: Color = Color.Transparent,
+        foregroundColor: Color = Color.Unspecified,
+        pressedBackgroundColor: Color = Color.Transparent,
+        pressedForegroundColor: Color = foregroundColor
+    ) = IconButtonColors(
+        backgroundColor = backgroundColor,
+        foregroundColor = foregroundColor,
+        pressedBackgroundColor = pressedBackgroundColor,
+        pressedForegroundColor = pressedForegroundColor
+    )
 }
 
 @Composable
@@ -72,10 +93,7 @@ internal fun IconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     dimens: IconButtonDimens = IconButtonDefaults.dimens(),
-    backgroundColor: Color = Color.Transparent,
-    foregroundColor: Color = Color.Unspecified,
-    pressedBackgroundColor: Color = Color.Transparent,
-    pressedForegroundColor: Color = foregroundColor,
+    colors: IconButtonColors = IconButtonDefaults.colors(),
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     liquidState: LiquidState? = null,
@@ -84,8 +102,8 @@ internal fun IconButton(
     val interactType = LocalInteractType.current
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val internalBackgroundColor = if (isPressed) pressedBackgroundColor else backgroundColor
-    val internalForegroundColor = if (isPressed) pressedForegroundColor else foregroundColor
+    val internalBackgroundColor = if (isPressed) colors.pressedBackgroundColor else colors.backgroundColor
+    val internalForegroundColor = if (isPressed) colors.pressedForegroundColor else colors.foregroundColor
     val shape = ContinuousRoundedCornerShape(dimens.cornerRadius)
 
     Box(
@@ -104,13 +122,13 @@ internal fun IconButton(
             .ifNotNull(liquidState) {
                 Modifier.liquid(it) {
                     this.shape = RoundedCornerShape(dimens.cornerRadius)
-                    tint = if (backgroundColor == Color.Transparent) Color.Transparent
-                    else backgroundColor.copy(.8f)
+                    tint = if (colors.backgroundColor == Color.Transparent) Color.Transparent
+                    else colors.backgroundColor.copy(.8f)
                     edge = 0.02f
                 }
             }
             .ifTrue(liquidState == null) {
-                Modifier.background(backgroundColor, shape)
+                Modifier.background(colors.backgroundColor, shape)
             }
             .padding(dimens.contentPadding),
         contentAlignment = Alignment.Center
