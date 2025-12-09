@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.checkbox.Checkbox
 import com.adamglin.zithian.compose.layout.Gap
 import com.adamglin.zithian.compose.layout.HorizontalDivider
+import com.adamglin.zithian.compose.radio.Radio
 import com.adamglin.zithian.compose.slider.Slider
 import com.adamglin.zithian.compose.slider.SliderDefaults
 import com.adamglin.zithian.compose.slider.Thumb
@@ -77,6 +78,45 @@ fun Inputs() {
             }
         }
         
+        HorizontalDivider()
+
+        // Radio
+        SectionTitle("Radio")
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            var selectedOption by remember { mutableStateOf(0) }
+
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Radio(
+                    selected = selectedOption == 0,
+                    onClick = { selectedOption = 0 },
+                )
+                Gap(size = 4.dp)
+                Text("Option 1")
+            }
+
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Radio(
+                    selected = selectedOption == 1,
+                    onClick = { selectedOption = 1 },
+                )
+                Gap(size = 4.dp)
+                Text("Option 2")
+            }
+
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Radio(
+                    selected = true,
+                    onClick = { },
+                    enabled = false,
+                )
+                Gap(size = 4.dp)
+                Text("Disabled")
+            }
+        }
+
         HorizontalDivider()
 
         // Switch
