@@ -1,29 +1,21 @@
 package com.adamglin.zithian.example.screens.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.checkbox.Checkbox
 import com.adamglin.zithian.compose.layout.Gap
 import com.adamglin.zithian.compose.layout.HorizontalDivider
+import com.adamglin.zithian.compose.picker.WheelPicker
+import com.adamglin.zithian.compose.picker.rememberWheelPickerState
 import com.adamglin.zithian.compose.radio.Radio
 import com.adamglin.zithian.compose.slider.Slider
 import com.adamglin.zithian.compose.slider.SliderDefaults
@@ -39,7 +31,9 @@ import com.adamglin.zithian.compose.theme.ZithianTheme
 @Composable
 fun Inputs() {
     Column(
-        modifier = Modifier.verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         // Checkbox
@@ -78,7 +72,7 @@ fun Inputs() {
                 Text("Disabled")
             }
         }
-        
+
         HorizontalDivider()
 
         // Radio
@@ -272,33 +266,28 @@ fun Inputs() {
             var selectedHour by remember { mutableStateOf(10) }
             var selectedMinute by remember { mutableStateOf(30) }
 
-            com.adamglin.zithian.compose.picker.WheelPicker(
-                count = 24,
-                initialIndex = selectedHour,
-                modifier = Modifier.width(60.dp),
-                onScrollFinished = { selectedHour = it }
-            ) { index ->
-                Text(
-                    text = index.toString().padStart(2, '0'),
-                )
-            }
-            
-            Gap(size = 8.dp)
-            Text(":")
-            Gap(size = 8.dp)
-
-            com.adamglin.zithian.compose.picker.WheelPicker(
-                count = 60,
-                initialIndex = selectedMinute,
-                modifier = Modifier.width(60.dp),
-                onScrollFinished = { selectedMinute = it }
-            ) { index ->
-                Text(
-                    text = index.toString().padStart(2, '0'),
-                )
+            val candidates = listOf(
+                "München",
+                "東京",
+                "القاهرة",
+                "Москва",
+                "Ciudad de México",
+                "서울",
+                "กรุงเทพฯ",
+                "新加坡",
+                "ירושלים",
+                "København"
+            )
+            val state = rememberWheelPickerState()
+            WheelPicker(
+                state = state,
+            ) {
+                items(candidates) {
+                    Text(it)
+                }
             }
         }
-        
+
         Gap(size = 20.dp)
     }
 }

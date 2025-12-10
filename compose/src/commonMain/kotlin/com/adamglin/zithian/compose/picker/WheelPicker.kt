@@ -1,195 +1,281 @@
 package com.adamglin.zithian.compose.picker
 
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.adamglin.zithian.compose.text.LocalTextStyle
 import com.adamglin.zithian.compose.theme.InteractType
-import com.adamglin.zithian.compose.theme.LocalContentColor
 import com.adamglin.zithian.compose.theme.LocalInteractType
-import com.adamglin.zithian.compose.theme.ZithianTheme
-import kotlinx.coroutines.flow.collect
-import kotlin.math.abs
-
-@Immutable
-data class WheelPickerDimens(
-    val itemHeight: Dp,
-    val visibleItemsCount: Int,
-    val unselectedAlpha: Float,
-    val unselectedScale: Float,
-) {
-    companion object {
-        internal val Pointer = WheelPickerDimens(
-            itemHeight = 32.dp,
-            visibleItemsCount = 5,
-            unselectedAlpha = 0.3f,
-            unselectedScale = 0.8f,
-        )
-
-        internal val Touch = WheelPickerDimens(
-            itemHeight = 40.dp,
-            visibleItemsCount = 5,
-            unselectedAlpha = 0.3f,
-            unselectedScale = 0.8f,
-        )
-
-        fun of(interactType: InteractType): WheelPickerDimens {
-            return when (interactType) {
-                InteractType.Pointer -> Pointer
-                InteractType.Touch -> Touch
-            }
-        }
-    }
-}
-
-@Immutable
-data class WheelPickerColors(
-    val contentColor: Color,
-)
-
-object WheelPickerDefaults {
-    @Composable
-    fun dimens(
-        interactType: InteractType = LocalInteractType.current
-    ): WheelPickerDimens = WheelPickerDimens.of(interactType)
-
-    @Composable
-    fun colors(
-        contentColor: Color = LocalContentColor.current,
-    ): WheelPickerColors = WheelPickerColors(
-        contentColor = contentColor,
-    )
-
-    @Composable
-    fun textStyle(): TextStyle = ZithianTheme.typography.titleMedium
-}
+import kotlin.math.absoluteValue
 
 @Composable
-fun WheelPicker(
-    count: Int,
-    initialIndex: Int,
-    onScrollFinished: (index: Int) -> Unit,
-    modifier: Modifier = Modifier,
-    infinite: Boolean = true,
-    dimens: WheelPickerDimens = WheelPickerDefaults.dimens(),
-    colors: WheelPickerColors = WheelPickerDefaults.colors(),
-    textStyle: TextStyle = WheelPickerDefaults.textStyle(),
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    content: @Composable BoxScope.(index: Int) -> Unit,
+fun rememberWheelPickerState(initialIndex: Int = 0): WheelPickerState {
+    return rememberSaveable(saver = WheelPickerState.Saver) {
+        WheelPickerState(initialIndex)
+    }
+}
+
+@Stable
+class WheelPickerState(
+    private val initialIndex: Int = 0
 ) {
-    // Use a large enough number to simulate infinite scrolling, but avoid Integer overflow in layout calculations
-    // (e.g. Accessibility or Pixel bounds). 100,000 items * ~100px is ~10M pixels, which fits in Int.
-    val largeCount = remember(count) { 100_000.coerceAtLeast(count * 2) }
-    
-    val listState = rememberLazyListState(
-        initialFirstVisibleItemIndex = if (infinite) {
-            (largeCount / 2) - ((largeCount / 2) % count) + initialIndex
-        } else {
-            initialIndex
-        }
-    )
-    val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
-    val currentOnScrollFinished by rememberUpdatedState(onScrollFinished)
+    internal var _lazyListState: LazyListState? = null
+    val lazyListState: LazyListState
+        get() = _lazyListState ?: error("WheelPickerState is not attached to a WheelPicker")
 
-    val itemHeightPx = with(LocalDensity.current) { dimens.itemHeight.toPx() }
+    // Use a reasonable multiplier to simulate infinite scrolling
+    // This provides ~5000 full cycles in each direction which is more than enough
+    internal companion object {
+        const val VIRTUAL_MULTIPLIER = 10000
 
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.isScrollInProgress }
-            .collect { isScrollInProgress ->
-                if (!isScrollInProgress) {
-                    // Find the center item
-                    val layoutInfo = listState.layoutInfo
-                    if (layoutInfo.visibleItemsInfo.isNotEmpty()) {
-                        val centerOffset =
-                            layoutInfo.viewportStartOffset + (layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset) / 2
-
-                        var closestItemIndex = -1
-                        var minDistance = Float.MAX_VALUE
-
-                        layoutInfo.visibleItemsInfo.forEach { item ->
-                            val itemCenter = item.offset + item.size / 2
-                            val distance = abs(centerOffset - itemCenter)
-                            if (distance < minDistance) {
-                                minDistance = distance.toFloat()
-                                closestItemIndex = item.index
-                            }
-                        }
-
-                        if (closestItemIndex != -1) {
-                            val finalIndex = if (infinite) closestItemIndex % count else closestItemIndex
-                            currentOnScrollFinished(finalIndex)
-                        }
-                    }
-                }
-            }
+        val Saver = androidx.compose.runtime.saveable.Saver<WheelPickerState, Int>(
+            save = {
+                it.currentIndex
+            },
+            restore = { WheelPickerState(it) }
+        )
     }
 
-    Box(
-        modifier = modifier
-            .height(dimens.itemHeight * dimens.visibleItemsCount),
-        contentAlignment = Alignment.Center
+    // Calculated in attach to ensure alignment
+    internal var initialScrollIndex = 0
+    internal var virtualCount = 0
+        private set
+    private var itemCount = 0
+
+    internal fun initialize(count: Int) {
+        itemCount = count
+        if (count > 0) {
+            virtualCount = count * VIRTUAL_MULTIPLIER
+            val infiniteCenter = virtualCount / 2
+            val offset = infiniteCenter % count
+            initialScrollIndex = infiniteCenter - offset + initialIndex
+        }
+    }
+
+    // Holds the initial index until we can apply it to the list
+    private var pendingInitialIndex: Int? = initialIndex
+
+    val currentIndex: Int
+        get() {
+            val listState = _lazyListState ?: return pendingInitialIndex ?: 0
+            val layoutInfo = listState.layoutInfo
+            if (layoutInfo.visibleItemsInfo.isEmpty()) return pendingInitialIndex ?: 0
+
+            val viewportCenter = layoutInfo.viewportEndOffset / 2
+            val closestItem = layoutInfo.visibleItemsInfo.minByOrNull {
+                (it.offset + it.size / 2 - viewportCenter).absoluteValue
+            }
+
+            val virtualIndex = closestItem?.index ?: return pendingInitialIndex ?: 0
+            if (itemCount == 0) return 0
+            return virtualIndex % itemCount
+        }
+
+    suspend fun scrollToIndex(index: Int) {
+        val listState = _lazyListState ?: return
+        if (itemCount == 0) return
+
+        val currentVirtual = listState.firstVisibleItemIndex
+        val currentActual = currentVirtual % itemCount
+
+        // Find the shortest distance
+        var diff = index - currentActual
+        if (diff > itemCount / 2) diff -= itemCount
+        if (diff < -itemCount / 2) diff += itemCount
+
+        listState.scrollToItem(currentVirtual + diff)
+    }
+
+    suspend fun animateScrollToIndex(index: Int) {
+        val listState = _lazyListState ?: return
+        if (itemCount == 0) return
+
+        val currentVirtual = listState.firstVisibleItemIndex
+        val currentActual = currentVirtual % itemCount
+
+        var diff = index - currentActual
+        if (diff > itemCount / 2) diff -= itemCount
+        if (diff < -itemCount / 2) diff += itemCount
+
+        listState.animateScrollToItem(currentVirtual + diff)
+    }
+}
+
+@Immutable
+data class BasicWheelPickerDimens(
+    val itemHeight: Dp,
+    val visibleItemCount: Int,
+) {
+    companion object {
+        internal val Pointer = BasicWheelPickerDimens(
+            itemHeight = 32.dp,
+            visibleItemCount = 5
+        )
+        internal val Touch = BasicWheelPickerDimens(
+            itemHeight = 44.dp,
+            visibleItemCount = 5
+        )
+
+        fun of(interactType: InteractType) = when (interactType) {
+            InteractType.Pointer -> Pointer
+            InteractType.Touch -> Touch
+        }
+    }
+}
+
+object BasicWheelPickerDefaults {
+    @Composable
+    fun dimens(type: InteractType = LocalInteractType.current) = BasicWheelPickerDimens.of(type)
+}
+
+/**
+ * Scope for [WheelPicker] content DSL.
+ */
+interface WheelPickerScope {
+    /**
+     * Add items to the wheel picker.
+     *
+     * @param items The collection of items to display.
+     * @param key Optional key function for stable identity.
+     * @param content The composable content for each item.
+     */
+    fun <T> items(
+        items: Collection<T>,
+        key: (T) -> Any? = { it },
+        content: @Composable (T) -> Unit
+    )
+}
+
+private class WheelPickerScopeImpl : WheelPickerScope {
+    var itemsData: List<Any?>? = null
+        private set
+    var keyProvider: ((Any?) -> Any?)? = null
+        private set
+    var contentProvider: (@Composable (Any?) -> Unit)? = null
+        private set
+
+    val count: Int get() = itemsData?.size ?: 0
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T> items(
+        items: Collection<T>,
+        key: (T) -> Any?,
+        content: @Composable (T) -> Unit
     ) {
-        LazyColumn(
-            state = listState,
-            flingBehavior = flingBehavior,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(vertical = dimens.itemHeight * (dimens.visibleItemsCount / 2))
-        ) {
-            val itemCount = if (infinite) largeCount else count
+        itemsData = items.toList()
+        keyProvider = { key(it as T) }
+        contentProvider = { content(it as T) }
+    }
+}
 
-            items(itemCount) { globalIndex ->
-                val index = if (infinite) globalIndex % count else globalIndex
+/**
+ * A wheel picker component with infinite scrolling and a 3D curved effect.
+ *
+ * @param modifier The modifier to be applied to the layout.
+ * @param state The state object to be used to control or observe the picker's state.
+ * @param dimens The dimensions configuration for the picker.
+ * @param content The content DSL for defining items.
+ */
+@Composable
+fun WheelPicker(
+    modifier: Modifier = Modifier,
+    state: WheelPickerState = rememberWheelPickerState(),
+    dimens: BasicWheelPickerDimens = BasicWheelPickerDefaults.dimens(),
+    content: WheelPickerScope.() -> Unit
+) {
+    // Build scope
+    val scope = remember { WheelPickerScopeImpl() }
+    scope.apply(content)
 
-                Box(
-                    modifier = Modifier
-                        .height(dimens.itemHeight)
-                        .fillMaxWidth()
-                        .graphicsLayer {
-                            val layoutInfo = listState.layoutInfo
-                            val centerOffset =
-                                layoutInfo.viewportStartOffset + (layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset) / 2
-                            val itemInfo = layoutInfo.visibleItemsInfo.find { it.index == globalIndex }
+    val count = scope.count
+    val itemsData = scope.itemsData
+    val contentProvider = scope.contentProvider
 
-                            if (itemInfo != null) {
-                                val itemCenter = itemInfo.offset + itemInfo.size / 2
-                                val distance = abs(centerOffset - itemCenter)
-                                val maxDistance = (dimens.visibleItemsCount / 2) * itemHeightPx
+    if (count == 0 || itemsData == null || contentProvider == null) {
+        Box(modifier = modifier.height(dimens.itemHeight * dimens.visibleItemCount))
+        return
+    }
 
-                                // Calculate normalized distance (0 at center, 1 at edge)
-                                val normalizedDistance = (distance / maxDistance).coerceIn(0f, 1f)
+    // Initialize state with count (must be synchronous for first render)
+    @Suppress("UNUSED_VARIABLE")
+    val initialized = remember(count, state) {
+        state.initialize(count)
+        true
+    }
 
-                                // Interpolate scale
-                                val scale = 1f - (1f - dimens.unselectedScale) * normalizedDistance
-                                scaleX = scale
-                                scaleY = scale
-                                alpha = 1f - (1f - dimens.unselectedAlpha) * normalizedDistance
-                            } else {
-                                scaleX = dimens.unselectedScale
-                                scaleY = dimens.unselectedScale
-                                alpha = dimens.unselectedAlpha
-                            }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    CompositionLocalProvider(
-                        LocalContentColor provides colors.contentColor,
-                        LocalTextStyle provides textStyle
-                    ) {
-                        content(index)
-                    }
-                }
+    // LazyListState creation
+    val listState = rememberLazyListState(
+        initialFirstVisibleItemIndex = state.initialScrollIndex
+    )
+
+    // Attach listState to WheelPickerState
+    DisposableEffect(state, listState) {
+        state._lazyListState = listState
+        onDispose { state._lazyListState = null }
+    }
+
+    // Snap behavior
+    val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
+
+    // Calculate container height
+    val containerHeight = dimens.itemHeight * dimens.visibleItemCount
+
+    LazyColumn(
+        modifier = modifier.height(containerHeight),
+        state = listState,
+        flingBehavior = flingBehavior,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        items(
+            count = state.virtualCount,
+        ) { virtualIndex ->
+            // Calculate the actual index
+            val actualIndex = virtualIndex % count
+            val item = itemsData[actualIndex]
+
+            // 3D Curved Effect
+            Box(
+                modifier = Modifier
+                    .height(dimens.itemHeight)
+                    .fillMaxWidth()
+                    .graphicsLayer {
+                        val layoutInfo = listState.layoutInfo
+                        val visibleItems = layoutInfo.visibleItemsInfo
+                        val itemInfo = visibleItems.find { it.index == virtualIndex }
+
+                        if (itemInfo != null) {
+                            val viewportCenter = layoutInfo.viewportEndOffset / 2f
+                            val itemCenter = itemInfo.offset + itemInfo.size / 2f
+                            val distance = (itemCenter - viewportCenter)
+
+                            // Normalize distance based on viewport half-height
+                            val normalizedDistance = distance / (layoutInfo.viewportEndOffset / 2f)
+
+                            // 1. Rotation X - creates the cylinder effect
+                            rotationX = -60f * normalizedDistance
+
+                            // 2. Scale - items at edges are smaller
+                            val scale = 1f - (normalizedDistance.absoluteValue * 0.4f)
+                            scaleX = scale
+                            scaleY = scale
+
+                            // 3. Alpha - items at edges fade out
+                            alpha = 1f - (normalizedDistance.absoluteValue * 0.6f)
+                        }
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                contentProvider(item)
             }
         }
     }
