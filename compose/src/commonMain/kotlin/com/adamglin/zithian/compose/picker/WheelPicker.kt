@@ -8,9 +8,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
@@ -20,6 +19,7 @@ import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.LocalContentColor
 import com.adamglin.zithian.compose.theme.LocalInteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
+import kotlinx.coroutines.flow.collect
 import kotlin.math.abs
 
 @Immutable
@@ -96,39 +96,39 @@ fun WheelPicker(
         }
     )
     val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
-    val coroutineScope = rememberCoroutineScope()
+    val currentOnScrollFinished by rememberUpdatedState(onScrollFinished)
 
     val itemHeightPx = with(LocalDensity.current) { dimens.itemHeight.toPx() }
 
-    // Calculate the center of the picker to determine the selected item
-    val isScrollInProgress = listState.isScrollInProgress
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.isScrollInProgress }
+            .collect { isScrollInProgress ->
+                if (!isScrollInProgress) {
+                    // Find the center item
+                    val layoutInfo = listState.layoutInfo
+                    if (layoutInfo.visibleItemsInfo.isNotEmpty()) {
+                        val centerOffset =
+                            layoutInfo.viewportStartOffset + (layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset) / 2
 
-    LaunchedEffect(isScrollInProgress) {
-        if (!isScrollInProgress) {
-            // Find the center item
-            val layoutInfo = listState.layoutInfo
-            if (layoutInfo.visibleItemsInfo.isNotEmpty()) {
-                val centerOffset =
-                    layoutInfo.viewportStartOffset + (layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset) / 2
+                        var closestItemIndex = -1
+                        var minDistance = Float.MAX_VALUE
 
-                var closestItemIndex = -1
-                var minDistance = Float.MAX_VALUE
+                        layoutInfo.visibleItemsInfo.forEach { item ->
+                            val itemCenter = item.offset + item.size / 2
+                            val distance = abs(centerOffset - itemCenter)
+                            if (distance < minDistance) {
+                                minDistance = distance.toFloat()
+                                closestItemIndex = item.index
+                            }
+                        }
 
-                layoutInfo.visibleItemsInfo.forEach { item ->
-                    val itemCenter = item.offset + item.size / 2
-                    val distance = abs(centerOffset - itemCenter)
-                    if (distance < minDistance) {
-                        minDistance = distance.toFloat()
-                        closestItemIndex = item.index
+                        if (closestItemIndex != -1) {
+                            val finalIndex = if (infinite) closestItemIndex % count else closestItemIndex
+                            currentOnScrollFinished(finalIndex)
+                        }
                     }
                 }
-
-                if (closestItemIndex != -1) {
-                    val finalIndex = if (infinite) closestItemIndex % count else closestItemIndex
-                    onScrollFinished(finalIndex)
-                }
             }
-        }
     }
 
     Box(
@@ -148,59 +148,35 @@ fun WheelPicker(
             items(itemCount) { globalIndex ->
                 val index = if (infinite) globalIndex % count else globalIndex
 
-                // Using derivedStateOf to calculate the distance from center
-                val scale by remember {
-                    derivedStateOf {
-                        val layoutInfo = listState.layoutInfo
-                        val centerOffset =
-                            layoutInfo.viewportStartOffset + (layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset) / 2
-                        val itemInfo = layoutInfo.visibleItemsInfo.find { it.index == globalIndex }
-
-                        if (itemInfo != null) {
-                            val itemCenter = itemInfo.offset + itemInfo.size / 2
-                            val distance = abs(centerOffset - itemCenter)
-                            val maxDistance = (dimens.visibleItemsCount / 2) * itemHeightPx
-
-                            // Calculate normalized distance (0 at center, 1 at edge)
-                            val normalizedDistance = (distance / maxDistance).coerceIn(0f, 1f)
-
-                            // Interpolate scale
-                            1f - (1f - dimens.unselectedScale) * normalizedDistance
-                        } else {
-                            dimens.unselectedScale
-                        }
-                    }
-                }
-
-                val alpha by remember {
-                    derivedStateOf {
-                        val layoutInfo = listState.layoutInfo
-                        val centerOffset =
-                            layoutInfo.viewportStartOffset + (layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset) / 2
-                        val itemInfo = layoutInfo.visibleItemsInfo.find { it.index == globalIndex }
-
-                        if (itemInfo != null) {
-                            val itemCenter = itemInfo.offset + itemInfo.size / 2
-                            val distance = abs(centerOffset - itemCenter)
-                            val maxDistance = (dimens.visibleItemsCount / 2) * itemHeightPx
-
-                            // Calculate normalized distance
-                            val normalizedDistance = (distance / maxDistance).coerceIn(0f, 1f)
-
-                            // Interpolate alpha
-                            1f - (1f - dimens.unselectedAlpha) * normalizedDistance
-                        } else {
-                            dimens.unselectedAlpha
-                        }
-                    }
-                }
-
                 Box(
                     modifier = Modifier
                         .height(dimens.itemHeight)
                         .fillMaxWidth()
-                        .scale(scale)
-                        .alpha(alpha),
+                        .graphicsLayer {
+                            val layoutInfo = listState.layoutInfo
+                            val centerOffset =
+                                layoutInfo.viewportStartOffset + (layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset) / 2
+                            val itemInfo = layoutInfo.visibleItemsInfo.find { it.index == globalIndex }
+
+                            if (itemInfo != null) {
+                                val itemCenter = itemInfo.offset + itemInfo.size / 2
+                                val distance = abs(centerOffset - itemCenter)
+                                val maxDistance = (dimens.visibleItemsCount / 2) * itemHeightPx
+
+                                // Calculate normalized distance (0 at center, 1 at edge)
+                                val normalizedDistance = (distance / maxDistance).coerceIn(0f, 1f)
+
+                                // Interpolate scale
+                                val scale = 1f - (1f - dimens.unselectedScale) * normalizedDistance
+                                scaleX = scale
+                                scaleY = scale
+                                alpha = 1f - (1f - dimens.unselectedAlpha) * normalizedDistance
+                            } else {
+                                scaleX = dimens.unselectedScale
+                                scaleY = dimens.unselectedScale
+                                alpha = dimens.unselectedAlpha
+                            }
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     CompositionLocalProvider(
