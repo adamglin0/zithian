@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
@@ -257,6 +258,45 @@ fun Inputs() {
                 state = passwordState,
                 modifier = Modifier.fillMaxWidth(),
             )
+        }
+
+        HorizontalDivider()
+
+        // WheelPicker
+        SectionTitle("Wheel Picker (Time)")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            var selectedHour by remember { mutableStateOf(10) }
+            var selectedMinute by remember { mutableStateOf(30) }
+
+            com.adamglin.zithian.compose.picker.WheelPicker(
+                count = 24,
+                initialIndex = selectedHour,
+                modifier = Modifier.width(60.dp),
+                onScrollFinished = { selectedHour = it }
+            ) { index ->
+                Text(
+                    text = index.toString().padStart(2, '0'),
+                )
+            }
+            
+            Gap(size = 8.dp)
+            Text(":")
+            Gap(size = 8.dp)
+
+            com.adamglin.zithian.compose.picker.WheelPicker(
+                count = 60,
+                initialIndex = selectedMinute,
+                modifier = Modifier.width(60.dp),
+                onScrollFinished = { selectedMinute = it }
+            ) { index ->
+                Text(
+                    text = index.toString().padStart(2, '0'),
+                )
+            }
         }
         
         Gap(size = 20.dp)
