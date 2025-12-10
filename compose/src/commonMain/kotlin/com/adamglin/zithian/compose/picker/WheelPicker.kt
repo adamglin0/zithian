@@ -88,9 +88,13 @@ fun WheelPicker(
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     content: @Composable BoxScope.(index: Int) -> Unit,
 ) {
+    // Use a large enough number to simulate infinite scrolling, but avoid Integer overflow in layout calculations
+    // (e.g. Accessibility or Pixel bounds). 100,000 items * ~100px is ~10M pixels, which fits in Int.
+    val largeCount = remember(count) { 100_000.coerceAtLeast(count * 2) }
+    
     val listState = rememberLazyListState(
         initialFirstVisibleItemIndex = if (infinite) {
-            (Int.MAX_VALUE / 2) - ((Int.MAX_VALUE / 2) % count) + initialIndex
+            (largeCount / 2) - ((largeCount / 2) % count) + initialIndex
         } else {
             initialIndex
         }
@@ -143,7 +147,7 @@ fun WheelPicker(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(vertical = dimens.itemHeight * (dimens.visibleItemsCount / 2))
         ) {
-            val itemCount = if (infinite) Int.MAX_VALUE else count
+            val itemCount = if (infinite) largeCount else count
 
             items(itemCount) { globalIndex ->
                 val index = if (infinite) globalIndex % count else globalIndex
