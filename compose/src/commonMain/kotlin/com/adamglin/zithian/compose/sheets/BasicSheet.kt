@@ -129,4 +129,4 @@ fun BasicSheet(
     }
 }
 
-private val SheetInScreenPadding = 20.dp
+private val SheetInScreenPadding = 13.dp
