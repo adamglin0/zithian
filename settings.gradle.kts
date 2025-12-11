@@ -19,6 +19,7 @@ dependencyResolutionManagement {
 }
 
 include(":compose")
+include(":emulator")
 include(":example")
 
 rootProject.name = "zithian"

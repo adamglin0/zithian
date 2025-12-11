@@ -13,14 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.adamglin.zithian.compose.checkbox.Checkbox
 import com.adamglin.zithian.compose.layout.Gap
 import com.adamglin.zithian.compose.layout.HorizontalDivider
-import com.adamglin.zithian.compose.picker.BasicWheelPickerDefaults
-import com.adamglin.zithian.compose.picker.BasicWheelPickerDimens
 import com.adamglin.zithian.compose.picker.WheelPicker
-import com.adamglin.zithian.compose.picker.WheelPickerEffect
 import com.adamglin.zithian.compose.picker.rememberWheelPickerState
 import com.adamglin.zithian.compose.radio.Radio
 import com.adamglin.zithian.compose.slider.Slider
@@ -288,7 +284,7 @@ fun Inputs() {
             WheelPicker(
                 state = state,
                 selector = {
-                    Box(modifier = Modifier.border(1.dp,Color.Black).fillMaxSize()) {
+                    Box(modifier = Modifier.border(1.dp, Color.Black).fillMaxSize()) {
 
                     }
                 }

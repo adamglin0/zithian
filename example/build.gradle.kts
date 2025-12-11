@@ -26,6 +26,7 @@ kotlin {
             implementation(libs.compose.components.resources)
             // other
             implementation(projects.zithian.compose)
+            implementation(projects.zithian.emulator)
             implementation(libs.coil.compose)
             implementation(libs.liquid)
         }

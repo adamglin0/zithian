@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
+import com.android.build.api.dsl.androidLibrary
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
@@ -7,8 +8,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.android.library)
+    alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.dokka)
     alias(libs.plugins.mavenPublish)
@@ -21,7 +22,12 @@ group = "com.adamglin.zithian"
 version = "1.0.0"
 
 kotlin {
-    androidTarget {
+    @Suppress("UnstableApiUsage")
+    androidLibrary {
+        namespace = "com.adamglin.zithian.compose"
+        compileSdk = libs.versions.androidCompileSdk.get().toInt()
+        minSdk = 29
+
         compilerOptions {
             jvmTarget = JvmTarget.JVM_11
         }
@@ -98,16 +104,6 @@ kotlin {
     }
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
-    }
-}
-
-android {
-    namespace = "com.adamglin.zithian.ui"
-    compileSdk = libs.versions.androidCompileSdk.get().toInt()
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-
-    buildFeatures {
-        compose = true
     }
 }
 
