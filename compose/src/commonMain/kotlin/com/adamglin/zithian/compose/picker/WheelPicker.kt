@@ -1,5 +1,9 @@
 package com.adamglin.zithian.compose.picker
 
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +20,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.LocalInteractType
+import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @Composable
@@ -230,8 +235,31 @@ fun WheelPicker(
     // Calculate container height
     val containerHeight = dimens.itemHeight * dimens.visibleItemCount
 
+    // Support mouse drag scrolling
+    val coroutineScope = rememberCoroutineScope()
+    val draggableState = rememberDraggableState { delta ->
+        coroutineScope.launch {
+            listState.scrollBy(-delta)
+        }
+    }
+
     LazyColumn(
-        modifier = modifier.height(containerHeight),
+        modifier = modifier
+            .height(containerHeight)
+            .draggable(
+                state = draggableState,
+                orientation = Orientation.Vertical,
+                onDragStopped = { velocity ->
+                    coroutineScope.launch {
+                        // Apply fling behavior after drag ends
+                        listState.scroll {
+                            with(flingBehavior) {
+                                performFling(-velocity)
+                            }
+                        }
+                    }
+                }
+            ),
         state = listState,
         flingBehavior = flingBehavior,
         horizontalAlignment = Alignment.CenterHorizontally,
