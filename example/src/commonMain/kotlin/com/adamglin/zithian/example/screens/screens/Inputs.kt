@@ -1,6 +1,7 @@
 package com.adamglin.zithian.example.screens.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -10,11 +11,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.adamglin.zithian.compose.checkbox.Checkbox
 import com.adamglin.zithian.compose.layout.Gap
 import com.adamglin.zithian.compose.layout.HorizontalDivider
+import com.adamglin.zithian.compose.picker.BasicWheelPickerDefaults
+import com.adamglin.zithian.compose.picker.BasicWheelPickerDimens
 import com.adamglin.zithian.compose.picker.WheelPicker
+import com.adamglin.zithian.compose.picker.WheelPickerEffect
 import com.adamglin.zithian.compose.picker.rememberWheelPickerState
 import com.adamglin.zithian.compose.radio.Radio
 import com.adamglin.zithian.compose.slider.Slider
@@ -267,23 +273,31 @@ fun Inputs() {
             var selectedMinute by remember { mutableStateOf(30) }
 
             val candidates = listOf(
-                "München",
-                "東京",
-                "القاهرة",
-                "Москва",
-                "Ciudad de México",
-                "서울",
-                "กรุงเทพฯ",
-                "新加坡",
-                "ירושלים",
-                "København"
+                "Munich",
+                "Tokyo",
+                "Cairo",
+                "Moscow",
+                "Mexico City",
+                "Seoul",
+                "Bangkok",
+                "Singapore",
+                "Jerusalem",
+                "Copenhagen"
             )
             val state = rememberWheelPickerState()
             WheelPicker(
                 state = state,
+                selector = {
+                    Box(modifier = Modifier.border(1.dp,Color.Black).fillMaxSize()) {
+
+                    }
+                }
             ) {
-                items(candidates) {
-                    Text(it)
+                items(candidates, key = { it }) {
+                    Text(
+                        text = it,
+                        color = if (isSelected) ZithianTheme.colors.primary else ZithianTheme.colors.primaryVariant,
+                    )
                 }
             }
         }
