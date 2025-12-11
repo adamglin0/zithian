@@ -20,7 +20,7 @@ version = "1.0.0"
 kotlin {
     jvm {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
+            jvmTarget = JvmTarget.JVM_21
         }
     }
 

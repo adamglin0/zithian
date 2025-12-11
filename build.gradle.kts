@@ -10,4 +10,5 @@ plugins {
     alias(libs.plugins.dokka) apply false
     alias(libs.plugins.mavenPublish) apply false
     alias(libs.plugins.binaryCompatibilityValidator) apply false
+    alias(libs.plugins.compose.hotReload) apply false
 }

@@ -15,6 +15,7 @@ plugins {
     alias(libs.plugins.mavenPublish)
     alias(libs.plugins.binaryCompatibilityValidator)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.compose.hotReload)
 }
 
 group = "com.adamglin.zithian"
@@ -29,13 +30,13 @@ kotlin {
         minSdk = 29
 
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
+            jvmTarget = JvmTarget.JVM_21
         }
     }
 
     jvm {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
+            jvmTarget = JvmTarget.JVM_21
         }
     }
 
