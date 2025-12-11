@@ -16,19 +16,20 @@ This document outlines the coding standards and patterns for developing componen
 
 Maintain a consistent parameter order to ensure predictability:
 
-1.  **Actions**: Primary callbacks (e.g., `onClick`).
+1.  **Mandatory Parameters**: Parameters without default values (e.g., `onClick`, required data).
 2.  **Modifier**: `modifier: Modifier = Modifier`.
-3.  **Dimensions**: `dimens: {Component}Dimens = {Component}Defaults.dimens()`.
-4.  **Interaction**: `interactionSource: MutableInteractionSource`.
-5.  **Colors**
-    *   **Data Class**: Create an `@Immutable` data class (e.g., `BasicButtonColors`) to hold color values for various states (e.g., `backgroundColor`, `foregroundColor`).
-    *   **Defaults Object**: Provide a composable helper in `{Component}Defaults` (e.g., `colors()`) to return instances of the color data class, defaulting to `ZithianTheme.colors`.
-    *   **Parameter**: Pass the `colors` object as a single parameter to the component.
-    *   **State Handling**: Calculate dynamic colors (hover, pressed) *inside* the component logic using the provided base colors and interaction state.
-6.  **Typography**: `textStyle`.
-7.  **Slots**: `leading`, `trailing` (composable lambdas).
-8.  **State**: `enabled`, `selected`, etc.
-9.  **Content**: Trailing lambda `content`.
+3.  **Optional Parameters**: Parameters with default values.
+    *   **State**: `enabled`, `selected`, etc.
+    *   **Dimensions**: `dimens: {Component}Dimens = {Component}Defaults.dimens()`.
+    *   **Interaction**: `interactionSource: MutableInteractionSource`.
+    *   **Colors**:
+        *   **Data Class**: Create an `@Immutable` data class (e.g., `BasicButtonColors`) to hold color values for various states (e.g., `backgroundColor`, `foregroundColor`).
+        *   **Defaults Object**: Provide a composable helper in `{Component}Defaults` (e.g., `colors()`) to return instances of the color data class, defaulting to `ZithianTheme.colors`.
+        *   **Parameter**: Pass the `colors` object as a single parameter to the component.
+        *   **State Handling**: Calculate dynamic colors (hover, pressed) *inside* the component logic using the provided base colors and interaction state.
+    *   **Typography**: `textStyle`.
+    *   **Slots**: `leading`, `trailing` (composable lambdas).
+4.  **Content**: Trailing lambda `content` (if present).
 
 ## 3. Dimensions & Responsiveness
 
