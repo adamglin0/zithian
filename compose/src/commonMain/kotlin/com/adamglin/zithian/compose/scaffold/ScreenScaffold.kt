@@ -14,6 +14,7 @@ import com.adamglin.zithian.compose.theme.ZithianTheme
 fun ScreenScaffold(
     modifier: Modifier = Modifier,
     header: (@Composable ScaffoldScope.() -> Unit)? = null,
+    bottom: (@Composable ScaffoldScope.() -> Unit)? = null,
     backgroundColor: Color = ZithianTheme.colors.background,
     content: @Composable ScaffoldScope.() -> Unit,
 ) {
@@ -28,6 +29,7 @@ fun ScreenScaffold(
             }
             .fillMaxSize().then(modifier),
         header = header,
+        bottom = bottom,
         backgroundColor = backgroundColor,
         content = content,
     )

@@ -14,6 +14,7 @@ import io.github.fletchmckee.liquid.liquefiable
 fun BasicScaffold(
     modifier: Modifier = Modifier,
     header: (@Composable ScaffoldScope.() -> Unit)? = null,
+    bottom: (@Composable ScaffoldScope.() -> Unit)? = null,
     backgroundColor: Color = ZithianTheme.colors.background,
     content: @Composable ScaffoldScope.() -> Unit,
 ) {
@@ -21,27 +22,54 @@ fun BasicScaffold(
         modifier = modifier.background(backgroundColor)
     ) {
         val screenScaffoldScope = rememberScaffoldScope()
-        header?.let { headerNotNull ->
+        if (header != null || bottom != null) {
             SubcomposeLayout(Modifier) { constraints ->
-                val headerPlaceables = subcompose("header") {
-                    headerNotNull(screenScaffoldScope)
-                }.map {
-                    it.measure(constraints)
+                val headerPlaceables = if (header != null) {
+                    subcompose("header") {
+                        header(screenScaffoldScope)
+                    }.map {
+                        it.measure(constraints)
+                    }
+                } else {
+                    emptyList()
                 }
                 val headerHeight = headerPlaceables.maxOfOrNull { it.height } ?: 0
                 screenScaffoldScope.headerHeight = headerHeight.toDp()
+
+                val bottomPlaceables = if (bottom != null) {
+                    subcompose("bottom") {
+                        bottom(screenScaffoldScope)
+                    }.map {
+                        it.measure(constraints)
+                    }
+                } else {
+                    emptyList()
+                }
+                val bottomHeight = bottomPlaceables.maxOfOrNull { it.height } ?: 0
+                screenScaffoldScope.bottomHeight = bottomHeight.toDp()
+
                 val contentPlaceables = subcompose("content") {
                     ContentWrapper(screenScaffoldScope, backgroundColor) {
                         content()
                     }
                 }.map { it.measure(constraints) }
+
                 val contentHeight = contentPlaceables.maxOfOrNull { it.height } ?: 0
-                layout(constraints.maxWidth, maxOf(headerHeight, contentHeight)) {
+                val layoutHeight = if (constraints.hasBoundedHeight) {
+                    constraints.maxHeight
+                } else {
+                    maxOf(headerHeight, contentHeight, bottomHeight)
+                }
+
+                layout(constraints.maxWidth, layoutHeight) {
                     contentPlaceables.forEach { it.placeRelative(0, 0) }
                     headerPlaceables.forEach { it.placeRelative(0, 0) }
+                    bottomPlaceables.forEach {
+                        it.placeRelative(0, layoutHeight - bottomHeight)
+                    }
                 }
             }
-        } ?: run {
+        } else {
             ContentWrapper(screenScaffoldScope, backgroundColor) {
                 content()
             }

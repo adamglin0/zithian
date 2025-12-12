@@ -24,6 +24,13 @@ class ScaffoldScope internal constructor(
         internal set(value) {
             _headerHeight = value
         }
+
+    private var _bottomHeight by mutableStateOf(0.dp)
+    var bottomHeight: Dp
+        get() = _bottomHeight
+        internal set(value) {
+            _bottomHeight = value
+        }
 }
 
 @Composable
