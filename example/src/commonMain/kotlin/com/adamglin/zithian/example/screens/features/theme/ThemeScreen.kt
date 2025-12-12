@@ -20,8 +20,8 @@ import com.adamglin.zithian.compose.layout.BasicFiller
 import com.adamglin.zithian.compose.scaffold.ScreenScaffold
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.theme.ZithianTheme
-import com.adamglin.zithian.example.screens.Bottom
-import com.adamglin.zithian.example.screens.LocalExampleAppFontFamily
+import com.adamglin.zithian.example.screens.widgets.SimpleTextTopBar
+import com.adamglin.zithian.example.screens.widgets.TopLevelSharableBottomNavigation
 
 @Composable
 internal fun ThemeScreen() {
@@ -132,20 +132,9 @@ internal fun ThemeScreen() {
 
     ScreenScaffold(
         header = {
-            Box(
-                modifier = Modifier.fillMaxWidth()
-                    .background(ZithianTheme.colors.surfacePure)
-                    .padding(horizontal = 20.dp, vertical = 10.dp)
-                    .statusBarsPadding()
-            ) {
-                Text(
-                    text = "Theme",
-                    style = ZithianTheme.typography.titleLarge,
-                    fontFamily = LocalExampleAppFontFamily.current.montserrat,
-                )
-            }
+            SimpleTextTopBar("Theme")
         },
-        bottom = { Bottom() }
+        bottom = { TopLevelSharableBottomNavigation() }
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

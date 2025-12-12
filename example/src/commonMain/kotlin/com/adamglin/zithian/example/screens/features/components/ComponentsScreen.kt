@@ -7,10 +7,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.adamglin.zithian.compose.scaffold.ScreenScaffold
 import com.adamglin.zithian.compose.text.Text
+import com.adamglin.zithian.example.screens.widgets.SimpleTextTopBar
+import com.adamglin.zithian.example.screens.widgets.TopLevelSharableBottomNavigation
 
 @Composable
 fun ComponentsScreen() {
-    ScreenScaffold {
+    ScreenScaffold(
+        header = {
+            SimpleTextTopBar("Components")
+        },
+        bottom = { TopLevelSharableBottomNavigation() }
+    ) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,

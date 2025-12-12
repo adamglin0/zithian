@@ -10,11 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -68,7 +64,7 @@ data class IconButtonColors(
     val pressedForegroundColor: Color
 )
 
-internal object IconButtonDefaults {
+object IconButtonDefaults {
     @Composable
     fun dimens(
         interactType: InteractType = LocalInteractType.current
@@ -102,22 +98,23 @@ internal fun IconButton(
     val interactType = LocalInteractType.current
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val internalBackgroundColor = if (isPressed) colors.pressedBackgroundColor else colors.backgroundColor
+    if (isPressed) colors.pressedBackgroundColor else colors.backgroundColor
     val internalForegroundColor = if (isPressed) colors.pressedForegroundColor else colors.foregroundColor
     val shape = ContinuousRoundedCornerShape(dimens.cornerRadius)
 
     Box(
-        modifier = modifier
-            .alpha(if (enabled) 1f else .4f)
-            .ifTrue(enabled && isHovered) {
-                Modifier.alpha(0.95f)
-            }
+        modifier = Modifier
             .clickable(
                 enabled = enabled,
                 role = Role.Button,
                 onClick = onClick,
                 interactionSource = interactionSource,
             )
+            .then(modifier)
+            .alpha(if (enabled) 1f else .4f)
+            .ifTrue(enabled && isHovered) {
+                Modifier.alpha(0.95f)
+            }
             .interactPointer(interactType, enabled)
             .ifNotNull(liquidState) {
                 Modifier.liquid(it) {

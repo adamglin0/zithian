@@ -1,5 +1,6 @@
 package com.adamglin.zithian.example
 
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.window.application
@@ -26,8 +27,10 @@ internal fun touchApplication() = application {
                 ZithianTheme(
                     interactType = InteractType.Touch
                 ) {
-
-                    MobileApp()
+                    SharedTransitionLayout {
+                        appState.sharedTransitionScope = this
+                        MobileApp()
+                    }
                 }
             }
         }

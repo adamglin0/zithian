@@ -1,5 +1,6 @@
 package com.adamglin.zithian.example.screens
 
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -18,20 +19,25 @@ interface TopLevelNavKey : NavKey
 
 @Stable
 class AppState(initialBackstack: List<NavKey>) {
+    lateinit var sharedTransitionScope: SharedTransitionScope
+
     private val _backstack = mutableStateOf(
         value = persistentListOf(*initialBackstack.toTypedArray())
     )
 
     val backstack: PersistentList<NavKey> get() = _backstack.value
-    private val topLevelNavKeys = persistentSetOf(
-        ThemeNavKey,
-        ComponentsNavKey,
-        ConfigNavKey
-    )
 
     fun navigate(block: MutableList<NavKey>.() -> Unit) {
         _backstack.value = _backstack.value.toMutableList()
             .apply { block() }
             .toPersistentList()
+    }
+
+    companion object {
+        val topLevelNavKeys = persistentSetOf(
+            ThemeNavKey,
+            ComponentsNavKey,
+            ConfigNavKey
+        )
     }
 }

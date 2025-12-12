@@ -1,4 +1,4 @@
-package com.adamglin.zithian.example.screens.features.config
+package com.adamglin.zithian.example.screens.features.liquid_test
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -6,39 +6,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.adamglin.zithian.compose.button.PrimaryButton
 import com.adamglin.zithian.compose.layout.BasicFiller
 import com.adamglin.zithian.compose.scaffold.ScreenScaffold
-import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.example.screens.LocalAppState
-import com.adamglin.zithian.example.screens.features.liquid_test.LiquidTestNavKey
 import com.adamglin.zithian.example.screens.widgets.SimpleTextTopBar
-import com.adamglin.zithian.example.screens.widgets.TopLevelSharableBottomNavigation
 
 @Composable
-fun ConfigScreen() {
+fun LiquidTestScreen() {
     val appState = LocalAppState.current
     ScreenScaffold(
         header = {
-            SimpleTextTopBar("Config")
+            SimpleTextTopBar(
+                text = "LiquidTest",
+                onBack = { appState.navigate { removeLastOrNull() } }
+            )
         },
-        bottom = { TopLevelSharableBottomNavigation() }
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(5.dp),
         ) {
             BasicFiller(height = headerHeight + 10.dp)
-            PrimaryButton(
-                onClick = {
-                    appState.navigate {
-                        add(LiquidTestNavKey)
-                    }
-                },
-            ) { Text("Navigate to Next Screen") }
-            PrimaryButton(
-                onClick = {},
-            ) { Text("Appearance") }
+
         }
     }
 }
