@@ -25,6 +25,9 @@ kotlin {
             implementation(libs.compose.foundation)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
+            implementation(libs.navigation3.runtime)
+            implementation(libs.navigation3.ui)
+            implementation(libs.navigation3.viewModel)
             // other
             implementation(projects.zithian.compose)
             implementation(projects.zithian.emulator)
