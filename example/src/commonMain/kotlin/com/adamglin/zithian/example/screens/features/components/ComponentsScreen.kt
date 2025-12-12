@@ -1,12 +1,17 @@
 package com.adamglin.zithian.example.screens.features.components
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.adamglin.zithian.compose.layout.BasicFiller
 import com.adamglin.zithian.compose.scaffold.ScreenScaffold
-import com.adamglin.zithian.compose.text.Text
+import com.adamglin.zithian.example.screens.features.components.widgets.Buttons
 import com.adamglin.zithian.example.screens.widgets.SimpleTextTopBar
 import com.adamglin.zithian.example.screens.widgets.TopLevelSharableBottomNavigation
 
@@ -18,11 +23,16 @@ fun ComponentsScreen() {
         },
         bottom = { TopLevelSharableBottomNavigation() }
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .horizontalScroll(rememberScrollState())
         ) {
-            Text("ComponentsScreen")
+            BasicFiller(height = headerHeight)
+            Column(modifier = Modifier.padding(20.dp, 20.dp)) {
+                Buttons()
+            }
         }
     }
 }
