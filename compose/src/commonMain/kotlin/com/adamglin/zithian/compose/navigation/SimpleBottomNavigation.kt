@@ -264,7 +264,7 @@ data class SimpleBottomNavigationDimens(
             height = 80.dp,
             itemSpacing = 0.dp,
             indicatorCornerRadius = 16.dp,
-            iconSize = 24.dp,
+            iconSize = 26.dp,
             indicatorPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp)
         )
 
