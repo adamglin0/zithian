@@ -1,12 +1,10 @@
 package com.adamglin.zithian.emulator
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.runtime.Composable
@@ -85,13 +83,17 @@ actual fun EmulatorDevice(
         Box(
             modifier = Modifier
                 .offset(x = WrapperPaddingValuesStart, y = WrapperPaddingValuesTop)
-                .size(device.width)
+                .background(Color.Red)
         ) {
-            CompositionLocalProvider(
-                LocalPlatformWindowInsets provides device,
-                LocalDensity provides density
-            ) {
-                DynamicIsland(DpSize(124.dp, 36.dp))
+            CompositionLocalProvider(LocalDensity provides density) {
+                device.cutoutPath?.let { path ->
+                    Canvas(modifier = Modifier) {
+                        drawPath(
+                            path = path,
+                            color = Color.Black
+                        )
+                    }
+                }
             }
         }
     }

@@ -4,6 +4,8 @@ import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.text.font.FontFamily
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
@@ -46,10 +48,10 @@ fun MobileApp() {
                 entry<ThemeNavKey> {
                     ThemeScreen()
                 }
-                entry<ComponentsNavKey>(){
+                entry<ComponentsNavKey>() {
                     ComponentsScreen()
                 }
-                entry<ConfigNavKey>(){
+                entry<ConfigNavKey>() {
                     ConfigScreen()
                 }
             }

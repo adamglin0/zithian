@@ -9,6 +9,7 @@ import com.adamglin.zithian.emulator.Device
 import com.adamglin.zithian.emulator.EmulatorDevice
 import com.adamglin.zithian.emulator.config.iphone17
 import com.adamglin.zithian.example.screens.AppState
+import com.adamglin.zithian.example.screens.ExampleAppFontFamilyProvider
 import com.adamglin.zithian.example.screens.LocalAppState
 import com.adamglin.zithian.example.screens.MobileApp
 import com.adamglin.zithian.example.screens.features.theme.ThemeNavKey
@@ -21,10 +22,13 @@ internal fun touchApplication() = application {
         EmulatorDevice(
             device = Device.iphone17(Density(2f))
         ) {
-            ZithianTheme(
-                interactType = InteractType.Touch
-            ) {
-                MobileApp()
+            ExampleAppFontFamilyProvider {
+                ZithianTheme(
+                    interactType = InteractType.Touch
+                ) {
+
+                    MobileApp()
+                }
             }
         }
     }
