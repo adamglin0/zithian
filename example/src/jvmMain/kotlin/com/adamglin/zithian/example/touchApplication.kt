@@ -11,7 +11,7 @@ import com.adamglin.zithian.example.screens.MobileApp
 
 internal fun touchApplication() = application {
     EmulatorDevice(
-        device = Device.iphone17(Density(1.1f))
+        device = Device.iphone17(Density(2f))
     ) {
         ZithianTheme(
             interactType = InteractType.Touch

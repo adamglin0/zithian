@@ -56,5 +56,5 @@ class Iphone17DeviceParameters(override val density: Density) : Device {
         get() = 844.dp
 
     override val roundedCornerSize: Dp
-        get() = with(density) { 48f.toDp() }
+        get() = 54.dp
 }
