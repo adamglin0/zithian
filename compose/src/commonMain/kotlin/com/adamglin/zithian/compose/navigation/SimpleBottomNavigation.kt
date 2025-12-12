@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
@@ -406,7 +407,6 @@ fun SimpleBottomNavigationIconItem(
     colors: SimpleBottomNavigationColors = SimpleBottomNavigationDefaults.colors(),
     dimens: SimpleBottomNavigationDimens = SimpleBottomNavigationDefaults.dimens(),
 ) {
-    val currentIcon = if (selected) selectedIcon else icon
     val interactType = LocalInteractType.current
 
     val contentColor = if (selected) colors.selectedContentColor else colors.contentColor
@@ -424,8 +424,15 @@ fun SimpleBottomNavigationIconItem(
         contentAlignment = Alignment.Center
     ) {
         CompositionLocalProvider(LocalContentColor provides contentColor) {
+            // Preload both icons to avoid flicker on first switch.
+            // Using graphicsLayer for alpha to skip drawing when invisible.
             Box(modifier = Modifier.size(dimens.iconSize)) {
-                currentIcon()
+                Box(modifier = Modifier.graphicsLayer { alpha = if (selected) 0f else 1f }) {
+                    icon()
+                }
+                Box(modifier = Modifier.graphicsLayer { alpha = if (selected) 1f else 0f }) {
+                    selectedIcon()
+                }
             }
         }
     }
@@ -472,11 +479,6 @@ fun SimpleBottomNavigationItem(
     dimens: SimpleBottomNavigationDimens = SimpleBottomNavigationDefaults.dimens(),
     textStyle: TextStyle = ZithianTheme.typography.bodySmall,
 ) {
-    val currentIcon = when {
-        selected && selectedIcon != null -> selectedIcon
-        icon != null -> icon
-        else -> null
-    }
     val interactType = LocalInteractType.current
 
     val contentColor = if (selected) colors.selectedContentColor else colors.contentColor
@@ -499,9 +501,20 @@ fun SimpleBottomNavigationItem(
         verticalArrangement = Arrangement.Center
     ) {
         CompositionLocalProvider(LocalContentColor provides contentColor) {
-            if (currentIcon != null) {
+            if (icon != null || selectedIcon != null) {
+                // Preload both icons to avoid flicker on first switch.
+                // Using graphicsLayer for alpha to skip drawing when invisible.
                 Box(modifier = Modifier.size(dimens.iconSize)) {
-                    currentIcon()
+                    if (icon != null) {
+                        Box(modifier = Modifier.graphicsLayer { alpha = if (selected && selectedIcon != null) 0f else 1f }) {
+                            icon()
+                        }
+                    }
+                    if (selectedIcon != null) {
+                        Box(modifier = Modifier.graphicsLayer { alpha = if (selected) 1f else 0f }) {
+                            selectedIcon()
+                        }
+                    }
                 }
             }
 
