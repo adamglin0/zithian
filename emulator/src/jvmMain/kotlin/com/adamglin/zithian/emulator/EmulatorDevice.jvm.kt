@@ -81,5 +81,18 @@ actual fun EmulatorDevice(
                 content()
             }
         }
+
+        Box(
+            modifier = Modifier
+                .offset(x = WrapperPaddingValuesStart, y = WrapperPaddingValuesTop)
+                .size(device.width)
+        ) {
+            CompositionLocalProvider(
+                LocalPlatformWindowInsets provides device,
+                LocalDensity provides density
+            ) {
+                DynamicIsland(DpSize(124.dp, 36.dp))
+            }
+        }
     }
 }
