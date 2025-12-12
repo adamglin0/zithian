@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.rememberWindowState
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
+import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.jetbrains.JBR
 import kotlinx.coroutines.Dispatchers
 
@@ -59,11 +60,15 @@ actual fun EmulatorDevice(
             }
         }
         WindowDraggableArea {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.LightGray)
-            )
+            ZithianTheme {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.LightGray)
+                ) {
+                    EmulatorToolBar()
+                }
+            }
         }
         val shape = ContinuousRoundedCornerShape(device.roundedCornerSize)
         Box(

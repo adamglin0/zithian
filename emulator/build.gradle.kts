@@ -1,6 +1,5 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
-import org.gradle.kotlin.dsl.provideDelegate
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -44,6 +43,7 @@ kotlin {
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             // other
+            implementation(projects.zithian.compose)
             implementation(libs.haze)
             implementation(libs.liquid)
             api(libs.composeContinuousRoundedCornerShape)
