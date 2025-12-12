@@ -60,7 +60,7 @@ fun MobileApp() {
 }
 
 @Composable
-private fun ScaffoldScope.Bottom() {
+fun ScaffoldScope.Bottom() {
     val appState = LocalAppState.current
     val selectedIndex by derivedStateOf {
         TopLevelNavKeys.indexOf(appState.backstack.lastOrNull())

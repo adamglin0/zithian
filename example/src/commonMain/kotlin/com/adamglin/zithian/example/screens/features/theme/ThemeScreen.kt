@@ -20,6 +20,7 @@ import com.adamglin.zithian.compose.layout.BasicFiller
 import com.adamglin.zithian.compose.scaffold.ScreenScaffold
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.theme.ZithianTheme
+import com.adamglin.zithian.example.screens.Bottom
 import com.adamglin.zithian.example.screens.LocalExampleAppFontFamily
 
 @Composable
@@ -143,11 +144,12 @@ internal fun ThemeScreen() {
                     fontFamily = LocalExampleAppFontFamily.current.montserrat,
                 )
             }
-        }
+        },
+        bottom = { Bottom() }
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item { BasicFiller(height = headerHeight) }
@@ -172,6 +174,7 @@ internal fun ThemeScreen() {
                     ColorGroupCard(group)
                 }
             }
+            item { BasicFiller(height = bottomHeight) }
         }
     }
 }
