@@ -4,8 +4,6 @@ import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.text.font.FontFamily
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
@@ -41,7 +39,8 @@ fun MobileApp() {
             ),
             onBack = {
                 appState.navigate {
-                    removeLastOrNull()
+                    if (lastOrNull() is TopLevelNavKey)
+                        removeLastOrNull()
                 }
             },
             entryProvider = entryProvider {
@@ -67,9 +66,14 @@ fun ScaffoldScope.Bottom() {
     }
     if (selectedIndex >= 0) {
         AppBottomNavigation(selectedIndex = selectedIndex) {
+            val targetNavKey = TopLevelNavKeys.toList()[it]
             appState.navigate {
-                clear()
-                add(TopLevelNavKeys.toList()[it])
+                if (targetNavKey in appState.backstack) {
+                    remove(targetNavKey)
+                    add(targetNavKey)
+                } else {
+                    add(targetNavKey)
+                }
             }
         }
     }
@@ -80,3 +84,8 @@ private val TopLevelNavKeys = persistentSetOf(
     ComponentsNavKey,
     ConfigNavKey,
 )
+
+fun main() {
+    val a = persistentSetOf(1, 2, 3) + persistentSetOf(4, 5, 6, 1)
+    println(a)
+}
