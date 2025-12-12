@@ -1,7 +1,7 @@
 package com.adamglin.zithian.example
 
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.*
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.window.application
 import com.adamglin.zithian.compose.theme.InteractType
@@ -20,8 +20,10 @@ internal fun touchApplication() = application {
     CompositionLocalProvider(
         LocalAppState provides appState
     ) {
+        var device by remember { mutableStateOf<Device>(Device.iphone17(Density(2f))) }
         EmulatorDevice(
-            device = Device.iphone17(Density(2f))
+            device = device,
+            onDeviceChange = { device = it }
         ) {
             ExampleAppFontFamilyProvider {
                 ZithianTheme(

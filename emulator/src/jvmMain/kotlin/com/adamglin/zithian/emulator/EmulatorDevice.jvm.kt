@@ -10,6 +10,7 @@ import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.InternalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,7 +20,7 @@ import androidx.compose.ui.platform.LocalPlatformWindowInsets
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.rememberWindowState
+import androidx.compose.ui.window.WindowState
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.jetbrains.JBR
@@ -35,15 +36,18 @@ private val WrapperPaddingValuesBottom = 10.dp
 @Composable
 actual fun EmulatorDevice(
     device: Device,
+    onDeviceChange: (Device) -> Unit,
     content: @Composable () -> Unit,
 ) {
     val density = device.density
-    val windowState = rememberWindowState(
-        size = DpSize(
-            width = device.width + WrapperPaddingValuesStart + WrapperPaddingValuesEnd,
-            height = device.height + WrapperPaddingValuesTop + WrapperPaddingValuesBottom
+    val windowState = retain(device) {
+        WindowState(
+            size = DpSize(
+                width = device.width + WrapperPaddingValuesStart + WrapperPaddingValuesEnd,
+                height = device.height + WrapperPaddingValuesTop + WrapperPaddingValuesBottom
+            )
         )
-    )
+    }
     Window(
         state = windowState,
         undecorated = false,
@@ -66,7 +70,10 @@ actual fun EmulatorDevice(
                         .fillMaxSize()
                         .background(Color.LightGray)
                 ) {
-                    EmulatorToolBar()
+                    EmulatorToolBar(
+                        selectedDevice = device,
+                        onDeviceChange = onDeviceChange
+                    )
                 }
             }
         }

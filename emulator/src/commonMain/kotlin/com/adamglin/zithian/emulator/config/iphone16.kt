@@ -12,26 +12,26 @@ import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.emulator.Device
 
 @OptIn(InternalComposeUiApi::class)
-fun Device.Companion.iphone17(density: Density) = Iphone17DeviceParameters(density)
+fun Device.Companion.iphone16(density: Density) = Iphone16DeviceParameters(density)
 
-class Iphone17DeviceParameters(override val density: Density) : Device {
+class Iphone16DeviceParameters(override val density: Density) : Device {
     override val name: String
-        get() = "iPhone 17"
+        get() = "iPhone 16"
 
     override val statusBars: PlatformInsets
-        get() = with(density) { PlatformInsets(top = 62.dp.roundToPx()) }
+        get() = with(density) { PlatformInsets(top = 59.dp.roundToPx()) }
 
     override val navigationBars: PlatformInsets
         get() = with(density) { PlatformInsets(bottom = 34.dp.roundToPx()) }
 
     override val systemBars: PlatformInsets
-        get() = with(density) { PlatformInsets(top = 62.dp.roundToPx(), bottom = 34.dp.roundToPx()) }
+        get() = with(density) { PlatformInsets(top = 59.dp.roundToPx(), bottom = 34.dp.roundToPx()) }
 
     override val captionBar: PlatformInsets
         get() = PlatformInsets(top = 0)
 
     override val displayCutout: PlatformInsets
-        get() = with(density) { PlatformInsets(top = 62.dp.roundToPx()) }
+        get() = with(density) { PlatformInsets(top = 59.dp.roundToPx()) }
 
     override val displayCutouts: List<Rect>
         get() = with(density) {
@@ -83,17 +83,18 @@ class Iphone17DeviceParameters(override val density: Density) : Device {
         }
 
     override val tappableElement: PlatformInsets
-        get() = with(density) { PlatformInsets(top = 62.dp.roundToPx()) }
+        get() = with(density) { PlatformInsets(top = 59.dp.roundToPx()) }
 
     override val waterfall: PlatformInsets
         get() = PlatformInsets(0, 0, 0, 0)
 
     override val width: Dp
-        get() = 402.dp
+        get() = 393.dp
 
     override val height: Dp
-        get() = 874.dp
+        get() = 852.dp
 
     override val roundedCornerSize: Dp
-        get() = 62.dp
+        get() = 55.dp
 }
+

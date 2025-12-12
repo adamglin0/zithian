@@ -8,7 +8,8 @@ import androidx.compose.ui.platform.LocalPlatformWindowInsets
 @OptIn(InternalComposeUiApi::class)
 @androidx.compose.runtime.Composable
 actual fun EmulatorDevice(
-    device: com.adamglin.zithian.emulator.Device,
+    device: Device,
+    onDeviceChange: (Device) -> Unit,
     content: @androidx.compose.runtime.Composable (() -> Unit)
 ) {
     val density = device.density
