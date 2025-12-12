@@ -46,6 +46,7 @@ actual fun EmulatorDevice(
     Window(
         state = windowState,
         undecorated = false,
+        resizable = false,
         onCloseRequest = {},
     ) {
         LaunchedEffect(Unit) {
