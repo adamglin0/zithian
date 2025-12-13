@@ -77,7 +77,7 @@ data class ZithianColors(
             // Primary (using green from brand colors)
             primary = BrandColors.blue6, // greenColors.green5
             primaryBold = BrandColors.blue8,
-            neutral = GrayColors.gray5,
+            neutral = GrayColors.gray3,
             onNeutral = GrayColors.gray13,
             neutralBold = GrayColors.gray6,
             onNeutralBold = GrayColors.gray13,

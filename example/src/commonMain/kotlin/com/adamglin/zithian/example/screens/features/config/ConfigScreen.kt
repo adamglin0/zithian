@@ -5,9 +5,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.button.PrimaryButton
-import com.adamglin.zithian.compose.button.SubtleButton
 import com.adamglin.zithian.compose.generated.resources.ZithianResources
 import com.adamglin.zithian.compose.icon.CoilIcon
+import com.adamglin.zithian.compose.icon.NeutralIconButton
 import com.adamglin.zithian.compose.layout.BasicFiller
 import com.adamglin.zithian.compose.scaffold.ScreenScaffold
 import com.adamglin.zithian.compose.sheets.BasicSheet
@@ -50,15 +50,15 @@ fun ConfigScreen() {
         onDismissRequest = { isExampleBottomSheetVisible = false },
         header = {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(15.dp),
                 horizontalArrangement = Arrangement.End
             ) {
-                SubtleButton(
-                    onClick = {}
+                NeutralIconButton(
+                    onClick = {},
                 ) {
                     CoilIcon(
                         uri = ZithianResources.getUri("drawable/ic_x.svg"),
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
             }
