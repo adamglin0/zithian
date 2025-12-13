@@ -23,6 +23,7 @@ liquid = "1.1.0"
 coil = "3.3.0"
 kotlinx-collections-immutable = "0.4.0"
 jbrapi = "1.9.0"
+ksp = "2.3.3"
 [libraries]
 # compose
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
@@ -50,6 +51,7 @@ detekt-rules-compose = { group = "ru.kode", name = "detekt-rules-compose", versi
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 liquid = { module = "io.github.fletchmckee.liquid:liquid", version.ref = "liquid" }
 kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref="kotlinx-collections-immutable"}
+ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 jbr-api = { module = "org.jetbrains.runtime:jbr-api", version.ref = "jbrapi" }
 [plugins]
 # kotlin
@@ -66,3 +68,4 @@ compose-hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "co
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
