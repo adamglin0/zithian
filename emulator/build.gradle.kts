@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.mavenPublish)
     alias(libs.plugins.binaryCompatibilityValidator)
+    alias(libs.plugins.ksp)
 }
 
 group = "com.adamglin.zithian"
@@ -23,19 +24,7 @@ kotlin {
         }
     }
 
-    js(compiler = IR) {
-        browser()
-    }
-
-    wasmJs {
-        browser()
-    }
-
     sourceSets {
-        val webMain = create("webMain")
-        webMain.dependsOn(commonMain.get())
-        jsMain.configure { dependsOn(webMain) }
-        wasmJsMain.configure { dependsOn(webMain) }
         commonMain.dependencies {
             // compose
             implementation(libs.compose.runtime)
@@ -44,6 +33,7 @@ kotlin {
             implementation(libs.compose.components.resources)
             // other
             implementation(projects.zithian.compose)
+            implementation(projects.zithian.processor.api)
             implementation(libs.haze)
             implementation(libs.liquid)
             api(libs.composeContinuousRoundedCornerShape)
@@ -62,6 +52,10 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
     }
+}
+
+dependencies {
+    add("kspJvm", projects.processor.ksp)
 }
 
 compose {
