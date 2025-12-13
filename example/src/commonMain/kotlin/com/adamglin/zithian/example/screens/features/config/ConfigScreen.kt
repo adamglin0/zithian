@@ -1,14 +1,16 @@
 package com.adamglin.zithian.example.screens.features.config
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.button.PrimaryButton
+import com.adamglin.zithian.compose.button.SubtleButton
+import com.adamglin.zithian.compose.generated.resources.ZithianResources
+import com.adamglin.zithian.compose.icon.CoilIcon
 import com.adamglin.zithian.compose.layout.BasicFiller
 import com.adamglin.zithian.compose.scaffold.ScreenScaffold
+import com.adamglin.zithian.compose.sheets.BasicSheet
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.example.screens.LocalAppState
 import com.adamglin.zithian.example.screens.features.liquid_test.LiquidTestNavKey
@@ -18,6 +20,7 @@ import com.adamglin.zithian.example.screens.widgets.TopLevelSharableBottomNaviga
 @Composable
 fun ConfigScreen() {
     val appState = LocalAppState.current
+    var isExampleBottomSheetVisible by remember { mutableStateOf(false) }
     ScreenScaffold(
         header = {
             SimpleTextTopBar("Config")
@@ -37,8 +40,30 @@ fun ConfigScreen() {
                 },
             ) { Text("Navigate to Next Screen") }
             PrimaryButton(
-                onClick = {},
-            ) { Text("Appearance") }
+                onClick = { isExampleBottomSheetVisible = true },
+            ) { Text("Bottom Sheet") }
         }
+    }
+
+    BasicSheet(
+        isVisible = isExampleBottomSheetVisible,
+        onDismissRequest = { isExampleBottomSheetVisible = false },
+        header = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                SubtleButton(
+                    onClick = {}
+                ) {
+                    CoilIcon(
+                        uri = ZithianResources.getUri("drawable/ic_x.svg"),
+                        contentDescription = null
+                    )
+                }
+            }
+        }
+    ) {
+        Box(modifier = Modifier.fillMaxWidth().height(400.dp))
     }
 }

@@ -9,14 +9,16 @@ import androidx.compose.ui.platform.PlatformInsets
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.adamglin.zithian.emulator.Device
+import com.adamglin.zithian.Device
+import com.adamglin.zithian.emulator.DeviceSpec
 
 @OptIn(InternalComposeUiApi::class)
-fun Device.Companion.iphone16(density: Density) = Iphone16DeviceParameters(density)
-
-class Iphone16DeviceParameters(override val density: Density) : Device {
+@Device
+val iphone16 = object : DeviceSpec {
     override val name: String
         get() = "iPhone 16"
+    override val density: Density
+        get() = Density(2f)
 
     override val statusBars: PlatformInsets
         get() = with(density) { PlatformInsets(top = 59.dp.roundToPx()) }

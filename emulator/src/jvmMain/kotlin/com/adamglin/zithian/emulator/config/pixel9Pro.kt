@@ -9,14 +9,17 @@ import androidx.compose.ui.platform.PlatformInsets
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.adamglin.zithian.emulator.Device
+import com.adamglin.zithian.Device
+import com.adamglin.zithian.emulator.DeviceSpec
 
 @OptIn(InternalComposeUiApi::class)
-fun Device.Companion.pixel9Pro(density: Density) = Pixel9ProDeviceParameters(density)
-
-class Pixel9ProDeviceParameters(override val density: Density) : Device {
+@Device
+val pixel9Pro = object : DeviceSpec {
     override val name: String
         get() = "Pixel 9 Pro"
+
+    override val density: Density
+        get() = Density(2f)
 
     override val statusBars: PlatformInsets
         get() = with(density) { PlatformInsets(top = 52.dp.roundToPx()) }

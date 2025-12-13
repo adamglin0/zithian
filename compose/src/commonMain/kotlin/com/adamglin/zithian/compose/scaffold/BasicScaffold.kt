@@ -18,60 +18,44 @@ fun BasicScaffold(
     backgroundColor: Color = ZithianTheme.colors.background,
     content: @Composable ScaffoldScope.() -> Unit,
 ) {
+    val headerNotNull = header ?: {}
+    val bottomNotNull = bottom ?: {}
     Box(
         modifier = modifier.background(backgroundColor)
     ) {
         val screenScaffoldScope = rememberScaffoldScope()
-        if (header != null || bottom != null) {
-            SubcomposeLayout(Modifier) { constraints ->
-                val headerPlaceables = if (header != null) {
-                    subcompose("header") {
-                        header(screenScaffoldScope)
-                    }.map {
-                        it.measure(constraints)
-                    }
-                } else {
-                    emptyList()
-                }
-                val headerHeight = headerPlaceables.maxOfOrNull { it.height } ?: 0
-                screenScaffoldScope.headerHeight = headerHeight.toDp()
-
-                val bottomPlaceables = if (bottom != null) {
-                    subcompose("bottom") {
-                        bottom(screenScaffoldScope)
-                    }.map {
-                        it.measure(constraints)
-                    }
-                } else {
-                    emptyList()
-                }
-                val bottomHeight = bottomPlaceables.maxOfOrNull { it.height } ?: 0
-                screenScaffoldScope.bottomHeight = bottomHeight.toDp()
-
-                val contentPlaceables = subcompose("content") {
-                    ContentWrapper(screenScaffoldScope, backgroundColor) {
-                        content()
-                    }
-                }.map { it.measure(constraints) }
-
-                val contentHeight = contentPlaceables.maxOfOrNull { it.height } ?: 0
-                val layoutHeight = if (constraints.hasBoundedHeight) {
-                    constraints.maxHeight
-                } else {
-                    maxOf(headerHeight, contentHeight, bottomHeight)
-                }
-
-                layout(constraints.maxWidth, layoutHeight) {
-                    contentPlaceables.forEach { it.placeRelative(0, 0) }
-                    headerPlaceables.forEach { it.placeRelative(0, 0) }
-                    bottomPlaceables.forEach {
-                        it.placeRelative(0, layoutHeight - bottomHeight)
-                    }
-                }
-            }
-        } else {
+        if (header == null && bottom == null) {
             ContentWrapper(screenScaffoldScope, backgroundColor) {
                 content()
+            }
+            return@Box
+        }
+        SubcomposeLayout(Modifier) { constraints ->
+            val headerPlaceables = subcompose("header") {
+                headerNotNull(screenScaffoldScope)
+            }.map {
+                it.measure(constraints)
+            }
+            val headerHeight = headerPlaceables.maxOfOrNull { it.height } ?: 0
+            screenScaffoldScope.headerHeight = headerHeight.toDp()
+            val contentPlaceables = subcompose("content") {
+                ContentWrapper(screenScaffoldScope, backgroundColor) {
+                    content()
+                }
+            }.map { it.measure(constraints) }
+            val bottomPlaceables = subcompose("bottom") {
+                bottomNotNull(screenScaffoldScope)
+            }.map {
+                it.measure(constraints)
+            }
+            val bottomHeight = bottomPlaceables.maxOfOrNull { it.height } ?: 0
+            val contentHeight = contentPlaceables.maxOfOrNull { it.height } ?: 0
+            layout(constraints.maxWidth, maxOf(headerHeight + bottomHeight, contentHeight)) {
+                contentPlaceables.forEach { it.placeRelative(0, 0) }
+                headerPlaceables.forEach { it.placeRelative(0, 0) }
+                bottomPlaceables.forEach {
+                    it.placeRelative(0, constraints.maxHeight - bottomHeight)
+                }
             }
         }
     }

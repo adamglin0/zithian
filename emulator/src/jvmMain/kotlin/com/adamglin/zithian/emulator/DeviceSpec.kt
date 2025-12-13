@@ -14,7 +14,7 @@ interface DeviceAppearance {
 
 @Immutable
 @OptIn(InternalComposeUiApi::class)
-interface Device : DeviceAppearance, PlatformWindowInsets {
+interface DeviceSpec : DeviceAppearance, PlatformWindowInsets {
     val name: String
     val density: Density
     companion object

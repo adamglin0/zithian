@@ -9,14 +9,17 @@ import androidx.compose.ui.platform.PlatformInsets
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.adamglin.zithian.emulator.Device
+import com.adamglin.zithian.Device
+import com.adamglin.zithian.emulator.DeviceSpec
 
 @OptIn(InternalComposeUiApi::class)
-fun Device.Companion.iphone17ProMax(density: Density) = Iphone17ProMaxDeviceParameters(density)
-
-class Iphone17ProMaxDeviceParameters(override val density: Density) : Device {
+@Device
+val iphone17 = object : DeviceSpec {
     override val name: String
-        get() = "iPhone 17 Pro Max"
+        get() = "iPhone 17"
+
+    override val density: Density
+        get() = Density(2f)
 
     override val statusBars: PlatformInsets
         get() = with(density) { PlatformInsets(top = 62.dp.roundToPx()) }
@@ -89,12 +92,11 @@ class Iphone17ProMaxDeviceParameters(override val density: Density) : Device {
         get() = PlatformInsets(0, 0, 0, 0)
 
     override val width: Dp
-        get() = 440.dp
+        get() = 402.dp
 
     override val height: Dp
-        get() = 956.dp
+        get() = 874.dp
 
     override val roundedCornerSize: Dp
         get() = 62.dp
 }
-

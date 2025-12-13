@@ -9,12 +9,12 @@ import androidx.compose.ui.platform.PlatformInsets
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.adamglin.zithian.emulator.Device
+import com.adamglin.zithian.emulator.DeviceSpec
 
 @OptIn(InternalComposeUiApi::class)
-fun Device.Companion.ipadPro13(density: Density) = IpadPro13DeviceParameters(density)
+fun DeviceSpec.Companion.ipadPro13(density: Density) = IpadPro13DeviceParameters(density)
 
-class IpadPro13DeviceParameters(override val density: Density) : Device {
+class IpadPro13DeviceParameters(override val density: Density) : DeviceSpec {
     override val name: String
         get() = "iPad Pro 13\""
 

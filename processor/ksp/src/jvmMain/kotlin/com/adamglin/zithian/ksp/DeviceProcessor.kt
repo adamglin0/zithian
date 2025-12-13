@@ -53,12 +53,11 @@ class DeviceProcessor(
         val builder = StringBuilder()
         builder.append("package $packageName\n\n")
 
-        // Imports
-        symbols.mapNotNull { it.packageName.asString().takeIf { it.isNotEmpty() } }.toSet()
-        // We don't necessarily need imports if we use fully qualified names, but it's cleaner.
-        // However, for simplicity and avoiding conflicts, fully qualified names are better in the list.
+        // Determine common type from annotated properties
+        val types = symbols.mapNotNull { it.type.resolve().declaration.qualifiedName?.asString() }.distinct()
+        val commonType = if (types.size == 1) types.first() else "Any"
 
-        builder.append("val registeredDevices: List<Any> = listOf(\n")
+        builder.append("val registeredDevices: List<$commonType> = listOf(\n")
 
         symbols.forEach { property ->
             val pkg = property.packageName.asString()

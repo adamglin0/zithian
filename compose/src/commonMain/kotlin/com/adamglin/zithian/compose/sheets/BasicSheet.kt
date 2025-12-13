@@ -38,6 +38,7 @@ internal fun BasicSheet(
     visibleState.targetState = isVisible
 
     if (visibleState.currentState || visibleState.targetState) {
+        val screenSize = Device.windowSize
         Popup(
             onDismissRequest = { onDismissRequest() },
             properties = basicSheetPopupProperties,
@@ -52,7 +53,6 @@ internal fun BasicSheet(
                 }
             }
         ) {
-            val screenSize = Device.windowSize
             AnimatedVisibility(
                 visibleState = visibleState,
                 enter = fadeIn(),
@@ -75,7 +75,7 @@ internal fun BasicSheet(
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .size(screenSize)
                         .padding(horizontal = SheetInScreenPadding)
                         .navigationBarsPadding()
                 ) {

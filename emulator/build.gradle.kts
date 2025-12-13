@@ -42,6 +42,9 @@ kotlin {
             api(libs.kotlinx.collections.immutable)
             api(libs.jbr.api)
         }
+        jvmMain.configure {
+            kotlin.srcDir("build/generated/ksp/jvm/jvmMain/kotlin")
+        }
         all {
             languageSettings {
                 optIn("kotlinx.cinterop.ExperimentalForeignApi")
@@ -56,6 +59,7 @@ kotlin {
 
 dependencies {
     add("kspJvm", projects.processor.ksp)
+    add("kspJvmTest", projects.processor.ksp)
 }
 
 compose {
