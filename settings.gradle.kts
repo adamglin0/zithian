@@ -19,6 +19,7 @@ dependencyResolutionManagement {
 }
 
 include(":compose")
+include(":processor:api", ":processor:ksp")
 include(":emulator")
 include(":example")
 
