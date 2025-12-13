@@ -16,7 +16,7 @@ fun DeviceSpec.Companion.ipadPro13(density: Density) = IpadPro13DeviceParameters
 
 class IpadPro13DeviceParameters(override val density: Density) : DeviceSpec {
     override val name: String
-        get() = "iPad Pro 13\""
+        get() = "iPad Pro 13"
 
     override val statusBars: PlatformInsets
         get() = with(density) { PlatformInsets(top = 24.dp.roundToPx()) }
