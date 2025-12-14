@@ -23,6 +23,8 @@ group = "com.adamglin.zithian"
 version = "1.0.0"
 
 kotlin {
+    jvmToolchain(21)
+
     @Suppress("UnstableApiUsage")
     androidLibrary {
         namespace = "com.adamglin.zithian.compose"
@@ -34,11 +36,7 @@ kotlin {
         }
     }
 
-    jvm {
-        compilerOptions {
-            jvmTarget = JvmTarget.JVM_21
-        }
-    }
+    jvm {}
 
     iosX64()
     iosArm64()
