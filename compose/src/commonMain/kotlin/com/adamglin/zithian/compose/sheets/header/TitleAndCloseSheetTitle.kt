@@ -1,17 +1,13 @@
 package com.adamglin.zithian.compose.sheets.header
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.annotation.InteractTypeOnly
 import com.adamglin.zithian.compose.generated.resources.ZithianResources
 import com.adamglin.zithian.compose.icon.CoilIcon
@@ -46,9 +42,7 @@ fun BasicSheetHeaderScope.TitleAndCloseSheetTitle(
     Layout(
         modifier = Modifier
             .height(headerHeight)
-            .fillMaxWidth()
-            .background(Color.Red)
-            .padding(15.dp),
+            .fillMaxWidth(),
         content = {
             CompositionLocalProvider(
                 LocalTextStyle provides ZithianTheme.typography.titleMedium
@@ -68,7 +62,9 @@ fun BasicSheetHeaderScope.TitleAndCloseSheetTitle(
             }
         },
     ) { measurables, constraints ->
-        // 1. Measure close button first (if present) to determine reserved space
+        val headerHeightPx = constraints.maxHeight
+
+        // 1. Measure close button first (if present)
         val closeMeasurable = measurables.find { it.layoutId == LAYOUT_ID_CLOSE }
         val closePlaceable = closeMeasurable?.measure(
             Constraints(maxWidth = constraints.maxWidth, maxHeight = constraints.maxHeight)
@@ -76,33 +72,30 @@ fun BasicSheetHeaderScope.TitleAndCloseSheetTitle(
         val closeWidth = closePlaceable?.width ?: 0
         val closeHeight = closePlaceable?.height ?: 0
 
-        // 2. Measure title with remaining width
+        // 2. Calculate close button padding independently: (headerHeight - iconButtonHeight) / 2
+        val closePadding = (headerHeightPx - closeHeight) / 2
+
+        // 3. Measure title with remaining width (accounting for close button and its padding)
         val titleMeasurable = measurables.first { it.layoutId != LAYOUT_ID_CLOSE }
-        val titleMaxWidth = (constraints.maxWidth - closeWidth).coerceAtLeast(0)
+        val closeReservedWidth = if (closePlaceable != null) closeWidth + closePadding else 0
+        val titleMaxWidth = (constraints.maxWidth - closeReservedWidth).coerceAtLeast(0)
         val titlePlaceable = titleMeasurable.measure(
             Constraints(maxWidth = titleMaxWidth, maxHeight = constraints.maxHeight)
         )
         val titleHeight = titlePlaceable.height
 
-        // 3. Calculate row height based on the tallest element
-        val rowHeight = maxOf(titleHeight, closeHeight)
+        // 4. Calculate title padding independently: (headerHeight - titleHeight) / 2
+        val titlePadding = (headerHeightPx - titleHeight) / 2
 
-        // 4. Calculate title's vertical offset (top padding when centered)
-        val titleTopOffset = (rowHeight - titleHeight) / 2
+        // 5. Place elements
+        layout(constraints.maxWidth, headerHeightPx) {
+            // Title: use titlePadding for both start and top offset
+            titlePlaceable.placeRelative(x = titlePadding, y = titlePadding)
 
-        // 5. Apply the same offset as start padding for visual balance
-        //    This ensures title's top margin equals its left margin when title is shorter
-        val titleStartOffset = titleTopOffset
-
-        // 6. Place elements
-        layout(constraints.maxWidth, rowHeight) {
-            // Title: offset by calculated start padding, vertically centered
-            titlePlaceable.placeRelative(x = titleStartOffset, y = titleTopOffset)
-
-            // Close button: aligned to end, vertically centered
+            // Close button: aligned to end with closePadding, vertically centered with closePadding
             closePlaceable?.placeRelative(
-                x = constraints.maxWidth - closeWidth,
-                y = (rowHeight - closeHeight) / 2
+                x = constraints.maxWidth - closeWidth - closePadding,
+                y = closePadding
             )
         }
     }
