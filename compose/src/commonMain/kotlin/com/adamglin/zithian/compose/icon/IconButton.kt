@@ -5,10 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -32,19 +29,19 @@ import io.github.fletchmckee.liquid.liquid
 data class IconButtonDimens(
     val contentPadding: PaddingValues,
     val cornerRadius: Dp,
-    val iconSize: Dp,
+    val size: Dp,
 ) {
     companion object {
         internal val Pointer = IconButtonDimens(
             contentPadding = PaddingValues(10.dp),
             cornerRadius = 100.dp,
-            iconSize = 17.dp,
+            size = 23.dp,
         )
 
         internal val Touch = IconButtonDimens(
-            contentPadding = PaddingValues(10.dp),
+            contentPadding = PaddingValues(6.08.dp),
             cornerRadius = 100.dp,
-            iconSize = 24.dp,
+            size = 32.dp,
         )
 
         fun of(interactType: InteractType): IconButtonDimens {
@@ -104,6 +101,7 @@ internal fun IconButton(
 
     Box(
         modifier = Modifier
+            .size(dimens.size)
             .clickable(
                 enabled = enabled,
                 role = Role.Button,
@@ -131,7 +129,7 @@ internal fun IconButton(
         contentAlignment = Alignment.Center
     ) {
         CompositionLocalProvider(LocalContentColor provides internalForegroundColor) {
-            Box(modifier = Modifier.size(dimens.iconSize)) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 content()
             }
         }
