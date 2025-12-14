@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.button.PrimaryButton
 import com.adamglin.zithian.compose.layout.BasicFiller
-import com.adamglin.zithian.compose.sheets.BasicSheet
+import com.adamglin.zithian.compose.sheets.BottomSheet
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.theme.ZithianTheme
 
@@ -23,7 +23,7 @@ fun Sheets() {
             Text("Open Sheet")
         }
 
-        BasicSheet(
+        BottomSheet(
             isVisible = isSheetVisible,
             onDismissRequest = { isSheetVisible = false },
             header = {
@@ -60,5 +60,6 @@ fun Sheets() {
         }
     }
 }
+
 
 

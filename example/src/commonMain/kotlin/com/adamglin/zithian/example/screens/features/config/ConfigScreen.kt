@@ -5,14 +5,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.button.PrimaryButton
-import com.adamglin.zithian.compose.generated.resources.ZithianResources
-import com.adamglin.zithian.compose.icon.CoilIcon
-import com.adamglin.zithian.compose.icon.NeutralIconButton
 import com.adamglin.zithian.compose.layout.BasicFiller
 import com.adamglin.zithian.compose.scaffold.ScreenScaffold
-import com.adamglin.zithian.compose.sheets.BasicSheet
+import com.adamglin.zithian.compose.sheets.BottomSheet
+import com.adamglin.zithian.compose.sheets.header.TitleAndCloseSheetTitle
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.example.screens.LocalAppState
+import com.adamglin.zithian.example.screens.LocalExampleAppFontFamily
 import com.adamglin.zithian.example.screens.features.liquid_test.LiquidTestNavKey
 import com.adamglin.zithian.example.screens.widgets.SimpleTextTopBar
 import com.adamglin.zithian.example.screens.widgets.TopLevelSharableBottomNavigation
@@ -45,23 +44,14 @@ fun ConfigScreen() {
         }
     }
 
-    BasicSheet(
+    BottomSheet(
         isVisible = isExampleBottomSheetVisible,
         onDismissRequest = { isExampleBottomSheetVisible = false },
         header = {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(15.dp),
-                horizontalArrangement = Arrangement.End
-            ) {
-                NeutralIconButton(
-                    onClick = {},
-                ) {
-                    CoilIcon(
-                        uri = ZithianResources.getUri("drawable/ic_x.svg"),
-                        contentDescription = null,
-                    )
-                }
-            }
+            TitleAndCloseSheetTitle(
+                title = { Text("BottomSheet Example", fontFamily = LocalExampleAppFontFamily.current.montserrat) },
+                onClose = { isExampleBottomSheetVisible = false }
+            )
         }
     ) {
         Box(modifier = Modifier.fillMaxWidth().height(400.dp))

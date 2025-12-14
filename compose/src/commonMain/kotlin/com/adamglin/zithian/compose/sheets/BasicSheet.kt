@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +27,16 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 
 internal expect val basicSheetPopupProperties: PopupProperties
+
+@Stable
+interface BasicSheetHeaderScope : ScaffoldScope
+internal class BasicSheetHeaderScopeImpl(scaffoldScope: ScaffoldScope) : BasicSheetHeaderScope,
+    ScaffoldScope by scaffoldScope
+
+@Stable
+interface BasicSheetBottomScope : ScaffoldScope
+internal class BasicSheetBottomScopeImpl(scaffoldScope: ScaffoldScope) : BasicSheetBottomScope,
+    ScaffoldScope by scaffoldScope
 
 @Composable
 internal fun BasicSheet(
@@ -108,10 +119,11 @@ internal fun BasicSheet(
 }
 
 @Composable
-fun BasicSheet(
+fun BottomSheet(
     isVisible: Boolean,
     onDismissRequest: () -> Unit,
-    header: @Composable ScaffoldScope.() -> Unit,
+    header: (@Composable BasicSheetHeaderScope.() -> Unit)? = null,
+    bottom: (@Composable BasicSheetBottomScope.() -> Unit)? = null,
     backgroundColor: Color = ZithianTheme.colors.surface,
     content: @Composable ScaffoldScope.() -> Unit,
 ) {
@@ -123,8 +135,19 @@ fun BasicSheet(
         BasicScaffold(
             backgroundColor = backgroundColor,
             header = {
-                header()
-            }
+                header?.let { headerNotNull ->
+                    with(BasicSheetHeaderScopeImpl(this)) {
+                        headerNotNull()
+                    }
+                }
+            },
+            bottom = {
+                bottom?.let { bottomNotNull ->
+                    with(BasicSheetBottomScopeImpl(this)) {
+                        bottomNotNull()
+                    }
+                }
+            },
         ) { content() }
     }
 }

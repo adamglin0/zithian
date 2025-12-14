@@ -35,4 +35,7 @@ kotlin {
             implementation(libs.liquid)
         }
     }
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
 }
