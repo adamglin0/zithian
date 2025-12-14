@@ -23,19 +23,27 @@ import com.adamglin.zithian.compose.scaffold.BasicScaffold
 import com.adamglin.zithian.compose.scaffold.ScaffoldScope
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.adamglin.zithian.compose.utils.Device
+import com.adamglin.zithian.compose.utils.LocalWindowRoundedCornerSize
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.rememberHazeState
 
 internal expect val basicSheetPopupProperties: PopupProperties
 
 @Stable
-interface BasicSheetHeaderScope : ScaffoldScope
-internal class BasicSheetHeaderScopeImpl(scaffoldScope: ScaffoldScope) : BasicSheetHeaderScope,
+interface BasicSheetHeaderScope : ScaffoldScope {
+    val containerRadius: Dp
+}
+
+internal class BasicSheetHeaderScopeImpl(scaffoldScope: ScaffoldScope, override val containerRadius: Dp) :
+    BasicSheetHeaderScope,
     ScaffoldScope by scaffoldScope
 
 @Stable
-interface BasicSheetBottomScope : ScaffoldScope
-internal class BasicSheetBottomScopeImpl(scaffoldScope: ScaffoldScope) : BasicSheetBottomScope,
+interface BasicSheetBottomScope : ScaffoldScope {
+    val radius: Dp
+}
+
+internal class BasicSheetBottomScopeImpl(scaffoldScope: ScaffoldScope, override val radius: Dp) : BasicSheetBottomScope,
     ScaffoldScope by scaffoldScope
 
 @Composable
@@ -45,6 +53,7 @@ internal fun BasicSheet(
     backgroundColor: Color = ZithianTheme.colors.surface,
     content: @Composable () -> Unit,
 ) {
+    val radius = LocalWindowRoundedCornerSize.current - SheetInScreenPadding
     val visibleState = remember { MutableTransitionState(isVisible) }
     visibleState.targetState = isVisible
 
@@ -90,7 +99,7 @@ internal fun BasicSheet(
                         .padding(horizontal = SheetInScreenPadding)
                         .navigationBarsPadding()
                 ) {
-                    val shape = ContinuousRoundedCornerShape(Device.windowRoundedCornerSize - SheetInScreenPadding)
+                    val shape = ContinuousRoundedCornerShape(radius)
                     val hazeState = rememberHazeState()
                     Box(
                         modifier = Modifier.fillMaxWidth()
@@ -127,6 +136,7 @@ fun BottomSheet(
     backgroundColor: Color = ZithianTheme.colors.surface,
     content: @Composable ScaffoldScope.() -> Unit,
 ) {
+    val radius = LocalWindowRoundedCornerSize.current - SheetInScreenPadding
     BasicSheet(
         isVisible = isVisible,
         onDismissRequest = onDismissRequest,
@@ -136,14 +146,14 @@ fun BottomSheet(
             backgroundColor = backgroundColor,
             header = {
                 header?.let { headerNotNull ->
-                    with(BasicSheetHeaderScopeImpl(this)) {
+                    with(BasicSheetHeaderScopeImpl(this, radius)) {
                         headerNotNull()
                     }
                 }
             },
             bottom = {
                 bottom?.let { bottomNotNull ->
-                    with(BasicSheetBottomScopeImpl(this)) {
+                    with(BasicSheetBottomScopeImpl(this, radius)) {
                         bottomNotNull()
                     }
                 }

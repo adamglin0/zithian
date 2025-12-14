@@ -5,10 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.adamglin.zithian.compose.text.LocalTextStyle
 import com.adamglin.zithian.compose.indication.ZithianNoneIndication
 import com.adamglin.zithian.compose.indication.ZithianScaleIndication
+import com.adamglin.zithian.compose.text.LocalTextStyle
+import com.adamglin.zithian.compose.utils.Device
+import com.adamglin.zithian.compose.utils.LocalWindowRoundedCornerSize
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.LocalHazeStyle
 
@@ -20,6 +23,7 @@ fun ZithianTheme(
     spacing: ZithianSpacing = ZithianSpacing(),
     shapes: ZithianShapes = ZithianShapes(),
     interactType: InteractType = InteractType.platformDefault,
+    windowRoundedCornerSize: Dp = Device.windowRoundedCornerSize,
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(
@@ -39,7 +43,8 @@ fun ZithianTheme(
             blurRadius = 40.dp,
         ),
         LocalContentColor provides colors.text1,
-        content = content
+        LocalWindowRoundedCornerSize provides windowRoundedCornerSize,
+        content = content,
     )
 }
 

@@ -1,10 +1,13 @@
 package com.adamglin.zithian.compose.sheets.header
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.Constraints
@@ -39,7 +42,13 @@ fun BasicSheetHeaderScope.TitleAndCloseSheetTitle(
     title: @Composable () -> Unit,
     onClose: (() -> Unit)? = null,
 ) {
+    val headerHeight = containerRadius * 2
     Layout(
+        modifier = Modifier
+            .height(headerHeight)
+            .fillMaxWidth()
+            .background(Color.Red)
+            .padding(15.dp),
         content = {
             CompositionLocalProvider(
                 LocalTextStyle provides ZithianTheme.typography.titleMedium
@@ -58,9 +67,6 @@ fun BasicSheetHeaderScope.TitleAndCloseSheetTitle(
                 }
             }
         },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(15.dp)
     ) { measurables, constraints ->
         // 1. Measure close button first (if present) to determine reserved space
         val closeMeasurable = measurables.find { it.layoutId == LAYOUT_ID_CLOSE }
