@@ -101,7 +101,6 @@ internal fun IconButton(
 
     Box(
         modifier = Modifier
-            .size(dimens.size)
             .clickable(
                 enabled = enabled,
                 role = Role.Button,
@@ -109,6 +108,7 @@ internal fun IconButton(
                 interactionSource = interactionSource,
             )
             .then(modifier)
+            .size(dimens.size)
             .alpha(if (enabled) 1f else .4f)
             .ifTrue(enabled && isHovered) {
                 Modifier.alpha(0.95f)
