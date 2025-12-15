@@ -265,8 +265,6 @@ fun Inputs() {
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            var selectedHour by remember { mutableStateOf(10) }
-            var selectedMinute by remember { mutableStateOf(30) }
 
             val candidates = listOf(
                 "Munich",
@@ -282,6 +280,7 @@ fun Inputs() {
             )
             val state = rememberWheelPickerState()
             WheelPicker(
+                modifier = Modifier.height(180.dp),
                 state = state,
                 selector = {
                     Box(modifier = Modifier.border(1.dp, Color.Black).fillMaxSize()) {

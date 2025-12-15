@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.layout.BasicFiller
 import com.adamglin.zithian.compose.scaffold.ScreenScaffold
 import com.adamglin.zithian.example.screens.features.components.widgets.Buttons
+import com.adamglin.zithian.example.screens.features.components.widgets.Pickers
 import com.adamglin.zithian.example.screens.widgets.SimpleTextTopBar
 import com.adamglin.zithian.example.screens.widgets.TopLevelSharableBottomNavigation
 
@@ -32,6 +33,7 @@ fun ComponentsScreen() {
             BasicFiller(height = headerHeight)
             Column(modifier = Modifier.padding(20.dp, 20.dp)) {
                 Buttons()
+                Pickers()
             }
         }
     }
