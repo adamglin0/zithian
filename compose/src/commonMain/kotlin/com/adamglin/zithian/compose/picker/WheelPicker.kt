@@ -14,6 +14,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
@@ -255,6 +257,7 @@ private class WheelPickerScopeImpl : WheelPickerScope {
  * @param verticalArrangement The vertical arrangement of items within the picker.
  * @param isInfinite Whether the picker should scroll infinitely.
  * @param userScrollEnabled Whether the user can scroll the picker.
+ * @param hapticFeedbackEnabled Whether to perform haptic feedback when the selected item changes (iOS-like tick effect).
  * @param selector Optional composable to display as a selection indicator.
  * @param onScrollFinished Callback invoked when scrolling finishes with the selected index.
  * @param content The content DSL for defining items.
@@ -268,6 +271,7 @@ fun WheelPicker(
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     isInfinite: Boolean = true,
     userScrollEnabled: Boolean = true,
+    hapticFeedbackEnabled: Boolean = true,
     selector: (@Composable BoxScope.() -> Unit)? = null,
     onScrollFinished: ((Int) -> Unit)? = null,
     content: WheelPickerScope.() -> Unit
@@ -296,6 +300,20 @@ fun WheelPicker(
     val listState = rememberLazyListState(
         initialFirstVisibleItemIndex = state.initialScrollIndex
     )
+
+    // Haptic feedback on index change
+    val hapticFeedback = LocalHapticFeedback.current
+    LaunchedEffect(hapticFeedbackEnabled, listState) {
+        if (!hapticFeedbackEnabled) return@LaunchedEffect
+        var previousIndex: Int? = null
+        snapshotFlow { state.currentIndex }
+            .collect { currentIndex ->
+                if (previousIndex != null && previousIndex != currentIndex) {
+                    hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                }
+                previousIndex = currentIndex
+            }
+    }
 
     // Handle scroll finished callback
     LaunchedEffect(listState, state, onScrollFinished) {

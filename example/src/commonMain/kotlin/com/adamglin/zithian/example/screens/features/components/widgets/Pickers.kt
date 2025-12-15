@@ -24,7 +24,8 @@ internal fun Pickers() {
             state = state,
             verticalArrangement = Arrangement.spacedBy(0.dp)
         ) {
-            items(candidates) {
+
+        items(candidates) {
                 Text(it)
             }
         }
