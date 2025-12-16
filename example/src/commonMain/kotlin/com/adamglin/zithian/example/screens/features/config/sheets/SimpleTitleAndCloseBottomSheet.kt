@@ -16,16 +16,17 @@ fun SimpleTitleAndCloseBottomSheet(
     isExampleBottomSheetVisible: Boolean,
     onDismissRequest: () -> Unit
 ) {
-    BottomSheet(
-        isVisible = isExampleBottomSheetVisible,
-        onDismissRequest = { onDismissRequest() },
-        header = {
-            TitleAndCloseSheetTitle(
-                title = { Text("BottomSheet Example", fontFamily = LocalExampleAppFontFamily.current.montserrat) },
-                onClose = { onDismissRequest() }
-            )
+    if (isExampleBottomSheetVisible) {
+        BottomSheet(
+            onDismissRequest = { onDismissRequest() },
+            header = {
+                TitleAndCloseSheetTitle(
+                    title = { Text("BottomSheet Example", fontFamily = LocalExampleAppFontFamily.current.montserrat) },
+                    onClose = { onDismissRequest() }
+                )
+            }
+        ) {
+            Box(modifier = Modifier.fillMaxWidth().height(400.dp))
         }
-    ) {
-        Box(modifier = Modifier.fillMaxWidth().height(400.dp))
     }
 }
