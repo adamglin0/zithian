@@ -40,9 +40,18 @@ internal class BasicBottomSheetState(
     }
 
     /**
+     * Whether dismiss has already been initiated. Prevents multiple calls.
+     */
+    private var dismissing = false
+
+    /**
      * Initiates the close animation and calls [onDismissRequest] upon completion.
+     * Multiple calls are ignored once dismiss has been initiated.
      */
     fun dismiss() {
+        if (dismissing) return
+        dismissing = true
+
         coroutineScope.launch {
             transitionState.targetState = false
             while (transitionState.currentState != transitionState.targetState) {
