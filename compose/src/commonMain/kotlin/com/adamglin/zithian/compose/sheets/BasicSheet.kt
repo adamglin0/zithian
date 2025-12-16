@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -19,8 +20,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.compose.ui.window.PopupProperties
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
-import com.adamglin.zithian.compose.scaffold.BasicScaffold
-import com.adamglin.zithian.compose.scaffold.ScaffoldScope
+import com.adamglin.zithian.compose.scaffold.LocalSheetContainerRadius
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.adamglin.zithian.compose.utils.Device
 import com.adamglin.zithian.compose.utils.LocalWindowRoundedCornerSize
@@ -29,29 +29,27 @@ import dev.chrisbanes.haze.rememberHazeState
 
 internal expect val basicSheetPopupProperties: PopupProperties
 
+/**
+ * Scope for BasicSheet content that provides access to the container radius.
+ */
 @Stable
-interface BasicSheetHeaderScope : ScaffoldScope {
+interface BasicSheetContentScope {
+    /**
+     * The corner radius of the sheet container.
+     */
     val containerRadius: Dp
 }
 
-internal class BasicSheetHeaderScopeImpl(scaffoldScope: ScaffoldScope, override val containerRadius: Dp) :
-    BasicSheetHeaderScope,
-    ScaffoldScope by scaffoldScope
-
-@Stable
-interface BasicSheetBottomScope : ScaffoldScope {
-    val radius: Dp
-}
-
-internal class BasicSheetBottomScopeImpl(scaffoldScope: ScaffoldScope, override val radius: Dp) : BasicSheetBottomScope,
-    ScaffoldScope by scaffoldScope
+internal class BasicSheetContentScopeImpl(
+    override val containerRadius: Dp
+) : BasicSheetContentScope
 
 @Composable
 internal fun BasicSheet(
     isVisible: Boolean,
     onDismissRequest: () -> Unit,
     backgroundColor: Color = ZithianTheme.colors.surface,
-    content: @Composable () -> Unit,
+    content: @Composable BasicSheetContentScope.() -> Unit,
 ) {
     val radius = LocalWindowRoundedCornerSize.current - SheetInScreenPadding
     val visibleState = remember { MutableTransitionState(isVisible) }
@@ -117,7 +115,11 @@ internal fun BasicSheet(
                             Box(
                                 modifier = Modifier.animateContentSize()
                             ) {
-                                content()
+                                CompositionLocalProvider(LocalSheetContainerRadius provides radius) {
+                                    with(BasicSheetContentScopeImpl(radius)) {
+                                        content()
+                                    }
+                                }
                             }
                         }
                     }
@@ -127,39 +129,31 @@ internal fun BasicSheet(
     }
 }
 
+/**
+ * A bottom sheet component that provides a simple container for sheet content.
+ *
+ * For structured layouts with header/bottom areas, use [SheetScaffold] inside the content lambda.
+ * The [containerRadius] is available through [BasicSheetContentScope] and [LocalSheetContainerRadius]
+ * for radius-aware components.
+ *
+ * @param isVisible Controls the visibility of the sheet with enter/exit animations.
+ * @param onDismissRequest Callback invoked when the sheet should be dismissed.
+ * @param backgroundColor Background color of the sheet container.
+ * @param content The main content of the sheet. Has access to [BasicSheetContentScope.containerRadius].
+ */
 @Composable
 fun BottomSheet(
     isVisible: Boolean,
     onDismissRequest: () -> Unit,
-    header: (@Composable BasicSheetHeaderScope.() -> Unit)? = null,
-    bottom: (@Composable BasicSheetBottomScope.() -> Unit)? = null,
     backgroundColor: Color = ZithianTheme.colors.surface,
-    content: @Composable ScaffoldScope.() -> Unit,
+    content: @Composable BasicSheetContentScope.() -> Unit,
 ) {
-    val radius = LocalWindowRoundedCornerSize.current - SheetInScreenPadding
     BasicSheet(
         isVisible = isVisible,
         onDismissRequest = onDismissRequest,
-        backgroundColor = backgroundColor
-    ) {
-        BasicScaffold(
-            backgroundColor = backgroundColor,
-            header = {
-                header?.let { headerNotNull ->
-                    with(BasicSheetHeaderScopeImpl(this, radius)) {
-                        headerNotNull()
-                    }
-                }
-            },
-            bottom = {
-                bottom?.let { bottomNotNull ->
-                    with(BasicSheetBottomScopeImpl(this, radius)) {
-                        bottomNotNull()
-                    }
-                }
-            },
-        ) { content() }
-    }
+        backgroundColor = backgroundColor,
+        content = content,
+    )
 }
 
 private val SheetInScreenPadding = 13.dp

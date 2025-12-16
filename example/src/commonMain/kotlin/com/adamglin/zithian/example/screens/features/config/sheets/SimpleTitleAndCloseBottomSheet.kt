@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.adamglin.zithian.compose.scaffold.SheetScaffold
 import com.adamglin.zithian.compose.sheets.BottomSheet
 import com.adamglin.zithian.compose.sheets.header.TitleAndCloseSheetTitle
 import com.adamglin.zithian.compose.text.Text
@@ -19,14 +20,23 @@ fun SimpleTitleAndCloseBottomSheet(
     if (isExampleBottomSheetVisible) {
         BottomSheet(
             onDismissRequest = { onDismissRequest() },
-            header = {
-                TitleAndCloseSheetTitle(
-                    title = { Text("BottomSheet Example", fontFamily = LocalExampleAppFontFamily.current.montserrat) },
-                    onClose = { onDismissRequest() }
-                )
-            }
         ) {
-            Box(modifier = Modifier.fillMaxWidth().height(400.dp))
+            SheetScaffold(
+                containerRadius = containerRadius,
+                header = {
+                    TitleAndCloseSheetTitle(
+                        title = {
+                            Text(
+                                "BottomSheet Example",
+                                fontFamily = LocalExampleAppFontFamily.current.montserrat
+                            )
+                        },
+                        onClose = { onDismissRequest() }
+                    )
+                }
+            ) {
+                Box(modifier = Modifier.fillMaxWidth().height(400.dp))
+            }
         }
     }
 }

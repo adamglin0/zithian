@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -15,8 +16,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
-import com.adamglin.zithian.compose.scaffold.BasicScaffold
-import com.adamglin.zithian.compose.scaffold.ScaffoldScope
+import com.adamglin.zithian.compose.scaffold.LocalSheetContainerRadius
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.adamglin.zithian.compose.utils.LocalWindowRoundedCornerSize
 import dev.chrisbanes.haze.hazeSource
@@ -40,81 +40,52 @@ data class BottomSheetProperties(
 internal expect fun BottomSheetProperties.toPopupProperties(): PopupProperties
 
 /**
- * Scope for the bottom sheet header slot.
- * Extends [BasicSheetHeaderScope] for compatibility with existing extension functions
- * like [TitleAndCloseSheetTitle], and [BottomSheetScope] to provide access to [dismiss].
+ * Scope for the bottom sheet content.
+ * Provides access to [dismiss] for closing the sheet and [containerRadius] for radius-aware styling.
  */
 @Stable
-interface BottomSheetHeaderScope : BasicSheetHeaderScope, BottomSheetScope
-
-internal class BottomSheetHeaderScopeImpl(
-    scaffoldScope: ScaffoldScope,
-    override val containerRadius: Dp,
-    private val sheetScope: BottomSheetScope,
-) : BottomSheetHeaderScope, ScaffoldScope by scaffoldScope {
-    override fun dismiss() = sheetScope.dismiss()
+interface BottomSheetContentScope : BottomSheetScope {
+    /**
+     * The corner radius of the sheet container.
+     * This can be used by content components to create consistent styling
+     * with the sheet's rounded corners.
+     */
+    val containerRadius: Dp
 }
-
-/**
- * Scope for the bottom sheet bottom slot.
- * Extends [BasicSheetBottomScope] for compatibility with existing extension functions,
- * and [BottomSheetScope] to provide access to [dismiss].
- */
-@Stable
-interface BottomSheetBottomScope : BasicSheetBottomScope, BottomSheetScope
-
-internal class BottomSheetBottomScopeImpl(
-    scaffoldScope: ScaffoldScope,
-    override val radius: Dp,
-    private val sheetScope: BottomSheetScope,
-) : BottomSheetBottomScope, ScaffoldScope by scaffoldScope {
-    override fun dismiss() = sheetScope.dismiss()
-}
-
-/**
- * Scope for the bottom sheet content slot.
- * Extends [ScaffoldScope] and [BottomSheetScope] to provide access to [dismiss].
- */
-@Stable
-interface BottomSheetContentScope : ScaffoldScope, BottomSheetScope
 
 internal class BottomSheetContentScopeImpl(
-    scaffoldScope: ScaffoldScope,
+    override val containerRadius: Dp,
     private val sheetScope: BottomSheetScope,
-) : BottomSheetContentScope, ScaffoldScope by scaffoldScope {
+) : BottomSheetContentScope {
     override fun dismiss() = sheetScope.dismiss()
 }
 
 /**
- * A bottom sheet component that uses [BasicBottomSheet] for animation handling
- * and provides layout with header/bottom slots.
+ * A bottom sheet component that uses [BasicBottomSheet] for animation handling.
  *
- * This component handles:
+ * This component provides a simple container for sheet content with:
  * - Positioning at the bottom of the screen
  * - Horizontal padding from screen edges
  * - Navigation bar padding
  * - Continuous rounded corner shape
- * - Header and bottom slot areas
  * - Content size animation
  *
- * All scope lambdas ([header], [bottom], [content]) have access to [BottomSheetScope.dismiss]
- * which triggers the exit animation and calls [onDismissRequest] upon completion.
+ * For structured layouts with header/bottom areas, use [SheetScaffold] inside the content lambda.
+ * The [containerRadius] is available through [BottomSheetContentScope] and [LocalSheetContainerRadius]
+ * for radius-aware components like [SheetScaffold].
  *
  * @param onDismissRequest Callback invoked after the exit animation completes.
  *                         Use this to remove the sheet from composition.
  * @param modifier Modifier to be applied to the sheet.
- * @param header Optional header content displayed at the top of the sheet.
- * @param bottom Optional bottom content displayed at the bottom of the sheet.
  * @param backgroundColor Background color of the sheet container.
  * @param properties Properties for popup behavior configuration.
- * @param content The main content of the sheet.
+ * @param content The main content of the sheet. Has access to [BottomSheetContentScope.dismiss]
+ *                and [BottomSheetContentScope.containerRadius].
  */
 @Composable
 fun BottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
-    header: (@Composable BottomSheetHeaderScope.() -> Unit)? = null,
-    bottom: (@Composable BottomSheetBottomScope.() -> Unit)? = null,
     backgroundColor: Color = ZithianTheme.colors.surface,
     properties: BottomSheetProperties = BottomSheetProperties(),
     content: @Composable BottomSheetContentScope.() -> Unit,
@@ -138,24 +109,8 @@ fun BottomSheet(
         ) {
             AnimatedContent(Unit) {
                 Box(modifier = Modifier.animateContentSize()) {
-                    BasicScaffold(
-                        backgroundColor = backgroundColor,
-                        header = {
-                            header?.let { headerContent ->
-                                with(BottomSheetHeaderScopeImpl(this, radius, sheetScope)) {
-                                    headerContent()
-                                }
-                            }
-                        },
-                        bottom = {
-                            bottom?.let { bottomContent ->
-                                with(BottomSheetBottomScopeImpl(this, radius, sheetScope)) {
-                                    bottomContent()
-                                }
-                            }
-                        },
-                    ) {
-                        with(BottomSheetContentScopeImpl(this, sheetScope)) {
+                    CompositionLocalProvider(LocalSheetContainerRadius provides radius) {
+                        with(BottomSheetContentScopeImpl(radius, sheetScope)) {
                             content()
                         }
                     }

@@ -12,7 +12,7 @@ import com.adamglin.zithian.compose.annotation.InteractTypeOnly
 import com.adamglin.zithian.compose.generated.resources.ZithianResources
 import com.adamglin.zithian.compose.icon.CoilIcon
 import com.adamglin.zithian.compose.icon.NeutralIconButton
-import com.adamglin.zithian.compose.sheets.BasicSheetHeaderScope
+import com.adamglin.zithian.compose.scaffold.SheetScaffoldScope
 import com.adamglin.zithian.compose.text.LocalTextStyle
 import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
@@ -34,7 +34,7 @@ private const val LAYOUT_ID_CLOSE = "close"
  */
 @Composable
 @InteractTypeOnly(InteractType.Touch)
-fun BasicSheetHeaderScope.TitleAndCloseSheetTitle(
+fun SheetScaffoldScope.TitleAndCloseSheetTitle(
     title: @Composable () -> Unit,
     onClose: (() -> Unit)? = null,
 ) {

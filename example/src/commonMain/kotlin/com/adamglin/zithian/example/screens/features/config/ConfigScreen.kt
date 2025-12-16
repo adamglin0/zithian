@@ -11,6 +11,7 @@ import com.adamglin.zithian.compose.layout.BasicFiller
 import com.adamglin.zithian.compose.scaffold.ScreenScaffold
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.example.screens.LocalAppState
+import com.adamglin.zithian.example.screens.features.config.sheets.SheetScaffoldExampleBottomSheet
 import com.adamglin.zithian.example.screens.features.config.sheets.SimpleTitleAndCloseBottomSheet
 import com.adamglin.zithian.example.screens.features.liquid_test.LiquidTestNavKey
 import com.adamglin.zithian.example.screens.widgets.SimpleTextTopBar
@@ -20,6 +21,7 @@ import com.adamglin.zithian.example.screens.widgets.TopLevelSharableBottomNaviga
 fun ConfigScreen() {
     val appState = LocalAppState.current
     var isExampleBottomSheetVisible by remember { mutableStateOf(false) }
+    var isSheetScaffoldExampleVisible by remember { mutableStateOf(false) }
     ScreenScaffold(
         header = {
             SimpleTextTopBar("Config")
@@ -40,11 +42,18 @@ fun ConfigScreen() {
             ) { Text("Navigate to Next Screen") }
             PrimaryButton(
                 onClick = { isExampleBottomSheetVisible = true },
-            ) { Text("Bottom Sheet") }
+            ) { Text("Simple Bottom Sheet") }
+            PrimaryButton(
+                onClick = { isSheetScaffoldExampleVisible = true },
+            ) { Text("SheetScaffold Example") }
         }
     }
     SimpleTitleAndCloseBottomSheet(
         isExampleBottomSheetVisible,
         onDismissRequest = { isExampleBottomSheetVisible = false }
+    )
+    SheetScaffoldExampleBottomSheet(
+        isSheetScaffoldExampleVisible,
+        onDismissRequest = { isSheetScaffoldExampleVisible = false }
     )
 }
