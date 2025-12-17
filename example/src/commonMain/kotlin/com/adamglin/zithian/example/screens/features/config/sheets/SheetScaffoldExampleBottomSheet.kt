@@ -98,7 +98,7 @@ fun SheetScaffoldExampleBottomSheet(
                             .fillMaxWidth()
                             .height(120.dp)
                             .clip(ContinuousRoundedCornerShape(containerRadius / 2))
-                            .background(ZithianTheme.colors.surface),
+                            .background(ZithianTheme.colors.success),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
