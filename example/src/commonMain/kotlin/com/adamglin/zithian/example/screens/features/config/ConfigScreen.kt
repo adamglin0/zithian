@@ -12,6 +12,7 @@ import com.adamglin.zithian.compose.scaffold.ScreenScaffold
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.example.screens.LocalAppState
 import com.adamglin.zithian.example.screens.features.config.sheets.SheetScaffoldExampleBottomSheet
+import com.adamglin.zithian.example.screens.features.config.sheets.SimpleSheetScaffoldExampleBottomSheet
 import com.adamglin.zithian.example.screens.features.config.sheets.SimpleTitleAndCloseBottomSheet
 import com.adamglin.zithian.example.screens.features.liquid_test.LiquidTestNavKey
 import com.adamglin.zithian.example.screens.widgets.SimpleTextTopBar
@@ -22,6 +23,7 @@ fun ConfigScreen() {
     val appState = LocalAppState.current
     var isExampleBottomSheetVisible by remember { mutableStateOf(false) }
     var isSheetScaffoldExampleVisible by remember { mutableStateOf(false) }
+    var isSimpleSheetScaffoldExampleVisible by remember { mutableStateOf(false) }
     ScreenScaffold(
         header = {
             SimpleTextTopBar("Config")
@@ -45,7 +47,10 @@ fun ConfigScreen() {
             ) { Text("Simple Bottom Sheet") }
             PrimaryButton(
                 onClick = { isSheetScaffoldExampleVisible = true },
-            ) { Text("SheetScaffold Example") }
+            ) { Text("SheetScaffold (3-Section)") }
+            PrimaryButton(
+                onClick = { isSimpleSheetScaffoldExampleVisible = true },
+            ) { Text("SimpleSheetScaffold (Floating Close)") }
         }
     }
     SimpleTitleAndCloseBottomSheet(
@@ -55,5 +60,9 @@ fun ConfigScreen() {
     SheetScaffoldExampleBottomSheet(
         isSheetScaffoldExampleVisible,
         onDismissRequest = { isSheetScaffoldExampleVisible = false }
+    )
+    SimpleSheetScaffoldExampleBottomSheet(
+        isSimpleSheetScaffoldExampleVisible,
+        onDismissRequest = { isSimpleSheetScaffoldExampleVisible = false }
     )
 }
