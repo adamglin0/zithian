@@ -28,7 +28,7 @@ import dev.chrisbanes.haze.rememberHazeState
 private val SheetHorizontalPadding = 13.dp
 
 /**
- * Properties for configuring modal bottom sheet popup behavior.
+ * Properties for configuring bottom sheet popup behavior.
  */
 data class BottomSheetProperties(
     val focusable: Boolean = true,
@@ -61,9 +61,13 @@ internal class BottomSheetContentScopeImpl(
 }
 
 /**
- * A bottom sheet component that uses [BasicBottomSheet] for animation handling.
+ * A non-modal bottom sheet component without scrim overlay.
  *
- * This component provides a simple container for sheet content with:
+ * This sheet allows interaction with content behind it while visible.
+ * Use [ModalBottomSheet] for a modal variant that blocks background interaction.
+ *
+ * Features:
+ * - No scrim overlay (underlying content remains visible and interactive)
  * - Positioning at the bottom of the screen
  * - Horizontal padding from screen edges
  * - Navigation bar padding
@@ -97,7 +101,78 @@ fun BottomSheet(
         modifier = modifier
             .padding(horizontal = SheetHorizontalPadding)
             .navigationBarsPadding(),
+        modal = false,
         properties = properties,
+    ) { sheetScope ->
+        val shape = ContinuousRoundedCornerShape(radius)
+        val hazeState = rememberHazeState()
+        Box(
+            modifier = Modifier
+                .clip(shape)
+                .background(backgroundColor, shape)
+                .hazeSource(hazeState)
+        ) {
+            AnimatedContent(Unit) {
+                Box(modifier = Modifier.animateContentSize()) {
+                    CompositionLocalProvider(LocalSheetContainerRadius provides radius) {
+                        with(BottomSheetContentScopeImpl(radius, sheetScope)) {
+                            content()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * A modal bottom sheet component with scrim overlay.
+ *
+ * This sheet blocks interaction with content behind it and displays a scrim overlay.
+ * Tapping the scrim will dismiss the sheet. Use [BottomSheet] for a non-modal variant
+ * that allows background interaction.
+ *
+ * Features:
+ * - Scrim overlay that dims and blocks underlying content
+ * - Tap-to-dismiss on scrim
+ * - Positioning at the bottom of the screen
+ * - Horizontal padding from screen edges
+ * - Navigation bar padding
+ * - Continuous rounded corner shape
+ * - Content size animation
+ *
+ * For structured layouts with header/bottom areas, use [SheetScaffold] inside the content lambda.
+ * The [containerRadius] is available through [BottomSheetContentScope] and [LocalSheetContainerRadius]
+ * for radius-aware components like [SheetScaffold].
+ *
+ * @param onDismissRequest Callback invoked after the exit animation completes.
+ *                         Use this to remove the sheet from composition.
+ * @param modifier Modifier to be applied to the sheet.
+ * @param backgroundColor Background color of the sheet container.
+ * @param scrimColor The color of the scrim overlay behind the sheet.
+ * @param properties Properties for popup behavior configuration.
+ * @param content The main content of the sheet. Has access to [BottomSheetContentScope.dismiss]
+ *                and [BottomSheetContentScope.containerRadius].
+ */
+@Composable
+fun ModalBottomSheet(
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = ZithianTheme.colors.surface,
+    scrimColor: Color = ZithianTheme.colors.text1.copy(alpha = 0.4f),
+    properties: BottomSheetProperties = BottomSheetProperties(),
+    content: @Composable BottomSheetContentScope.() -> Unit,
+) {
+    val radius = LocalWindowRoundedCornerSize.current - SheetHorizontalPadding
+
+    BasicBottomSheet(
+        onDismissRequest = onDismissRequest,
+        modifier = modifier
+            .padding(horizontal = SheetHorizontalPadding)
+            .navigationBarsPadding(),
+        modal = true,
+        properties = properties,
+        scrimColor = scrimColor,
     ) { sheetScope ->
         val shape = ContinuousRoundedCornerShape(radius)
         val hazeState = rememberHazeState()

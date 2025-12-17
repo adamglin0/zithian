@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
 import com.adamglin.zithian.compose.button.PrimaryButton
 import com.adamglin.zithian.compose.scaffold.SimpleSheetScaffold
-import com.adamglin.zithian.compose.sheets.BottomSheet
+import com.adamglin.zithian.compose.sheets.ModalBottomSheet
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.adamglin.zithian.example.screens.LocalExampleAppFontFamily
@@ -26,7 +26,7 @@ fun SimpleSheetScaffoldExampleBottomSheet(
     onDismissRequest: () -> Unit
 ) {
     if (isVisible) {
-        BottomSheet(
+        ModalBottomSheet(
             onDismissRequest = { onDismissRequest() },
         ) {
             SimpleSheetScaffold(

@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
 import com.adamglin.zithian.compose.button.PrimaryButton
 import com.adamglin.zithian.compose.scaffold.SheetScaffold
-import com.adamglin.zithian.compose.sheets.BottomSheet
+import com.adamglin.zithian.compose.sheets.ModalBottomSheet
 import com.adamglin.zithian.compose.sheets.header.TitleAndCloseSheetTitle
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.theme.ZithianTheme
@@ -26,7 +26,7 @@ fun SheetScaffoldExampleBottomSheet(
     onDismissRequest: () -> Unit
 ) {
     if (isVisible) {
-        BottomSheet(
+        ModalBottomSheet(
             onDismissRequest = { onDismissRequest() },
         ) {
             SheetScaffold(

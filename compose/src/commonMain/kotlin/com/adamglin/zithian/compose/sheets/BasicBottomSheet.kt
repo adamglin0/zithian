@@ -23,28 +23,30 @@ import com.adamglin.zithian.compose.theme.ZithianTheme
 import com.adamglin.zithian.compose.utils.Device
 
 /**
- * Basic bottom sheet that handles animations, scrim overlay, and size constraints.
+ * Basic bottom sheet that handles animations and positioning.
  *
- * This is the foundational sheet component. Use [BottomSheet] for the full-featured
- * variant with positioning, padding, shape, and header/bottom slots.
+ * This is the foundational sheet component. Use [BottomSheet] for a non-modal variant
+ * without scrim overlay, or [ModalBottomSheet] for a modal variant with scrim.
  *
  * The sheet appears with enter animation when added to composition and dismisses
  * with exit animation when [BottomSheetScope.dismiss] is called from within [content].
  *
  * **Responsibilities:**
- * - Enter/exit animations (scrim fade, content slide)
- * - Scrim overlay (dismissable on click)
+ * - Enter/exit animations (scrim fade for modal, content slide)
+ * - Scrim overlay (modal only, dismissable on click)
  * - Size constraints (full screen container)
  *
  * **Animation behavior:**
- * - Scrim: fadeIn/fadeOut
+ * - Scrim (modal only): fadeIn/fadeOut
  * - Content: slideInVertically with spring / slideOutVertically
  *
  * @param onDismissRequest Callback invoked after the exit animation completes.
  *                         Use this to remove the sheet from composition.
  * @param modifier Modifier to be applied to the content container.
+ * @param modal Whether the sheet is modal. When true, displays a scrim overlay
+ *              and blocks interaction with underlying content.
  * @param properties Properties for configuring the popup behavior.
- * @param scrimColor The color of the scrim overlay behind the sheet.
+ * @param scrimColor The color of the scrim overlay behind the sheet (modal only).
  * @param content The content to display inside the sheet. Use [BottomSheetScope.dismiss]
  *                to trigger the exit animation.
  */
@@ -52,6 +54,7 @@ import com.adamglin.zithian.compose.utils.Device
 fun BasicBottomSheet(
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
+    modal: Boolean = true,
     properties: BottomSheetProperties = BottomSheetProperties(),
     scrimColor: Color = ZithianTheme.colors.text1.copy(alpha = 0.4f),
     content: @Composable BoxScope.(BottomSheetScope) -> Unit,
@@ -59,11 +62,22 @@ fun BasicBottomSheet(
     val state = rememberBasicBottomSheetState(onDismissRequest)
     val scope = BottomSheetScopeImpl(state)
 
+    // Adjust properties for non-modal sheet: disable focusable to allow
+    // interaction with underlying content
+    val effectiveProperties = if (modal) {
+        properties
+    } else {
+        properties.copy(
+            focusable = false,
+            dismissOnClickOutside = false,
+        )
+    }
+
     if (state.transitionState.currentState || state.transitionState.targetState) {
         val screenSize = Device.windowSize
         Popup(
             onDismissRequest = state::dismiss,
-            properties = properties.toPopupProperties(),
+            properties = effectiveProperties.toPopupProperties(),
             popupPositionProvider = object : PopupPositionProvider {
                 override fun calculatePosition(
                     anchorBounds: IntRect,
@@ -73,22 +87,24 @@ fun BasicBottomSheet(
                 ): IntOffset = IntOffset.Zero
             }
         ) {
-            // Scrim layer with fade animation
-            AnimatedVisibility(
-                visibleState = state.transitionState,
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(screenSize)
-                        .clickable(
-                            interactionSource = null,
-                            indication = null,
-                            onClick = state::dismiss
-                        )
-                        .background(scrimColor)
-                )
+            // Scrim layer with fade animation (modal only)
+            if (modal) {
+                AnimatedVisibility(
+                    visibleState = state.transitionState,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(screenSize)
+                            .clickable(
+                                interactionSource = null,
+                                indication = null,
+                                onClick = state::dismiss
+                            )
+                            .background(scrimColor)
+                    )
+                }
             }
 
             // Content layer with slide animation

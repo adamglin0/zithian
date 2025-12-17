@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.scaffold.SheetScaffold
-import com.adamglin.zithian.compose.sheets.BottomSheet
+import com.adamglin.zithian.compose.sheets.ModalBottomSheet
 import com.adamglin.zithian.compose.sheets.header.TitleAndCloseSheetTitle
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.example.screens.LocalExampleAppFontFamily
@@ -18,7 +18,7 @@ fun SimpleTitleAndCloseBottomSheet(
     onDismissRequest: () -> Unit
 ) {
     if (isExampleBottomSheetVisible) {
-        BottomSheet(
+        ModalBottomSheet(
             onDismissRequest = { onDismissRequest() },
         ) {
             SheetScaffold(
