@@ -14,6 +14,7 @@ import com.adamglin.zithian.compose.annotation.InteractTypeOnly
 import com.adamglin.zithian.compose.generated.resources.ZithianResources
 import com.adamglin.zithian.compose.icon.CoilIcon
 import com.adamglin.zithian.compose.icon.NeutralIconButton
+import com.adamglin.zithian.compose.sheets.BottomSheetScope
 import com.adamglin.zithian.compose.theme.InteractType
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import dev.chrisbanes.haze.HazeState
@@ -28,9 +29,11 @@ import io.github.fletchmckee.liquid.rememberLiquidState
  *
  * This scope is used with [SimpleSheetScaffold] where content overlays with
  * an optional floating close button in the top-right corner.
+ *
+ * It extends [BottomSheetScope] to allow dismissal from within the scope.
  */
 @Stable
-interface SimpleSheetScaffoldScope {
+interface SimpleSheetScaffoldScope : BottomSheetScope {
     /**
      * The corner radius of the sheet container.
      */
@@ -64,7 +67,8 @@ internal class SimpleSheetScaffoldScopeImpl(
     override val containerRadius: Dp,
     override val hazeState: HazeState,
     override val liquidState: LiquidState,
-) : SimpleSheetScaffoldScope {
+    private val bottomSheetScope: BottomSheetScope,
+) : SimpleSheetScaffoldScope, BottomSheetScope by bottomSheetScope {
     private var _closeButtonEdgePadding by mutableStateOf(0.dp)
     override var closeButtonEdgePadding: Dp
         get() = _closeButtonEdgePadding
@@ -76,11 +80,12 @@ internal class SimpleSheetScaffoldScopeImpl(
 @Composable
 internal fun rememberSimpleSheetScaffoldScope(
     containerRadius: Dp,
+    bottomSheetScope: BottomSheetScope,
 ): SimpleSheetScaffoldScopeImpl {
     val hazeState = rememberHazeState()
     val liquidState = rememberLiquidState()
-    return remember(containerRadius) {
-        SimpleSheetScaffoldScopeImpl(containerRadius, hazeState, liquidState)
+    return remember(containerRadius, bottomSheetScope) {
+        SimpleSheetScaffoldScopeImpl(containerRadius, hazeState, liquidState, bottomSheetScope)
     }
 }
 
@@ -100,6 +105,8 @@ internal fun rememberSimpleSheetScaffoldScope(
  * - Add appropriate padding that aligns with the close button's visual margins
  * - Create visually consistent layouts that respect the close button's presence
  *
+ * It must be used within a [BottomSheetScope], ensuring it's only used inside a sheet.
+ *
  * @param containerRadius The corner radius of the sheet container.
  * @param modifier Modifier to be applied to the scaffold.
  * @param onClose Optional callback for the close button. If null, no close button is shown.
@@ -109,14 +116,14 @@ internal fun rememberSimpleSheetScaffoldScope(
  */
 @Composable
 @InteractTypeOnly(InteractType.Touch)
-fun SimpleSheetScaffold(
+fun BottomSheetScope.SimpleSheetScaffold(
     containerRadius: Dp,
     modifier: Modifier = Modifier,
     onClose: (() -> Unit)? = null,
     backgroundColor: Color = ZithianTheme.colors.surface,
     content: @Composable SimpleSheetScaffoldScope.() -> Unit,
 ) {
-    val scope = rememberSimpleSheetScaffoldScope(containerRadius)
+    val scope = rememberSimpleSheetScaffoldScope(containerRadius, this)
 
     CompositionLocalProvider(LocalSheetContainerRadius provides containerRadius) {
         SubcomposeLayout(

@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.adamglin.zithian.compose.sheets.BottomSheetScope
 import com.adamglin.zithian.compose.theme.ZithianTheme
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
@@ -23,11 +24,11 @@ import io.github.fletchmckee.liquid.rememberLiquidState
 val LocalSheetContainerRadius = compositionLocalOf<Dp> { 0.dp }
 
 /**
- * Scope for SheetScaffold that extends [ScaffoldScope] and provides
- * access to the container radius for radius-aware components.
+ * Scope for SheetScaffold that extends [ScaffoldScope] and [BottomSheetScope], providing
+ * access to the container radius for radius-aware components and sheet dismissal.
  */
 @Stable
-interface SheetScaffoldScope : ScaffoldScope {
+interface SheetScaffoldScope : ScaffoldScope, BottomSheetScope {
     /**
      * The corner radius of the sheet container.
      * This can be used by header, bottom, and content components
@@ -44,7 +45,8 @@ internal class SheetScaffoldScopeImpl(
     override val containerRadius: Dp,
     override val hazeState: HazeState,
     override val liquidState: LiquidState,
-) : SheetScaffoldScope {
+    private val bottomSheetScope: BottomSheetScope,
+) : SheetScaffoldScope, BottomSheetScope by bottomSheetScope {
     private var _headerHeight by mutableStateOf(0.dp)
     override var headerHeight: Dp
         get() = _headerHeight
@@ -64,14 +66,18 @@ internal class SheetScaffoldScopeImpl(
  * Creates and remembers a [SheetScaffoldScope] instance.
  *
  * @param containerRadius The corner radius of the sheet container.
+ * @param bottomSheetScope The scope of the bottom sheet, used for delegation.
  * @return A remembered [SheetScaffoldScope] instance.
  */
 @Composable
-fun rememberSheetScaffoldScope(containerRadius: Dp): SheetScaffoldScope {
+fun rememberSheetScaffoldScope(
+    containerRadius: Dp,
+    bottomSheetScope: BottomSheetScope,
+): SheetScaffoldScope {
     val hazeState = rememberHazeState()
     val liquidState = rememberLiquidState()
-    return remember(containerRadius) {
-        SheetScaffoldScopeImpl(containerRadius, hazeState, liquidState)
+    return remember(containerRadius, bottomSheetScope) {
+        SheetScaffoldScopeImpl(containerRadius, hazeState, liquidState, bottomSheetScope)
     }
 }
 
@@ -83,11 +89,14 @@ fun rememberSheetScaffoldScope(containerRadius: Dp): SheetScaffoldScope {
  * This enables header, bottom, and content components to create styling
  * that is aware of and consistent with the sheet's rounded corners.
  *
+ * It must be used within a [BottomSheetScope], ensuring it's only used inside a sheet.
+ *
  * Key features:
  * - Provides [containerRadius] through [SheetScaffoldScope] to all slots
  * - Also provides [containerRadius] through [LocalSheetContainerRadius] for nested components
  * - Handles header/bottom/content layout measurement and placement
  * - Integrates with haze and liquid effects
+ * - Exposes [BottomSheetScope] functionalities (like dismiss) to its content
  *
  * @param containerRadius The corner radius of the sheet container.
  * @param modifier Modifier to be applied to the scaffold.
@@ -100,7 +109,7 @@ fun rememberSheetScaffoldScope(containerRadius: Dp): SheetScaffoldScope {
  *                Has access to [SheetScaffoldScope.containerRadius] for radius-aware styling.
  */
 @Composable
-fun SheetScaffold(
+fun BottomSheetScope.SheetScaffold(
     containerRadius: Dp,
     modifier: Modifier = Modifier,
     header: (@Composable SheetScaffoldScope.() -> Unit)? = null,
@@ -115,7 +124,7 @@ fun SheetScaffold(
         Box(
             modifier = modifier.background(backgroundColor)
         ) {
-            val sheetScaffoldScope = rememberSheetScaffoldScope(containerRadius)
+            val sheetScaffoldScope = rememberSheetScaffoldScope(containerRadius, this@SheetScaffold)
             if (header == null && bottom == null) {
                 SheetContentWrapper(sheetScaffoldScope, backgroundColor) {
                     content()
