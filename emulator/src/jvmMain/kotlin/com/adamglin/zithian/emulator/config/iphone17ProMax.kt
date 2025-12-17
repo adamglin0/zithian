@@ -19,7 +19,7 @@ val iphone17ProMax = object : DeviceSpec {
         get() = "iPhone 17 Pro Max"
 
     override val density: Density
-        get() = Density(2f)
+        get() = Density(3f)
 
     override val statusBars: PlatformInsets
         get() = with(density) { PlatformInsets(top = 62.dp.roundToPx()) }
