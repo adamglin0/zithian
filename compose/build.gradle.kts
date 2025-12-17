@@ -38,7 +38,6 @@ kotlin {
 
     jvm {}
 
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -75,7 +74,6 @@ kotlin {
         iosMain.configure {
             dependsOn(appleMain.get())
         }
-        iosX64Main.configure { dependsOn(iosMain.get()) }
         iosArm64Main.configure { dependsOn(iosMain.get()) }
         iosSimulatorArm64Main.configure { dependsOn(iosMain.get()) }
 
