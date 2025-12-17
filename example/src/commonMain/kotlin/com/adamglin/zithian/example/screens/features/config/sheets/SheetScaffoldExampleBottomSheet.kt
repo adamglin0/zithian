@@ -2,18 +2,23 @@ package com.adamglin.zithian.example.screens.features.config.sheets
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
-import com.adamglin.zithian.compose.button.PrimaryButton
 import com.adamglin.zithian.compose.scaffold.SheetScaffold
 import com.adamglin.zithian.compose.sheets.ModalBottomSheet
 import com.adamglin.zithian.compose.sheets.header.TitleAndCloseSheetTitle
+import com.adamglin.zithian.compose.slider.Slider
+import com.adamglin.zithian.compose.slider.SliderDefaults
+import com.adamglin.zithian.compose.slider.Thumb
+import com.adamglin.zithian.compose.slider.rememberSliderState
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.compose.theme.ZithianTheme
+import com.adamglin.zithian.compose.utils.calculateInnerCornerRadius
 import com.adamglin.zithian.example.screens.LocalExampleAppFontFamily
 
 /**
@@ -42,45 +47,23 @@ fun SheetScaffoldExampleBottomSheet(
                         onClose = { onDismissRequest() }
                     )
                 },
-                bottom = {
-                    // Bottom area with radius-aware corners
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = containerRadius / 2)
-                            .padding(bottom = containerRadius / 2)
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            PrimaryButton(
-                                onClick = { onDismissRequest() },
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Text("Cancel")
-                            }
-                            PrimaryButton(
-                                onClick = { onDismissRequest() },
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Text("Confirm")
-                            }
-                        }
-                    }
-                }
             ) {
+                val sliderState = rememberSliderState(0f, 0f..32f)
                 // Content area demonstrating containerRadius awareness
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = headerHeight)
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = bottomHeight + 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                        .padding(horizontal = sliderState.value.dp)
+                        .padding(bottom = bottomHeight + sliderState.value.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     Text(
                         text = "Container Radius: $containerRadius",
+                        style = ZithianTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = "Padding: ${sliderState.value}",
                         style = ZithianTheme.typography.bodyMedium
                     )
                     Text(
@@ -93,17 +76,43 @@ fun SheetScaffoldExampleBottomSheet(
                     )
 
                     // Radius-aware content box
-                    Box(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(120.dp)
-                            .clip(ContinuousRoundedCornerShape(containerRadius / 2))
+                            .height(100.dp)
+                            .clip(
+                                ContinuousRoundedCornerShape(
+                                    calculateInnerCornerRadius(
+                                        containerRadius,
+                                        sliderState.value.dp
+                                    )
+                                )
+                            )
                             .background(ZithianTheme.colors.success),
-                        contentAlignment = Alignment.Center
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
                         Text(
                             text = "Radius-Aware Content",
                             style = ZithianTheme.typography.markLarge
+                        )
+                        Slider(
+                            state = sliderState,
+                            track = {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(4.dp)
+                                        .background(ZithianTheme.colors.surface, CircleShape)
+                                )
+                            },
+                            thumb = {
+                                Thumb(
+                                    shape = CircleShape,
+                                    color = ZithianTheme.colors.primary,
+                                    dimens = SliderDefaults.dimens()
+                                )
+                            }
                         )
                     }
                 }

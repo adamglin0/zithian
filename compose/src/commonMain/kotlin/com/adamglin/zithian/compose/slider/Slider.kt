@@ -3,12 +3,7 @@ package com.adamglin.zithian.compose.slider
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.GestureCancellationException
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction.Press
 import androidx.compose.foundation.interaction.PressInteraction.Release
@@ -16,15 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.progressSemantics
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,28 +20,22 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEvent
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.input.key.type
-import androidx.compose.ui.input.pointer.AwaitPointerEventScope
-import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.input.pointer.PointerInputChange
-import androidx.compose.ui.input.pointer.changedToUp
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.key.*
+import androidx.compose.ui.input.pointer.*
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.setProgress
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastAll
 import androidx.compose.ui.util.fastCoerceIn
 import androidx.compose.ui.util.lerp
+import com.adamglin.zithian.compose.theme.InteractType
+import com.adamglin.zithian.compose.theme.LocalInteractType
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -63,15 +44,20 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-import androidx.compose.runtime.Immutable
-import androidx.compose.ui.unit.Dp
-import com.adamglin.zithian.compose.theme.InteractType
-import com.adamglin.zithian.compose.theme.LocalInteractType
+@Immutable
+data class SliderRange(
+    override val start: Float,
+    override val endInclusive: Float
+) : ClosedFloatingPointRange<Float> {
+    override fun lessThanOrEquals(a: Float, b: Float): Boolean = a <= b
+    override fun contains(value: Float): Boolean = value in start..endInclusive
+    override fun isEmpty(): Boolean = start > endInclusive
+}
 
 @Stable
 class SliderState(
     initialValue: Float,
-    internal val valueRange: ClosedFloatingPointRange<Float>,
+    internal val valueRange: SliderRange,
     internal val steps: Int,
 ) {
     init {
@@ -128,8 +114,8 @@ fun rememberSliderState(
     valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     steps: Int = 0,
 ): SliderState {
-    return remember {
-        SliderState(initialValue, valueRange, steps)
+    return remember(valueRange) {
+        SliderState(initialValue, SliderRange(valueRange.start, valueRange.endInclusive), steps)
     }
 }
 
@@ -137,7 +123,7 @@ fun rememberSliderState(
 private fun CorrectValueSideEffect(
     scaleToOffset: (Float) -> Float,
     correctValue: (Float) -> Unit,
-    valueRange: ClosedFloatingPointRange<Float>,
+    valueRange: SliderRange,
     trackRange: ClosedFloatingPointRange<Float>,
     value: Float,
 ) {
@@ -172,7 +158,6 @@ fun Slider(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
     orientation: Orientation = Orientation.Horizontal,
     track: @Composable () -> Unit,
     thumb: @Composable () -> Unit
@@ -183,6 +168,7 @@ fun Slider(
     var rawOffset by remember { mutableStateOf(0f) }
     var pressOffset by remember { mutableFloatStateOf(0f) }
 
+    val valueRange = state.valueRange
     val coerced = state.value.coerceIn(valueRange.start, valueRange.endInclusive)
     val fraction = calcFraction(valueRange.start, valueRange.endInclusive, coerced)
 

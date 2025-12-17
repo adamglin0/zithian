@@ -2,7 +2,7 @@ package com.adamglin.zithian.compose.utils
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.coerceAtLeast
-import kotlin.math.*
+import androidx.compose.ui.unit.dp
 
 /**
  * Calculates the inner corner radius for a nested rounded rectangle.
