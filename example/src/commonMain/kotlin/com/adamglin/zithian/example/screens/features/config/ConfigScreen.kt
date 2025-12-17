@@ -11,6 +11,7 @@ import com.adamglin.zithian.compose.layout.BasicFiller
 import com.adamglin.zithian.compose.scaffold.ScreenScaffold
 import com.adamglin.zithian.compose.text.Text
 import com.adamglin.zithian.example.screens.LocalAppState
+import com.adamglin.zithian.example.screens.features.config.sheets.NonModalBottomSheetExample
 import com.adamglin.zithian.example.screens.features.config.sheets.SheetScaffoldExampleBottomSheet
 import com.adamglin.zithian.example.screens.features.config.sheets.SimpleSheetScaffoldExampleBottomSheet
 import com.adamglin.zithian.example.screens.features.config.sheets.SimpleTitleAndCloseBottomSheet
@@ -24,6 +25,7 @@ fun ConfigScreen() {
     var isExampleBottomSheetVisible by remember { mutableStateOf(false) }
     var isSheetScaffoldExampleVisible by remember { mutableStateOf(false) }
     var isSimpleSheetScaffoldExampleVisible by remember { mutableStateOf(false) }
+    var isNonModalBottomSheetVisible by remember { mutableStateOf(false) }
     ScreenScaffold(
         header = {
             SimpleTextTopBar("Config")
@@ -51,6 +53,9 @@ fun ConfigScreen() {
             PrimaryButton(
                 onClick = { isSimpleSheetScaffoldExampleVisible = true },
             ) { Text("SimpleSheetScaffold (Floating Close)") }
+            PrimaryButton(
+                onClick = { isNonModalBottomSheetVisible = true },
+            ) { Text("Non-Modal BottomSheet") }
         }
     }
     SimpleTitleAndCloseBottomSheet(
@@ -64,5 +69,9 @@ fun ConfigScreen() {
     SimpleSheetScaffoldExampleBottomSheet(
         isSimpleSheetScaffoldExampleVisible,
         onDismissRequest = { isSimpleSheetScaffoldExampleVisible = false }
+    )
+    NonModalBottomSheetExample(
+        isNonModalBottomSheetVisible,
+        onDismissRequest = { isNonModalBottomSheetVisible = false }
     )
 }

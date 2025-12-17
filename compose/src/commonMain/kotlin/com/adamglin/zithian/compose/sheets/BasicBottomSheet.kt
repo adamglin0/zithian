@@ -34,7 +34,7 @@ import com.adamglin.zithian.compose.utils.Device
  * **Responsibilities:**
  * - Enter/exit animations (scrim fade for modal, content slide)
  * - Scrim overlay (modal only, dismissable on click)
- * - Size constraints (full screen container)
+ * - Size constraints (full screen container for modal, content-sized for non-modal)
  *
  * **Animation behavior:**
  * - Scrim (modal only): fadeIn/fadeOut
@@ -44,7 +44,8 @@ import com.adamglin.zithian.compose.utils.Device
  *                         Use this to remove the sheet from composition.
  * @param modifier Modifier to be applied to the content container.
  * @param modal Whether the sheet is modal. When true, displays a scrim overlay
- *              and blocks interaction with underlying content.
+ *              and blocks interaction with underlying content. When false, the sheet
+ *              only covers its content area and allows interaction with underlying content.
  * @param properties Properties for configuring the popup behavior.
  * @param scrimColor The color of the scrim overlay behind the sheet (modal only).
  * @param content The content to display inside the sheet. Use [BottomSheetScope.dismiss]
@@ -75,10 +76,10 @@ fun BasicBottomSheet(
 
     if (state.transitionState.currentState || state.transitionState.targetState) {
         val screenSize = Device.windowSize
-        Popup(
-            onDismissRequest = state::dismiss,
-            properties = effectiveProperties.toPopupProperties(),
-            popupPositionProvider = object : PopupPositionProvider {
+
+        // Position provider: top-left for modal (full screen), bottom for non-modal
+        val positionProvider = if (modal) {
+            object : PopupPositionProvider {
                 override fun calculatePosition(
                     anchorBounds: IntRect,
                     windowSize: IntSize,
@@ -86,9 +87,28 @@ fun BasicBottomSheet(
                     popupContentSize: IntSize
                 ): IntOffset = IntOffset.Zero
             }
+        } else {
+            object : PopupPositionProvider {
+                override fun calculatePosition(
+                    anchorBounds: IntRect,
+                    windowSize: IntSize,
+                    layoutDirection: LayoutDirection,
+                    popupContentSize: IntSize
+                ): IntOffset = IntOffset(
+                    x = (windowSize.width - popupContentSize.width) / 2,
+                    y = windowSize.height - popupContentSize.height
+                )
+            }
+        }
+
+        Popup(
+            onDismissRequest = state::dismiss,
+            properties = effectiveProperties.toPopupProperties(),
+            popupPositionProvider = positionProvider
         ) {
-            // Scrim layer with fade animation (modal only)
             if (modal) {
+                // Modal: Full screen layout with scrim
+                // Scrim layer with fade animation
                 AnimatedVisibility(
                     visibleState = state.transitionState,
                     enter = fadeIn(),
@@ -105,29 +125,44 @@ fun BasicBottomSheet(
                             .background(scrimColor)
                     )
                 }
-            }
 
-            // Content layer with slide animation
-            AnimatedVisibility(
-                visibleState = state.transitionState,
-                enter = slideInVertically(
-                    animationSpec = spring(stiffness = Spring.StiffnessHigh)
-                ) { it },
-                exit = slideOutVertically { it }
-            ) {
-                Box(
-                    modifier = modifier.size(screenSize),
-                    contentAlignment = Alignment.BottomCenter,
+                // Content layer with slide animation
+                AnimatedVisibility(
+                    visibleState = state.transitionState,
+                    enter = slideInVertically(
+                        animationSpec = spring(stiffness = Spring.StiffnessHigh)
+                    ) { it },
+                    exit = slideOutVertically { it }
                 ) {
-                    // Inner container for content
                     Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable(
-                                interactionSource = null,
-                                indication = null,
-                                onClick = {} // Consume clicks to prevent dismissal
-                            )
+                        modifier = modifier.size(screenSize),
+                        contentAlignment = Alignment.BottomCenter,
+                    ) {
+                        // Inner container for content
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(
+                                    interactionSource = null,
+                                    indication = null,
+                                    onClick = {} // Consume clicks to prevent dismissal
+                                )
+                        ) {
+                            content(scope)
+                        }
+                    }
+                }
+            } else {
+                // Non-modal: Content-sized layout without scrim
+                AnimatedVisibility(
+                    visibleState = state.transitionState,
+                    enter = slideInVertically(
+                        animationSpec = spring(stiffness = Spring.StiffnessHigh)
+                    ) { it },
+                    exit = slideOutVertically { it }
+                ) {
+                    Box(
+                        modifier = modifier.fillMaxWidth()
                     ) {
                         content(scope)
                     }
