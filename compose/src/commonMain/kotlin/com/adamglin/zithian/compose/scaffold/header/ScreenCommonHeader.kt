@@ -1,6 +1,8 @@
 package com.adamglin.zithian.compose.scaffold.header
 
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -11,9 +13,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavEntryDecorator
@@ -29,7 +29,6 @@ import com.adamglin.zithian.compose.theme.ZithianTheme
 import dev.chrisbanes.haze.HazeProgressive
 import dev.chrisbanes.haze.hazeEffect
 import io.github.fletchmckee.liquid.liquid
-import kotlin.math.max
 
 /**
  * CompositionLocal for providing [SharedTransitionScope] to [ScreenCommonHeader].
@@ -232,169 +231,88 @@ fun ScaffoldScope.ScreenCommonHeader(
                 progressive = HazeProgressive.verticalGradient(startIntensity = 1f, endIntensity = 0f)
             }
             .statusBarsPadding()
+            .height(dimens.height)
+            .padding(horizontal = dimens.horizontalPadding)
     ) {
-        SubcomposeLayout { constraints ->
-            val horizontalPaddingPx = dimens.horizontalPadding.roundToPx()
-            val minSpacingPx = dimens.minSpacing.roundToPx()
-            val heightPx = dimens.height.roundToPx()
-
-            val availableWidth = constraints.maxWidth - horizontalPaddingPx * 2
-
-            // 1. Measure leading with AnimatedContent for smooth transitions
-            val leadingPlaceable = leading?.let {
-                subcompose("leading") {
-                    AnimatedContent(
-                        targetState = leading,
-                        transitionSpec = { fadeIn() togetherWith fadeOut() },
-                        modifier = Modifier.height(dimens.height),
-                    ) { targetLeading ->
-                        Box(
-                            modifier = Modifier
-                                .height(dimens.height)
-                                .then(
-                                    if (sharedTransitionScope != null && animatedVisibilityScope != null) {
-                                        with(sharedTransitionScope) {
-                                            Modifier
-                                                .sharedElement(
-                                                    sharedContentState = rememberSharedContentState(
-                                                        key = ScreenCommonHeaderSharedElementKey.LEADING
-                                                    ),
-                                                    animatedVisibilityScope = animatedVisibilityScope,
-                                                )
-                                                .skipToLookaheadSize()
-                                        }
-                                    } else Modifier
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            targetLeading()
-                        }
-                    }
-                }.firstOrNull()?.measure(
-                    Constraints(maxWidth = availableWidth, maxHeight = heightPx)
-                )
-            }
-            val leadingWidth = leadingPlaceable?.width ?: 0
-
-            // 2. Measure actions with AnimatedContent
-            val actionsPlaceable = actions?.let {
-                subcompose("actions") {
-                    AnimatedContent(
-                        targetState = actions,
-                        transitionSpec = { fadeIn() togetherWith fadeOut() },
-                        modifier = Modifier.height(dimens.height),
-                    ) { targetActions ->
-                        Row(
-                            modifier = Modifier
-                                .height(dimens.height)
-                                .then(
-                                    if (sharedTransitionScope != null && animatedVisibilityScope != null) {
-                                        with(sharedTransitionScope) {
-                                            Modifier
-                                                .sharedElement(
-                                                    sharedContentState = rememberSharedContentState(
-                                                        key = ScreenCommonHeaderSharedElementKey.ACTIONS
-                                                    ),
-                                                    animatedVisibilityScope = animatedVisibilityScope,
-                                                )
-                                                .skipToLookaheadSize()
-                                        }
-                                    } else Modifier
-                                ),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End,
-                            content = targetActions
-                        )
-                    }
-                }.firstOrNull()?.measure(
-                    Constraints(maxWidth = availableWidth - leadingWidth - minSpacingPx, maxHeight = heightPx)
-                )
-            }
-            val actionsWidth = actionsPlaceable?.width ?: 0
-
-            // 3. Calculate title positioning
-            val leadingOccupied = leadingWidth + (if (leadingWidth > 0) minSpacingPx else 0)
-            val actionsOccupied = actionsWidth + (if (actionsWidth > 0) minSpacingPx else 0)
-
-            val leftBoundary = horizontalPaddingPx + leadingOccupied
-            val rightBoundary = constraints.maxWidth - horizontalPaddingPx - actionsOccupied
-            val centerX = constraints.maxWidth / 2
-
-            // Maximum width for centered title
-            val maxCenteredWidth = 2 * minOf(centerX - leftBoundary, rightBoundary - centerX)
-
-            // 4. Measure title with AnimatedContent for smooth transitions
-            val titlePlaceable = title?.let {
-                subcompose("title") {
-                    AnimatedContent(
-                        targetState = title,
-                        transitionSpec = { fadeIn() togetherWith fadeOut() },
-                        modifier = Modifier
-                            .height(dimens.height)
-                            .then(
-                                if (sharedTransitionScope != null && animatedVisibilityScope != null) {
-                                    with(sharedTransitionScope) {
-                                        Modifier
-                                            .sharedElement(
-                                                sharedContentState = rememberSharedContentState(
-                                                    key = ScreenCommonHeaderSharedElementKey.TITLE
-                                                ),
-                                                animatedVisibilityScope = animatedVisibilityScope,
-                                            )
-                                            .skipToLookaheadSize()
-                                    }
-                                } else Modifier
-                            ),
-                    ) { targetTitle ->
-                        Box(
-                            modifier = Modifier.height(dimens.height),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CompositionLocalProvider(
-                                LocalTextStyle provides ZithianTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            ) {
-                                targetTitle()
+        // Leading - aligned to start
+        if (leading != null) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .then(
+                        if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+                            with(sharedTransitionScope) {
+                                Modifier
+                                    .sharedElement(
+                                        sharedContentState = rememberSharedContentState(
+                                            key = ScreenCommonHeaderSharedElementKey.LEADING
+                                        ),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                    )
+                                    .skipToLookaheadSize()
                             }
-                        }
-                    }
-                }.firstOrNull()?.measure(
-                    Constraints(
-                        maxWidth = max(0, availableWidth - leadingOccupied - actionsOccupied),
-                        maxHeight = heightPx
+                        } else Modifier
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                leading()
+            }
+        }
+
+        // Title - centered
+        if (title != null) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .then(
+                        if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+                            with(sharedTransitionScope) {
+                                Modifier
+                                    .sharedElement(
+                                        sharedContentState = rememberSharedContentState(
+                                            key = ScreenCommonHeaderSharedElementKey.TITLE
+                                        ),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                    )
+                                    .skipToLookaheadSize()
+                            }
+                        } else Modifier
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                CompositionLocalProvider(
+                    LocalTextStyle provides ZithianTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold
                     )
-                )
-            }
-            val titleWidth = titlePlaceable?.width ?: 0
-
-            // 5. Determine if title can be centered
-            val canCenterTitle = maxCenteredWidth >= titleWidth
-
-            // 6. Layout
-            layout(constraints.maxWidth, heightPx) {
-                // Place leading at start
-                leadingPlaceable?.placeRelative(
-                    x = horizontalPaddingPx,
-                    y = 0
-                )
-
-                // Place title
-                titlePlaceable?.let {
-                    val titleX = if (canCenterTitle) {
-                        (constraints.maxWidth - titleWidth) / 2
-                    } else {
-                        horizontalPaddingPx + leadingOccupied
-                    }
-                    it.placeRelative(x = titleX, y = 0)
+                ) {
+                    title()
                 }
-
-                // Place actions at end
-                actionsPlaceable?.placeRelative(
-                    x = constraints.maxWidth - horizontalPaddingPx - actionsWidth,
-                    y = 0
-                )
             }
+        }
+
+        // Actions - aligned to end
+        if (actions != null) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .then(
+                        if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+                            with(sharedTransitionScope) {
+                                Modifier
+                                    .sharedElement(
+                                        sharedContentState = rememberSharedContentState(
+                                            key = ScreenCommonHeaderSharedElementKey.ACTIONS
+                                        ),
+                                        animatedVisibilityScope = animatedVisibilityScope,
+                                    )
+                                    .skipToLookaheadSize()
+                            }
+                        } else Modifier
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End,
+                content = actions
+            )
         }
     }
 }
