@@ -13,6 +13,8 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -29,6 +31,7 @@ import com.adamglin.zithian.compose.theme.ZithianTheme
 import dev.chrisbanes.haze.HazeProgressive
 import dev.chrisbanes.haze.hazeEffect
 import io.github.fletchmckee.liquid.liquid
+import kotlin.math.max
 
 /**
  * CompositionLocal for providing [SharedTransitionScope] to [ScreenCommonHeader].
@@ -211,6 +214,10 @@ object ScreenCommonHeaderSharedElementKey {
  * @param leading Optional leading content (typically a back button).
  * @param actions Optional trailing actions.
  */
+private const val LAYOUT_ID_LEADING = "leading"
+private const val LAYOUT_ID_TITLE = "title"
+private const val LAYOUT_ID_ACTIONS = "actions"
+
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 @InteractTypeOnly(InteractType.Touch)
@@ -223,7 +230,90 @@ fun ScaffoldScope.ScreenCommonHeader(
     actions: (@Composable RowScope.() -> Unit)? = null,
 ) {
     val animatedVisibilityScope = LocalScreenCommonHeaderAnimatedVisibilityScope.current
-    Box(
+
+    Layout(
+        content = {
+            // Leading slot
+            if (leading != null) {
+                Box(
+                    modifier = Modifier
+                        .layoutId(LAYOUT_ID_LEADING)
+                        .then(
+                            if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+                                with(sharedTransitionScope) {
+                                    Modifier
+                                        .sharedElement(
+                                            sharedContentState = rememberSharedContentState(
+                                                key = ScreenCommonHeaderSharedElementKey.LEADING
+                                            ),
+                                            animatedVisibilityScope = animatedVisibilityScope,
+                                        )
+                                        .skipToLookaheadSize()
+                                }
+                            } else Modifier
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    leading()
+                }
+            }
+
+            // Title slot
+            if (title != null) {
+                Box(
+                    modifier = Modifier
+                        .layoutId(LAYOUT_ID_TITLE)
+                        .then(
+                            if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+                                with(sharedTransitionScope) {
+                                    Modifier
+                                        .sharedElement(
+                                            sharedContentState = rememberSharedContentState(
+                                                key = ScreenCommonHeaderSharedElementKey.TITLE
+                                            ),
+                                            animatedVisibilityScope = animatedVisibilityScope,
+                                        )
+                                        .skipToLookaheadSize()
+                                }
+                            } else Modifier
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CompositionLocalProvider(
+                        LocalTextStyle provides ZithianTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    ) {
+                        title()
+                    }
+                }
+            }
+
+            // Actions slot
+            if (actions != null) {
+                Row(
+                    modifier = Modifier
+                        .layoutId(LAYOUT_ID_ACTIONS)
+                        .then(
+                            if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+                                with(sharedTransitionScope) {
+                                    Modifier
+                                        .sharedElement(
+                                            sharedContentState = rememberSharedContentState(
+                                                key = ScreenCommonHeaderSharedElementKey.ACTIONS
+                                            ),
+                                            animatedVisibilityScope = animatedVisibilityScope,
+                                        )
+                                        .skipToLookaheadSize()
+                                }
+                            } else Modifier
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End,
+                    content = actions
+                )
+            }
+        },
         modifier = modifier
             .fillMaxWidth()
             .hazeEffect(hazeState) {
@@ -233,85 +323,78 @@ fun ScaffoldScope.ScreenCommonHeader(
             .statusBarsPadding()
             .height(dimens.height)
             .padding(horizontal = dimens.horizontalPadding)
-    ) {
-        // Leading - aligned to start
-        if (leading != null) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .then(
-                        if (sharedTransitionScope != null && animatedVisibilityScope != null) {
-                            with(sharedTransitionScope) {
-                                Modifier
-                                    .sharedElement(
-                                        sharedContentState = rememberSharedContentState(
-                                            key = ScreenCommonHeaderSharedElementKey.LEADING
-                                        ),
-                                        animatedVisibilityScope = animatedVisibilityScope,
-                                    )
-                                    .skipToLookaheadSize()
-                            }
-                        } else Modifier
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                leading()
-            }
-        }
+    ) { measurables, constraints ->
+        val heightPx = constraints.maxHeight
+        val availableWidth = constraints.maxWidth
+        val minSpacingPx = dimens.minSpacing.roundToPx()
 
-        // Title - centered
-        if (title != null) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .then(
-                        if (sharedTransitionScope != null && animatedVisibilityScope != null) {
-                            with(sharedTransitionScope) {
-                                Modifier
-                                    .sharedElement(
-                                        sharedContentState = rememberSharedContentState(
-                                            key = ScreenCommonHeaderSharedElementKey.TITLE
-                                        ),
-                                        animatedVisibilityScope = animatedVisibilityScope,
-                                    )
-                                    .skipToLookaheadSize()
-                            }
-                        } else Modifier
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                CompositionLocalProvider(
-                    LocalTextStyle provides ZithianTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.SemiBold
-                    )
-                ) {
-                    title()
+        // Find measurables by layoutId
+        val leadingMeasurable = measurables.find { it.layoutId == LAYOUT_ID_LEADING }
+        val titleMeasurable = measurables.find { it.layoutId == LAYOUT_ID_TITLE }
+        val actionsMeasurable = measurables.find { it.layoutId == LAYOUT_ID_ACTIONS }
+
+        // 1. Measure leading (unconstrained width)
+        val leadingPlaceable = leadingMeasurable?.measure(
+            constraints.copy(minWidth = 0, minHeight = 0)
+        )
+        val leadingWidth = leadingPlaceable?.width ?: 0
+
+        // 2. Measure actions (constrained by remaining width after leading)
+        val actionsPlaceable = actionsMeasurable?.measure(
+            constraints.copy(
+                minWidth = 0,
+                minHeight = 0,
+                maxWidth = max(0, availableWidth - leadingWidth - minSpacingPx)
+            )
+        )
+        val actionsWidth = actionsPlaceable?.width ?: 0
+
+        // 3. Calculate occupied space
+        val leadingOccupied = leadingWidth + (if (leadingWidth > 0) minSpacingPx else 0)
+        val actionsOccupied = actionsWidth + (if (actionsWidth > 0) minSpacingPx else 0)
+
+        // 4. Measure title (constrained by remaining width)
+        val titlePlaceable = titleMeasurable?.measure(
+            constraints.copy(
+                minWidth = 0,
+                minHeight = 0,
+                maxWidth = max(0, availableWidth - leadingOccupied - actionsOccupied)
+            )
+        )
+        val titleWidth = titlePlaceable?.width ?: 0
+
+        // 5. Calculate if title can be centered
+        val centerX = availableWidth / 2
+        val leftBoundary = leadingOccupied
+        val rightBoundary = availableWidth - actionsOccupied
+        val maxCenteredWidth = 2 * minOf(centerX - leftBoundary, rightBoundary - centerX)
+        val canCenterTitle = maxCenteredWidth >= titleWidth
+
+        // 6. Layout
+        layout(constraints.maxWidth, heightPx) {
+            // Place leading at start, vertically centered
+            leadingPlaceable?.placeRelative(
+                x = 0,
+                y = (heightPx - leadingPlaceable.height) / 2
+            )
+
+            // Place title (centered if possible, otherwise after leading)
+            titlePlaceable?.let {
+                val titleX = if (canCenterTitle) {
+                    (availableWidth - titleWidth) / 2
+                } else {
+                    leadingOccupied
                 }
+                it.placeRelative(
+                    x = titleX,
+                    y = (heightPx - it.height) / 2
+                )
             }
-        }
 
-        // Actions - aligned to end
-        if (actions != null) {
-            Row(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .then(
-                        if (sharedTransitionScope != null && animatedVisibilityScope != null) {
-                            with(sharedTransitionScope) {
-                                Modifier
-                                    .sharedElement(
-                                        sharedContentState = rememberSharedContentState(
-                                            key = ScreenCommonHeaderSharedElementKey.ACTIONS
-                                        ),
-                                        animatedVisibilityScope = animatedVisibilityScope,
-                                    )
-                                    .skipToLookaheadSize()
-                            }
-                        } else Modifier
-                    ),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End,
-                content = actions
+            // Place actions at end, vertically centered
+            actionsPlaceable?.placeRelative(
+                x = availableWidth - actionsWidth,
+                y = (heightPx - actionsPlaceable.height) / 2
             )
         }
     }
