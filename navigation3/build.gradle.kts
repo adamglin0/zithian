@@ -82,6 +82,8 @@ kotlin {
             implementation(libs.compose.foundation)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
+            implementation(libs.navigation3.runtime)
+            implementation(libs.navigation3.ui)
             // other
             implementation(libs.haze)
             implementation(libs.liquid)
