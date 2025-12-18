@@ -34,13 +34,13 @@ implementation(libs.zithian.emulator)
 
 This is the implementation of Zithian in [Compose multiplatform](https://github.com/JetBrains/compose-multiplatform).
 
-_It is currently in the early development stage._
+<span style="color: red;">_It is currently in the early development stage._</span>
 
 ### Navigation3
 
 This is the jetpack navigation3 extension used in conjunction with Zithian Compose.
 
-_It is currently in the early development stage._
+<span style="color: red;">_It is currently in the early development stage._</span>
 
 ### Emulator
 
@@ -52,4 +52,4 @@ full functionality.
 We developed it to work in conjunction with the [Compose Hot Reload](https://github.com/JetBrains/compose-hot-reload)
 ￼project, enabling mobile UI simulation on the JVM to make debugging easier and more efficient.
 
-It is currently in an early stage of development.
+<span style="color: red;">_It is currently in the early development stage._</span>
