@@ -1,14 +1,13 @@
 package com.adamglin.zithian.compose.scaffold.header
 
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -28,6 +27,27 @@ import dev.chrisbanes.haze.HazeProgressive
 import dev.chrisbanes.haze.hazeEffect
 import io.github.fletchmckee.liquid.liquid
 import kotlin.math.max
+
+/**
+ * CompositionLocal for providing [SharedTransitionScope] to [ScreenCommonHeader].
+ *
+ * When provided, [ScreenCommonHeader] will automatically use this scope for shared element
+ * transitions without needing to pass it explicitly as a parameter.
+ *
+ * Example:
+ * ```kotlin
+ * SharedTransitionLayout {
+ *     CompositionLocalProvider(
+ *         LocalScreenCommonHeaderSharedTransitionScope provides this
+ *     ) {
+ *         // All ScreenCommonHeader instances will automatically participate in shared transitions
+ *         ScreenCommonHeader(title = { Text("Title") })
+ *     }
+ * }
+ * ```
+ */
+@Suppress("CompositionLocalAllowlist")
+val LocalScreenCommonHeaderSharedTransitionScope = staticCompositionLocalOf<SharedTransitionScope?> { null }
 
 /**
  * Dimensions configuration for [ScreenCommonHeader].
@@ -122,33 +142,42 @@ data class ScreenCommonHeaderSharedElementConfig(
  * ## Shared Element Transitions
  *
  * To enable shared element transitions between different ScreenCommonHeader instances,
- * provide both [sharedTransitionScope] and [animatedVisibilityScope]. When both are provided,
- * the leading, title, and actions will automatically animate between screens.
+ * provide [sharedTransitionScope] (or use [LocalScreenCommonHeaderSharedTransitionScope]).
+ * The component handles animations internally using `AnimatedContent`.
  *
  * You can dynamically control which elements participate in the transition using
  * [sharedElementConfig]. This is useful for scenarios like controlling animation
  * based on navigation direction.
  *
- * Example:
+ * Example using CompositionLocal (recommended):
  * ```kotlin
  * SharedTransitionLayout {
- *     AnimatedContent(targetState = currentScreen) { screen ->
+ *     CompositionLocalProvider(
+ *         LocalScreenCommonHeaderSharedTransitionScope provides this
+ *     ) {
+ *         // All ScreenCommonHeader instances automatically participate in shared transitions
  *         ScreenCommonHeader(
- *             sharedTransitionScope = this@SharedTransitionLayout,
- *             animatedVisibilityScope = this@AnimatedContent,
- *             sharedElementConfig = ScreenCommonHeaderSharedElementConfig(
- *                 titleEnabled = isForwardNavigation, // only animate title when going forward
- *             ),
- *             // ...
+ *             title = { Text("Title") },
+ *             leading = { ScreenCommonHeaderBackButton(onClick = onBack) }
  *         )
  *     }
+ * }
+ * ```
+ *
+ * Example using explicit parameter:
+ * ```kotlin
+ * SharedTransitionLayout {
+ *     ScreenCommonHeader(
+ *         sharedTransitionScope = this,
+ *         title = { Text("Title") }
+ *     )
  * }
  * ```
  *
  * @param modifier Modifier to be applied to the header.
  * @param dimens Dimensions configuration for the header.
  * @param sharedTransitionScope Optional scope for shared element transitions.
- * @param animatedVisibilityScope Optional scope for animated visibility, required with [sharedTransitionScope].
+ *        If not provided, falls back to [LocalScreenCommonHeaderSharedTransitionScope].
  * @param sharedElementConfig Configuration for which elements participate in shared transitions.
  * @param title Optional title content. Receives max width constraint when not centered.
  * @param leading Optional leading content (typically a back button).
@@ -160,14 +189,12 @@ data class ScreenCommonHeaderSharedElementConfig(
 fun ScaffoldScope.ScreenCommonHeader(
     modifier: Modifier = Modifier,
     dimens: ScreenCommonHeaderDimens = ScreenCommonHeaderDefaults.dimens(),
-    sharedTransitionScope: SharedTransitionScope? = null,
-    animatedVisibilityScope: AnimatedVisibilityScope? = null,
+    sharedTransitionScope: SharedTransitionScope? = LocalScreenCommonHeaderSharedTransitionScope.current,
     sharedElementConfig: ScreenCommonHeaderSharedElementConfig = ScreenCommonHeaderSharedElementConfig.Enabled,
     title: (@Composable () -> Unit)? = null,
     leading: (@Composable () -> Unit)? = null,
     actions: (@Composable RowScope.() -> Unit)? = null,
 ) {
-    val sharedElementAvailable = sharedTransitionScope != null && animatedVisibilityScope != null
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -184,39 +211,35 @@ fun ScaffoldScope.ScreenCommonHeader(
 
             val availableWidth = constraints.maxWidth - horizontalPaddingPx * 2
 
-            // Helper to apply shared element modifier with dynamic enable control
-            @Composable
-            fun Modifier.sharedElementIfEnabled(key: String, enabled: Boolean): Modifier {
-                // Already checked sharedElementAvailable, so both scopes are non-null here
-                return if (sharedElementAvailable && enabled) {
-                    with(sharedTransitionScope!!) {
-                        this@sharedElementIfEnabled
-                            .sharedElement(
-                                sharedContentState = rememberSharedContentState(key = key),
-                                animatedVisibilityScope = animatedVisibilityScope!!,
-                            )
-                            // Keep the final size during shared element animations
-                            // This helps with smoother transitions, especially for "reveal" type animations
-                            .skipToLookaheadSize()
-                    }
-                } else {
-                    this
-                }
-            }
-
-            // 1. Measure leading
+            // 1. Measure leading with AnimatedContent for smooth transitions
             val leadingPlaceable = leading?.let {
                 subcompose("leading") {
-                    Box(
-                        modifier = Modifier
-                            .height(dimens.height)
-                            .sharedElementIfEnabled(
-                                key = ScreenCommonHeaderSharedElementKey.LEADING,
-                                enabled = sharedElementConfig.leadingEnabled,
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        leading()
+                    AnimatedContent(
+                        targetState = leading,
+                        transitionSpec = { fadeIn() togetherWith fadeOut() },
+                        modifier = Modifier.height(dimens.height),
+                    ) { targetLeading ->
+                        Box(
+                            modifier = Modifier
+                                .height(dimens.height)
+                                .then(
+                                    if (sharedTransitionScope != null && sharedElementConfig.leadingEnabled) {
+                                        with(sharedTransitionScope) {
+                                            Modifier
+                                                .sharedElement(
+                                                    sharedContentState = rememberSharedContentState(
+                                                        key = ScreenCommonHeaderSharedElementKey.LEADING
+                                                    ),
+                                                    animatedVisibilityScope = this@AnimatedContent,
+                                                )
+                                                .skipToLookaheadSize()
+                                        }
+                                    } else Modifier
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            targetLeading()
+                        }
                     }
                 }.firstOrNull()?.measure(
                     Constraints(maxWidth = availableWidth, maxHeight = heightPx)
@@ -224,20 +247,36 @@ fun ScaffoldScope.ScreenCommonHeader(
             }
             val leadingWidth = leadingPlaceable?.width ?: 0
 
-            // 2. Measure actions
+            // 2. Measure actions with AnimatedContent
             val actionsPlaceable = actions?.let {
                 subcompose("actions") {
-                    Row(
-                        modifier = Modifier
-                            .height(dimens.height)
-                            .sharedElementIfEnabled(
-                                key = ScreenCommonHeaderSharedElementKey.ACTIONS,
-                                enabled = sharedElementConfig.actionsEnabled,
-                            ),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End,
-                        content = actions
-                    )
+                    AnimatedContent(
+                        targetState = actions,
+                        transitionSpec = { fadeIn() togetherWith fadeOut() },
+                        modifier = Modifier.height(dimens.height),
+                    ) { targetActions ->
+                        Row(
+                            modifier = Modifier
+                                .height(dimens.height)
+                                .then(
+                                    if (sharedTransitionScope != null && sharedElementConfig.actionsEnabled) {
+                                        with(sharedTransitionScope) {
+                                            Modifier
+                                                .sharedElement(
+                                                    sharedContentState = rememberSharedContentState(
+                                                        key = ScreenCommonHeaderSharedElementKey.ACTIONS
+                                                    ),
+                                                    animatedVisibilityScope = this@AnimatedContent,
+                                                )
+                                                .skipToLookaheadSize()
+                                        }
+                                    } else Modifier
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End,
+                            content = targetActions
+                        )
+                    }
                 }.firstOrNull()?.measure(
                     Constraints(maxWidth = availableWidth - leadingWidth - minSpacingPx, maxHeight = heightPx)
                 )
@@ -245,47 +284,50 @@ fun ScaffoldScope.ScreenCommonHeader(
             val actionsWidth = actionsPlaceable?.width ?: 0
 
             // 3. Calculate title positioning
-            // For center alignment, we need to check if there's enough space
             val leadingOccupied = leadingWidth + (if (leadingWidth > 0) minSpacingPx else 0)
             val actionsOccupied = actionsWidth + (if (actionsWidth > 0) minSpacingPx else 0)
-
-            // Maximum width title can use if centered
-            // Title is centered in the full width, so we need to ensure it doesn't overlap
-            // The center point is at constraints.maxWidth / 2
-            // Leading occupies: horizontalPaddingPx + leadingOccupied
-            // Actions occupies: constraints.maxWidth - horizontalPaddingPx - actionsOccupied to end
-            // For centered title with width W, it spans: (maxWidth - W) / 2 to (maxWidth + W) / 2
-            // Must satisfy: (maxWidth - W) / 2 >= horizontalPaddingPx + leadingOccupied
-            //               (maxWidth + W) / 2 <= maxWidth - horizontalPaddingPx - actionsOccupied
-            // => W <= maxWidth - 2 * (horizontalPaddingPx + leadingOccupied)
-            // => W <= maxWidth - 2 * (horizontalPaddingPx + actionsOccupied)
-            // => W <= min of both
 
             val leftBoundary = horizontalPaddingPx + leadingOccupied
             val rightBoundary = constraints.maxWidth - horizontalPaddingPx - actionsOccupied
             val centerX = constraints.maxWidth / 2
 
-            // Maximum width for centered title: twice the distance from center to the nearest boundary
+            // Maximum width for centered title
             val maxCenteredWidth = 2 * minOf(centerX - leftBoundary, rightBoundary - centerX)
 
-            // 4. Measure title with centered constraints first
+            // 4. Measure title with AnimatedContent for smooth transitions
             val titlePlaceable = title?.let {
                 subcompose("title") {
-                    Box(
-                        modifier = Modifier
-                            .height(dimens.height)
-                            .sharedElementIfEnabled(
-                                key = ScreenCommonHeaderSharedElementKey.TITLE,
-                                enabled = sharedElementConfig.titleEnabled,
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CompositionLocalProvider(
-                            LocalTextStyle provides ZithianTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.SemiBold
-                            )
+                    AnimatedContent(
+                        targetState = title,
+                        transitionSpec = { fadeIn() togetherWith fadeOut() },
+                        modifier = Modifier.height(dimens.height),
+                    ) { targetTitle ->
+                        Box(
+                            modifier = Modifier
+                                .height(dimens.height)
+                                .then(
+                                    if (sharedTransitionScope != null && sharedElementConfig.titleEnabled) {
+                                        with(sharedTransitionScope) {
+                                            Modifier
+                                                .sharedElement(
+                                                    sharedContentState = rememberSharedContentState(
+                                                        key = ScreenCommonHeaderSharedElementKey.TITLE
+                                                    ),
+                                                    animatedVisibilityScope = this@AnimatedContent,
+                                                )
+                                                .skipToLookaheadSize()
+                                        }
+                                    } else Modifier
+                                ),
+                            contentAlignment = Alignment.Center
                         ) {
-                            title()
+                            CompositionLocalProvider(
+                                LocalTextStyle provides ZithianTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            ) {
+                                targetTitle()
+                            }
                         }
                     }
                 }.firstOrNull()?.measure(
@@ -311,10 +353,8 @@ fun ScaffoldScope.ScreenCommonHeader(
                 // Place title
                 titlePlaceable?.let {
                     val titleX = if (canCenterTitle) {
-                        // Center the title
                         (constraints.maxWidth - titleWidth) / 2
                     } else {
-                        // Place after leading with spacing
                         horizontalPaddingPx + leadingOccupied
                     }
                     it.placeRelative(x = titleX, y = 0)
