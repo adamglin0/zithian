@@ -16,6 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavEntryDecorator
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.adamglin.zithian.compose.annotation.InteractTypeOnly
 import com.adamglin.zithian.compose.generated.resources.ZithianResources
 import com.adamglin.zithian.compose.icon.CoilIcon
@@ -40,14 +43,73 @@ import kotlin.math.max
  *     CompositionLocalProvider(
  *         LocalScreenCommonHeaderSharedTransitionScope provides this
  *     ) {
- *         // All ScreenCommonHeader instances will automatically participate in shared transitions
- *         ScreenCommonHeader(title = { Text("Title") })
+ *         NavHost(...) {
+ *             composable(...) {
+ *                 CompositionLocalProvider(
+ *                     LocalScreenCommonHeaderAnimatedVisibilityScope provides this
+ *                 ) {
+ *                     // All ScreenCommonHeader instances will automatically participate in shared transitions
+ *                     ScreenCommonHeader(title = { Text("Title") })
+ *                 }
+ *             }
+ *         }
+ *     }
+ * }
+ */
+@Suppress("CompositionLocalAllowlist")
+val LocalScreenCommonHeaderSharedTransitionScope = staticCompositionLocalOf<SharedTransitionScope?> { null }
+
+/**
+ * CompositionLocal for providing [AnimatedVisibilityScope] to [ScreenCommonHeader].
+ *
+ * This is required for shared element transitions to work correctly between screens.
+ * Usually provided from within a [NavHost] composable.
+ */
+@Suppress("CompositionLocalAllowlist")
+val LocalScreenCommonHeaderAnimatedVisibilityScope = staticCompositionLocalOf<AnimatedVisibilityScope?> { null }
+
+/**
+ * Helper to provide the [AnimatedVisibilityScope] to [ScreenCommonHeader] and its children.
+ *
+ * Call this inside your navigation destination (e.g., inside `composable` or `entry`) to
+ * enable shared element transitions between screens.
+ *
+ * Example:
+ * ```kotlin
+ * NavHost(...) {
+ *     composable("home") { // `this` is AnimatedVisibilityScope (AnimatedContentScope)
+ *         ProvideScreenCommonHeaderAnimatedVisibilityScope(this) {
+ *             HomeScreen()
+ *         }
  *     }
  * }
  * ```
  */
-@Suppress("CompositionLocalAllowlist")
-val LocalScreenCommonHeaderSharedTransitionScope = staticCompositionLocalOf<SharedTransitionScope?> { null }
+@Composable
+fun ProvideScreenCommonHeaderAnimatedVisibilityScope(
+    scope: AnimatedVisibilityScope,
+    content: @Composable () -> Unit
+) {
+    CompositionLocalProvider(
+        LocalScreenCommonHeaderAnimatedVisibilityScope provides scope,
+        content = content
+    )
+}
+
+/**
+ * A navigation3 decorator that automatically provides the [AnimatedVisibilityScope]
+ * to [ScreenCommonHeader] instances within the screen.
+ *
+ * Add this to your [NavDisplay]'s `entryDecorators` to enable shared element
+ * transitions without manual boilerplate in each screen.
+ */
+@Composable
+fun rememberScreenCommonHeaderNavEntryDecorator() = NavEntryDecorator<NavKey> { entry ->
+    val animatedContentScope = LocalNavAnimatedContentScope.current
+    ProvideScreenCommonHeaderAnimatedVisibilityScope(animatedContentScope) {
+        entry.Content()
+    }
+}
 
 /**
  * Dimensions configuration for [ScreenCommonHeader].
@@ -101,35 +163,6 @@ object ScreenCommonHeaderSharedElementKey {
 }
 
 /**
- * Configuration for shared element transitions in [ScreenCommonHeader].
- *
- * This allows dynamic control over whether shared element transitions are enabled,
- * useful for scenarios like controlling animation based on navigation direction.
- *
- * @property leadingEnabled Whether the leading element should participate in shared transitions.
- * @property titleEnabled Whether the title element should participate in shared transitions.
- * @property actionsEnabled Whether the actions element should participate in shared transitions.
- */
-@Immutable
-data class ScreenCommonHeaderSharedElementConfig(
-    val leadingEnabled: Boolean = true,
-    val titleEnabled: Boolean = true,
-    val actionsEnabled: Boolean = true,
-) {
-    companion object {
-        /** All shared elements enabled (default). */
-        val Enabled = ScreenCommonHeaderSharedElementConfig()
-
-        /** All shared elements disabled. */
-        val Disabled = ScreenCommonHeaderSharedElementConfig(
-            leadingEnabled = false,
-            titleEnabled = false,
-            actionsEnabled = false,
-        )
-    }
-}
-
-/**
  * A common header component for screens with support for leading, title, and actions.
  *
  * The layout follows these rules:
@@ -142,12 +175,9 @@ data class ScreenCommonHeaderSharedElementConfig(
  * ## Shared Element Transitions
  *
  * To enable shared element transitions between different ScreenCommonHeader instances,
- * provide [sharedTransitionScope] (or use [LocalScreenCommonHeaderSharedTransitionScope]).
- * The component handles animations internally using `AnimatedContent`.
- *
- * You can dynamically control which elements participate in the transition using
- * [sharedElementConfig]. This is useful for scenarios like controlling animation
- * based on navigation direction.
+ * provide [sharedTransitionScope] (or use [LocalScreenCommonHeaderSharedTransitionScope])
+ * and ensure [LocalScreenCommonHeaderAnimatedVisibilityScope] is provided (e.g., via
+ * [rememberScreenCommonHeaderNavEntryDecorator]).
  *
  * Example using CompositionLocal (recommended):
  * ```kotlin
@@ -178,7 +208,6 @@ data class ScreenCommonHeaderSharedElementConfig(
  * @param dimens Dimensions configuration for the header.
  * @param sharedTransitionScope Optional scope for shared element transitions.
  *        If not provided, falls back to [LocalScreenCommonHeaderSharedTransitionScope].
- * @param sharedElementConfig Configuration for which elements participate in shared transitions.
  * @param title Optional title content. Receives max width constraint when not centered.
  * @param leading Optional leading content (typically a back button).
  * @param actions Optional trailing actions.
@@ -190,11 +219,11 @@ fun ScaffoldScope.ScreenCommonHeader(
     modifier: Modifier = Modifier,
     dimens: ScreenCommonHeaderDimens = ScreenCommonHeaderDefaults.dimens(),
     sharedTransitionScope: SharedTransitionScope? = LocalScreenCommonHeaderSharedTransitionScope.current,
-    sharedElementConfig: ScreenCommonHeaderSharedElementConfig = ScreenCommonHeaderSharedElementConfig.Enabled,
     title: (@Composable () -> Unit)? = null,
     leading: (@Composable () -> Unit)? = null,
     actions: (@Composable RowScope.() -> Unit)? = null,
 ) {
+    val animatedVisibilityScope = LocalScreenCommonHeaderAnimatedVisibilityScope.current
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -223,14 +252,14 @@ fun ScaffoldScope.ScreenCommonHeader(
                             modifier = Modifier
                                 .height(dimens.height)
                                 .then(
-                                    if (sharedTransitionScope != null && sharedElementConfig.leadingEnabled) {
+                                    if (sharedTransitionScope != null && animatedVisibilityScope != null) {
                                         with(sharedTransitionScope) {
                                             Modifier
                                                 .sharedElement(
                                                     sharedContentState = rememberSharedContentState(
                                                         key = ScreenCommonHeaderSharedElementKey.LEADING
                                                     ),
-                                                    animatedVisibilityScope = this@AnimatedContent,
+                                                    animatedVisibilityScope = animatedVisibilityScope,
                                                 )
                                                 .skipToLookaheadSize()
                                         }
@@ -259,14 +288,14 @@ fun ScaffoldScope.ScreenCommonHeader(
                             modifier = Modifier
                                 .height(dimens.height)
                                 .then(
-                                    if (sharedTransitionScope != null && sharedElementConfig.actionsEnabled) {
+                                    if (sharedTransitionScope != null && animatedVisibilityScope != null) {
                                         with(sharedTransitionScope) {
                                             Modifier
                                                 .sharedElement(
                                                     sharedContentState = rememberSharedContentState(
                                                         key = ScreenCommonHeaderSharedElementKey.ACTIONS
                                                     ),
-                                                    animatedVisibilityScope = this@AnimatedContent,
+                                                    animatedVisibilityScope = animatedVisibilityScope,
                                                 )
                                                 .skipToLookaheadSize()
                                         }
@@ -300,25 +329,25 @@ fun ScaffoldScope.ScreenCommonHeader(
                     AnimatedContent(
                         targetState = title,
                         transitionSpec = { fadeIn() togetherWith fadeOut() },
-                        modifier = Modifier.height(dimens.height),
+                        modifier = Modifier
+                            .height(dimens.height)
+                            .then(
+                                if (sharedTransitionScope != null && animatedVisibilityScope != null) {
+                                    with(sharedTransitionScope) {
+                                        Modifier
+                                            .sharedElement(
+                                                sharedContentState = rememberSharedContentState(
+                                                    key = ScreenCommonHeaderSharedElementKey.TITLE
+                                                ),
+                                                animatedVisibilityScope = animatedVisibilityScope,
+                                            )
+                                            .skipToLookaheadSize()
+                                    }
+                                } else Modifier
+                            ),
                     ) { targetTitle ->
                         Box(
-                            modifier = Modifier
-                                .height(dimens.height)
-                                .then(
-                                    if (sharedTransitionScope != null && sharedElementConfig.titleEnabled) {
-                                        with(sharedTransitionScope) {
-                                            Modifier
-                                                .sharedElement(
-                                                    sharedContentState = rememberSharedContentState(
-                                                        key = ScreenCommonHeaderSharedElementKey.TITLE
-                                                    ),
-                                                    animatedVisibilityScope = this@AnimatedContent,
-                                                )
-                                                .skipToLookaheadSize()
-                                        }
-                                    } else Modifier
-                                ),
+                            modifier = Modifier.height(dimens.height),
                             contentAlignment = Alignment.Center
                         ) {
                             CompositionLocalProvider(
