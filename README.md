@@ -15,9 +15,9 @@
 [versions]
 zithian = "latest-version"
 [libraries]
-zithian-compose = { module = "com.adamglin.zithian:compose" }
-zithian-navigation3 = { module = "com.adamglin.zithian:navigation3" }
-zithian-emulator = { module = "com.adamglin.zithian:emulator" }
+zithian-compose = { module = "com.adamglin.zithian:compose", version.ref = "zithian" }
+zithian-navigation3 = { module = "com.adamglin.zithian:navigation3", version.ref = "zithian" }
+zithian-emulator = { module = "com.adamglin.zithian:emulator", version.ref = "zithian" }
 ```
 
 **build.gradle.kts**
@@ -32,19 +32,19 @@ implementation(libs.zithian.emulator)
 
 ### Compose
 
-This is the implementation of Zithian in [Compose multiplatform](https://github.com/JetBrains/compose-multiplatform).
+_It is currently in the early development stage._
 
-<span style="color: red;">_It is currently in the early development stage._</span>
+This is the implementation of Zithian in [Compose multiplatform](https://github.com/JetBrains/compose-multiplatform).
 
 ### Navigation3
 
-This is the jetpack navigation3 extension used in conjunction with Zithian Compose.
+_It is currently in the early development stage._
 
-<span style="color: red;">_It is currently in the early development stage._</span>
+This is the jetpack navigation3 extension used in conjunction with Zithian Compose.
 
 ### Emulator
 
-Here’s a polished English version:
+_It is currently in the early development stage._
 
 This is a mobile appearance simulator running on the JVM. It only simulates the device’s visual appearance rather than
 full functionality.
@@ -52,4 +52,4 @@ full functionality.
 We developed it to work in conjunction with the [Compose Hot Reload](https://github.com/JetBrains/compose-hot-reload)
 ￼project, enabling mobile UI simulation on the JVM to make debugging easier and more efficient.
 
-<span style="color: red;">_It is currently in the early development stage._</span>
+
