@@ -26,7 +26,7 @@ zithian-emulator = { module = "com.adamglin.zithian:emulator" }
 implementation(libs.zithian.compose)
 implementation(libs.zithian.navigation3)
 implementation(libs.zithian.emulator)
-> ```
+```
 
 ## Modules
 
