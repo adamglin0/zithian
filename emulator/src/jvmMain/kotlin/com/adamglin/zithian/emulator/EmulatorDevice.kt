@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalPlatformWindowInsets
 import androidx.compose.ui.unit.Density
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
+import com.adamglin.zithian.compose.utils.LocalWindowCornerSize
 import com.adamglin.zithian.compose.utils.inverseClip
 
 @Composable
@@ -45,7 +46,8 @@ fun EmulatorDevice(
                     ) {
                         CompositionLocalProvider(
                             LocalPlatformWindowInsets provides currentDevice,
-                            LocalDensity provides currentDensity
+                            LocalDensity provides currentDensity,
+                            LocalWindowCornerSize provides currentDevice.roundedCornerSize
                         ) {
                             currentContent()
                         }

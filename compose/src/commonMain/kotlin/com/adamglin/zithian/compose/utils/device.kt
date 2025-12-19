@@ -1,8 +1,11 @@
 package com.adamglin.zithian.compose.utils
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
+
+val LocalWindowCornerSize = staticCompositionLocalOf { Device.windowRoundedCornerSize }
 
 object Device {
     val windowRoundedCornerSize: Dp by lazy { getDeviceRoundedCornerSize() }
