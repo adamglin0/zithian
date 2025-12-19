@@ -1,11 +1,24 @@
 package com.adamglin.zithian.navigation3.strategy
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.scene.OverlayScene
 import androidx.navigation3.scene.Scene
 import androidx.navigation3.scene.SceneStrategy
 import androidx.navigation3.scene.SceneStrategyScope
+
+/**
+ * CompositionLocal 用于标记当前是否处于 OverlayScene 中。
+ * 
+ * 在 OverlayScene（如 BottomSheet、Dialog 等）中，[LocalNavAnimatedContentScope] 不可用，
+ * 因为 OverlayScene 的内容是在 AnimatedContent 外部渲染的。
+ * 
+ * 使用此 local 可以安全地检测是否应该访问 [LocalNavAnimatedContentScope]。
+ */
+@Suppress("CompositionLocalAllowlist")
+val LocalIsOverlayScene = staticCompositionLocalOf { false }
 
 internal class BottomSheetScene<T : Any>(
     override val key: T,
@@ -17,7 +30,11 @@ internal class BottomSheetScene<T : Any>(
     override val entries: List<NavEntry<T>> = listOf(entry)
 
     override val content: @Composable (() -> Unit) = {
-        entry.Content()
+        CompositionLocalProvider(
+            LocalIsOverlayScene provides true
+        ) {
+            entry.Content()
+        }
     }
 }
 
