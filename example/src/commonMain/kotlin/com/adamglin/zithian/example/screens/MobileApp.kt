@@ -6,7 +6,6 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.adamglin.zithian.compose.scaffold.header.rememberScreenCommonHeaderNavEntryDecorator
 import com.adamglin.zithian.example.screens.features.components.ComponentsNavKey
 import com.adamglin.zithian.example.screens.features.components.ComponentsScreen
 import com.adamglin.zithian.example.screens.features.config.ConfigNavKey
@@ -15,6 +14,7 @@ import com.adamglin.zithian.example.screens.features.liquid_test.LiquidTestNavKe
 import com.adamglin.zithian.example.screens.features.liquid_test.LiquidTestScreen
 import com.adamglin.zithian.example.screens.features.theme.ThemeNavKey
 import com.adamglin.zithian.example.screens.features.theme.ThemeScreen
+import com.adamglin.zithian.navigation3.decorator.rememberScreenCommonHeaderNavEntryDecorator
 
 @Composable
 fun MobileApp() {

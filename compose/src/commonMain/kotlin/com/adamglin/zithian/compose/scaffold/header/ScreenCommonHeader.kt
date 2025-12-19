@@ -18,9 +18,6 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.navigation3.runtime.NavEntryDecorator
-import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.adamglin.zithian.compose.annotation.InteractTypeOnly
 import com.adamglin.zithian.compose.generated.resources.ZithianResources
 import com.adamglin.zithian.compose.icon.CoilIcon
@@ -98,20 +95,6 @@ fun ProvideScreenCommonHeaderAnimatedVisibilityScope(
     )
 }
 
-/**
- * A navigation3 decorator that automatically provides the [AnimatedVisibilityScope]
- * to [ScreenCommonHeader] instances within the screen.
- *
- * Add this to your [NavDisplay]'s `entryDecorators` to enable shared element
- * transitions without manual boilerplate in each screen.
- */
-@Composable
-fun rememberScreenCommonHeaderNavEntryDecorator() = NavEntryDecorator<NavKey> { entry ->
-    val animatedContentScope = LocalNavAnimatedContentScope.current
-    ProvideScreenCommonHeaderAnimatedVisibilityScope(animatedContentScope) {
-        entry.Content()
-    }
-}
 
 /**
  * Dimensions configuration for [ScreenCommonHeader].
@@ -179,7 +162,7 @@ object ScreenCommonHeaderSharedElementKey {
  * To enable shared element transitions between different ScreenCommonHeader instances,
  * provide [sharedTransitionScope] (or use [LocalScreenCommonHeaderSharedTransitionScope])
  * and ensure [LocalScreenCommonHeaderAnimatedVisibilityScope] is provided (e.g., via
- * [rememberScreenCommonHeaderNavEntryDecorator]).
+ * [ProvideScreenCommonHeaderAnimatedVisibilityScope] or a navigation3 decorator).
  *
  * Example using CompositionLocal (recommended):
  * ```kotlin

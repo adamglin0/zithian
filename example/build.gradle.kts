@@ -30,6 +30,7 @@ kotlin {
             implementation(libs.navigation3.viewModel)
             // other
             implementation(projects.zithian.compose)
+            implementation(projects.zithian.navigation3)
             implementation(projects.zithian.emulator)
             implementation(libs.coil.compose)
             implementation(libs.liquid)
