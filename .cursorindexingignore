@@ -1,3 +1,17 @@
 
 # Don't index SpecStory auto-save files, but allow explicit context inclusion via @ references
 .specstory/**
+
+# Gradle build outputs
+build/
+.gradle/
+**/build/
+
+# IDE files
+.idea/
+
+# Kotlin/Native
+*.klib
+
+# Local properties
+local.properties
