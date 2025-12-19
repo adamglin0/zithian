@@ -77,21 +77,13 @@ kotlin {
         iosSimulatorArm64Main.configure { dependsOn(iosMain.get()) }
 
         commonMain.dependencies {
+            // zithian compose module
+            api(project(":compose"))
             // compose
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
-            implementation(libs.compose.ui)
-            implementation(libs.compose.components.resources)
             implementation(libs.navigation3.runtime)
             implementation(libs.navigation3.ui)
-            // other
-            implementation(libs.haze)
-            implementation(libs.liquid)
-            api(libs.composeContinuousRoundedCornerShape)
-            implementation(libs.coil.compose)
-            implementation(libs.coil.svg)
-            api(libs.kotlinx.collections.immutable)
-            api(libs.jbr.api)
         }
         all {
             languageSettings {
