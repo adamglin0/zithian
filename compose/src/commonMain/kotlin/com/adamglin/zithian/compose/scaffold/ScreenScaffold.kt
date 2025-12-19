@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
 import com.adamglin.zithian.compose.theme.ZithianTheme
-import com.adamglin.zithian.compose.utils.Device
+import com.adamglin.zithian.compose.utils.LocalWindowRoundedCornerSize
 
 @Composable
 fun ScreenScaffold(
@@ -22,7 +22,7 @@ fun ScreenScaffold(
 ) {
     val shadowColor = ZithianTheme.colors.shadow
     CompositionLocalProvider(
-        LocalSheetContainerRadius provides Device.windowRoundedCornerSize
+        LocalSheetContainerRadius provides LocalWindowRoundedCornerSize.current
     ) {
         BasicScaffold(
             modifier = Modifier
