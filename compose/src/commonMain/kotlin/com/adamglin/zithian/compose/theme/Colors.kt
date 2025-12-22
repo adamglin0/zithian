@@ -5,14 +5,12 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 val LocalZithianColors = staticCompositionLocalOf {
+    // todo
     ZithianColors.light
 }
 
 @Immutable
 data class ZithianColors(
-    val brandColors: BrandColors = BrandColors,
-    val greenColors: GreenColors = GreenColors,
-    // Background colors
     val background: Color,
     val onBackground: Color,
     val surface: Color,
@@ -32,6 +30,7 @@ data class ZithianColors(
     val neutralBold: Color,
     val onNeutralBold: Color,
     // Text colors
+    val text0: Color,
     val text1: Color, // Primary text
     val text2: Color, // Secondary text
     val text3: Color, // Tertiary text
@@ -65,110 +64,111 @@ data class ZithianColors(
 
     val shadow: Color = Color.Black.copy(alpha = 0.05f),
 ) {
-    companion object {
-        val light = ZithianColors(
-            // Background
-            background = GrayColors.gray2,
-            onBackground = GrayColors.gray14,
-            surface = Color(0xFFFAFAFA),
-            onSurface = GrayColors.gray14,
-            surfacePure = Color.White,
-
-            // Primary (using green from brand colors)
-            primary = BrandColors.blue6, // greenColors.green5
-            primaryBold = BrandColors.blue8,
-            neutral = GrayColors.gray3,
-            onNeutral = GrayColors.gray13,
-            neutralBold = GrayColors.gray6,
-            onNeutralBold = GrayColors.gray13,
-            primaryVariant = Color(0xFF008858), // greenColors.green6
-            onPrimary = Color.White,
-            focusColor = Color(0x7f0DB4D6),
-            // Text colors
-            text1 = GrayColors.gray14,
-            text2 = GrayColors.gray13,
-            text3 = GrayColors.gray12,
-            text4 = GrayColors.gray11,
-            text5 = GrayColors.gray10,
-            text6 = GrayColors.gray9,
-            text7 = GrayColors.gray8,
-            text8 = GrayColors.gray7,
-            text9 = GrayColors.gray6,
-            text10 = GrayColors.gray5,
-            text11 = GrayColors.gray4,
-            text12 = GrayColors.gray3,
-            text13 = GrayColors.gray2,
-            text14 = GrayColors.gray1,
-            text15 = GrayColors.white,
-
-            // Functional colors
-            success = Color(0xFF2ba471), // Same as primary green
-            onSuccess = Color.White,
-            error = Color(0xFFd54941), // redColors.red6
-            onError = Color.White,
-            warning = Color(0xFFe37318), // orangeColors.orange5
-            onWarning = Color.White,
-            link = Color(0xFF0052d9), // brandColors.blue7
-
-            // Border and divider
-            border = Color(0xFFE8E8E8),
-            divider = Color(0xFFF0F0F1),
-            subtlePressed = GrayColors.gray2,
-        )
-
-        val dark = ZithianColors(
-            // Background
-            background = Color.Black,
-            onBackground = GrayColors.white,
-            surface = GrayColors.gray13,
-            onSurface = GrayColors.white,
-            surfacePure = GrayColors.gray10,
-
-            // Primary (using green from brand colors)
-            primary = BrandColors.blue4, // greenColors.green5
-            primaryBold = Color(0xFF00A0E5),
-            primaryVariant = Color(0xFF008858), // greenColors.green6
-            neutral = GrayColors.gray13,
-            onNeutral = GrayColors.gray1,
-            neutralBold = GrayColors.gray10,
-            onNeutralBold = GrayColors.gray1,
-            onPrimary = Color.White,
-            focusColor = Color(0xffABF1FF),
-
-            // Text colors
-            text1 = GrayColors.white,
-            text2 = GrayColors.gray1,
-            text3 = GrayColors.gray2,
-            text4 = GrayColors.gray3,
-            text5 = GrayColors.gray4,
-            text6 = GrayColors.gray5,
-            text7 = GrayColors.gray6,
-            text8 = GrayColors.gray7,
-            text9 = GrayColors.gray8,
-            text10 = GrayColors.gray9,
-            text11 = GrayColors.gray10,
-            text12 = GrayColors.gray11,
-            text13 = GrayColors.gray12,
-            text14 = GrayColors.gray13,
-            text15 = GrayColors.gray14,
-
-
-            // Functional colors
-            success = Color(0xFF2ba471), // Same as primary green
-            onSuccess = Color.White,
-            error = Color(0xFFd54941), // redColors.red6
-            onError = Color.White,
-            warning = Color(0xFFe37318), // orangeColors.orange5
-            onWarning = Color.White,
-            link = Color(0xFF0052d9), // brandColors.blue7
-
-            // Border and divider
-            border = Color(0xFF797979),
-            divider = Color(0xFF6D6D6D),
-            subtlePressed = GrayColors.gray12,
-        )
-    }
+    companion object
 }
+
+val ZithianColors.Companion.light
+    get() = ZithianColors(
+        // Background
+        background = GrayColors.gray2,
+        onBackground = GrayColors.gray14,
+        surface = Color(0xFFFAFAFA),
+        onSurface = GrayColors.gray14,
+        surfacePure = Color.White,
+
+        // Primary (using green from brand colors)
+        primary = BlueColors.blue6, // greenColors.green5
+        primaryBold = BlueColors.blue8,
+        neutral = GrayColors.gray3,
+        onNeutral = GrayColors.gray13,
+        neutralBold = GrayColors.gray6,
+        onNeutralBold = GrayColors.gray13,
+        primaryVariant = Color(0xFF008858), // greenColors.green6
+        onPrimary = Color.White,
+        focusColor = Color(0x7f0DB4D6),
+        // Text colors
+        text0 = Color.White,
+        text1 = GrayColors.gray14,
+        text2 = GrayColors.gray13,
+        text3 = GrayColors.gray12,
+        text4 = GrayColors.gray11,
+        text5 = GrayColors.gray10,
+        text6 = GrayColors.gray9,
+        text7 = GrayColors.gray8,
+        text8 = GrayColors.gray7,
+        text9 = GrayColors.gray6,
+        text10 = GrayColors.gray5,
+        text11 = GrayColors.gray4,
+        text12 = GrayColors.gray3,
+        text13 = GrayColors.gray2,
+        text14 = GrayColors.gray1,
+        text15 = GrayColors.white,
+        // Functional colors
+        success = Color(0xFF2ba471), // Same as primary green
+        onSuccess = Color.White,
+        error = Color(0xFFd54941), // redColors.red6
+        onError = Color.White,
+        warning = Color(0xFFe37318), // orangeColors.orange5
+        onWarning = Color.White,
+        link = Color(0xFF0052d9), // brandColors.blue7
+
+        // Border and divider
+        border = Color(0xFFE8E8E8),
+        divider = Color(0xFFF0F0F1),
+        subtlePressed = GrayColors.gray2,
+    )
+
+val ZithianColors.Companion.dark
+    get() = ZithianColors(
+        // Background
+        background = Color.Black,
+        onBackground = GrayColors.white,
+        surface = GrayColors.gray13,
+        onSurface = GrayColors.white,
+        surfacePure = GrayColors.gray10,
+
+        // Primary (using green from brand colors)
+        primary = BlueColors.blue4, // greenColors.green5
+        primaryBold = Color(0xFF00A0E5),
+        primaryVariant = Color(0xFF008858), // greenColors.green6
+        neutral = GrayColors.gray13,
+        onNeutral = GrayColors.gray1,
+        neutralBold = GrayColors.gray10,
+        onNeutralBold = GrayColors.gray1,
+        onPrimary = Color.White,
+        focusColor = Color(0xffABF1FF),
+        text0 = GrayColors.white,
+        text1 = GrayColors.gray1,
+        text2 = GrayColors.gray2,
+        text3 = GrayColors.gray3,
+        text4 = GrayColors.gray4,
+        text5 = GrayColors.gray5,
+        text6 = GrayColors.gray6,
+        text7 = GrayColors.gray7,
+        text8 = GrayColors.gray8,
+        text9 = GrayColors.gray9,
+        text10 = GrayColors.gray10,
+        text11 = GrayColors.gray11,
+        text12 = GrayColors.gray12,
+        text13 = GrayColors.gray13,
+        text14 = GrayColors.gray14,
+        text15 = Color.Black,
+
+        // Functional colors
+        success = Color(0xFF2ba471), // Same as primary green
+        onSuccess = Color.White,
+        error = Color(0xFFd54941), // redColors.red6
+        onError = Color.White,
+        warning = Color(0xFFe37318), // orangeColors.orange5
+        onWarning = Color.White,
+        link = Color(0xFF0052d9), // brandColors.blue7
+
+        // Border and divider
+        border = Color(0xFF797979),
+        divider = Color(0xFF6D6D6D),
+        subtlePressed = GrayColors.gray12,
+    )
+
 
 object GrayColors {
     val white: Color = Color(0xFFFFFFFF)
@@ -188,7 +188,7 @@ object GrayColors {
     val gray14: Color = Color(0xFF181818)
 }
 
-object BrandColors {
+object BlueColors {
     val blue1: Color = Color(0xFFf2f3ff)
     val blue2: Color = Color(0xFFd9e1ff)
     val blue3: Color = Color(0xFFb5c7ff)
