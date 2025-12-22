@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
@@ -93,11 +94,12 @@ fun ApplicationScope.EmulatorTable(
             modifier = Modifier
                 .offset(x = WrapperPaddingValuesStart, y = WrapperPaddingValuesTop)
         ) {
-            EmulatorDevice(
-                device = device,
-                density = device.density,
+            CompositionLocalProvider(
+                LocalDensity provides device.density
             ) {
-                content()
+                EmulatorDevice(device = device) {
+                    content()
+                }
             }
         }
     }
