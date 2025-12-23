@@ -77,8 +77,8 @@ val ZithianColors.Companion.light
         surfacePure = Color.White,
 
         // Primary (using green from brand colors)
-        primary = BlueColors.blue6, // greenColors.green5
-        primaryBold = BlueColors.blue8,
+        primary = Color(0xFF009DFF), // greenColors.green5
+        primaryBold = BlueColors.blue4,
         neutral = GrayColors.gray3,
         onNeutral = GrayColors.gray13,
         neutralBold = GrayColors.gray6,
