@@ -1,0 +1,24 @@
+{
+  "context7": {
+    "url": "https://mcp.context7.com/mcp",
+    "headers": {
+      "CONTEXT7_API_KEY": "ctx7sk-a1b9660a-50d7-4e34-88f7-2c7243ee9857"
+    }
+  },
+  "deepwiki": {
+    "url": "https://mcp.deepwiki.com/sse"
+  },
+  "maven": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "mcp-maven-deps"
+    ]
+  },
+  "exa": {
+    "name": "exa",
+    "type": "http",
+    "url": "https://mcp.exa.ai/mcp",
+    "headers": {}
+  }
+}
