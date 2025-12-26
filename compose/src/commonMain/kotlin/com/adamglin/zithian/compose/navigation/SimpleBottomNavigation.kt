@@ -4,20 +4,8 @@ import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.key
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -346,22 +334,29 @@ fun SimpleBottomNavigation(
     content: SimpleBottomNavigationScope.() -> Unit,
 ) {
     val scope = SimpleBottomNavigationScopeImpl(selectedIndex, onSelectedIndexChange).apply(content)
-
-    Row(
-        modifier = modifier
-            .background(colors.backgroundColor)
-            .padding(dimens.contentPadding)
-            .navigationBarsPadding(),
-        horizontalArrangement = Arrangement.spacedBy(dimens.itemSpacing),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        repeat(scope.size) { index ->
-            key(scope.getKey(index)) {
-                Box(
-                    modifier = Modifier.weight(1f),
-                    contentAlignment = Alignment.Center
-                ) {
-                    scope.getContent(index).invoke()
+    Column {
+        Box(
+            modifier = modifier
+                .height(1.dp)
+                .fillMaxWidth()
+                .background(ZithianTheme.colors.border)
+        )
+        Row(
+            modifier = modifier
+                .background(colors.backgroundColor)
+                .padding(dimens.contentPadding)
+                .navigationBarsPadding(),
+            horizontalArrangement = Arrangement.spacedBy(dimens.itemSpacing),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            repeat(scope.size) { index ->
+                key(scope.getKey(index)) {
+                    Box(
+                        modifier = Modifier.weight(1f),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        scope.getContent(index).invoke()
+                    }
                 }
             }
         }
@@ -506,7 +501,9 @@ fun SimpleBottomNavigationItem(
                 // Using graphicsLayer for alpha to skip drawing when invisible.
                 Box(modifier = Modifier.size(dimens.iconSize)) {
                     if (icon != null) {
-                        Box(modifier = Modifier.graphicsLayer { alpha = if (selected && selectedIcon != null) 0f else 1f }) {
+                        Box(modifier = Modifier.graphicsLayer {
+                            alpha = if (selected && selectedIcon != null) 0f else 1f
+                        }) {
                             icon()
                         }
                     }
