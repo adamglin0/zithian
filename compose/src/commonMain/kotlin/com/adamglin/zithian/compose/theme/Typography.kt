@@ -40,31 +40,27 @@ data class ZithianTypography(
 
 val ZithianTypography.Companion.compat: ZithianTypography
     get() = ZithianTypography(
-        // Display: Large promotional text, hero sections
-        // Tight line height for visual impact
-        displayMedium = TextStyle(
-            fontSize = 48.sp,
-            lineHeight = 1.2.em,
-            fontWeight = FontWeight.Normal,
-            lineHeightStyle = LineHeightStyle(
-                alignment = LineHeightStyle.Alignment.Center,
-                trim = LineHeightStyle.Trim.None
-            )
-        ),
         displayLarge = TextStyle(
             fontSize = 64.sp,
             lineHeight = 1.15.em,
-            fontWeight = FontWeight.Normal,
+            fontWeight = FontWeight.ExtraBold,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
                 trim = LineHeightStyle.Trim.None
             )
         ),
-        // Headline: Page titles, major sections
-        // Slightly relaxed line height for readability
-        headlineSmall = TextStyle(
-            fontSize = 24.sp,
-            lineHeight = 1.3.em,
+        displayMedium = TextStyle(
+            fontSize = 48.sp,
+            lineHeight = 1.2.em,
+            fontWeight = FontWeight.ExtraBold,
+            lineHeightStyle = LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None
+            )
+        ),
+        headlineLarge = TextStyle(
+            fontSize = 36.sp,
+            lineHeight = 1.25.em,
             fontWeight = FontWeight.Normal,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
@@ -80,19 +76,26 @@ val ZithianTypography.Companion.compat: ZithianTypography
                 trim = LineHeightStyle.Trim.None
             )
         ),
-        headlineLarge = TextStyle(
-            fontSize = 36.sp,
-            lineHeight = 1.25.em,
+        headlineSmall = TextStyle(
+            fontSize = 24.sp,
+            lineHeight = 1.3.em,
             fontWeight = FontWeight.Normal,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
                 trim = LineHeightStyle.Trim.None
             )
         ),
-        // Title: Section headers, card titles, emphasis
-        // SemiBold for hierarchy distinction
-        titleSmall = TextStyle(
-            fontSize = 14.sp,
+        titleExtraLarge = TextStyle(
+            fontSize = 24.sp,
+            lineHeight = 1.35.em,
+            fontWeight = FontWeight.SemiBold,
+            lineHeightStyle = LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None
+            )
+        ),
+        titleLarge = TextStyle(
+            fontSize = 20.sp,
             lineHeight = 1.4.em,
             fontWeight = FontWeight.SemiBold,
             lineHeightStyle = LineHeightStyle(
@@ -109,8 +112,8 @@ val ZithianTypography.Companion.compat: ZithianTypography
                 trim = LineHeightStyle.Trim.None
             )
         ),
-        titleLarge = TextStyle(
-            fontSize = 20.sp,
+        titleSmall = TextStyle(
+            fontSize = 14.sp,
             lineHeight = 1.4.em,
             fontWeight = FontWeight.SemiBold,
             lineHeightStyle = LineHeightStyle(
@@ -118,28 +121,8 @@ val ZithianTypography.Companion.compat: ZithianTypography
                 trim = LineHeightStyle.Trim.None
             )
         ),
-        titleExtraLarge = TextStyle(
-            fontSize = 24.sp,
-            lineHeight = 1.35.em,
-            fontWeight = FontWeight.SemiBold,
-            lineHeightStyle = LineHeightStyle(
-                alignment = LineHeightStyle.Alignment.Center,
-                trim = LineHeightStyle.Trim.None
-            )
-        ),
-        // Body: Main content text, paragraphs
-        // Comfortable line height for extended reading
-        bodyExtraSmall = TextStyle(
-            fontSize = 10.sp,
-            lineHeight = 1.6.em,
-            fontWeight = FontWeight.Normal,
-            lineHeightStyle = LineHeightStyle(
-                alignment = LineHeightStyle.Alignment.Center,
-                trim = LineHeightStyle.Trim.None
-            )
-        ),
-        bodySmall = TextStyle(
-            fontSize = 12.sp,
+        bodyLarge = TextStyle(
+            fontSize = 16.sp,
             lineHeight = 1.5.em,
             fontWeight = FontWeight.Normal,
             lineHeightStyle = LineHeightStyle(
@@ -156,8 +139,8 @@ val ZithianTypography.Companion.compat: ZithianTypography
                 trim = LineHeightStyle.Trim.None
             )
         ),
-        bodyLarge = TextStyle(
-            fontSize = 16.sp,
+        bodySmall = TextStyle(
+            fontSize = 12.sp,
             lineHeight = 1.5.em,
             fontWeight = FontWeight.Normal,
             lineHeightStyle = LineHeightStyle(
@@ -165,19 +148,17 @@ val ZithianTypography.Companion.compat: ZithianTypography
                 trim = LineHeightStyle.Trim.None
             )
         ),
-        // Mark: Labels, badges, tags, captions
-        // Medium weight for visual distinction at small sizes
-        markExtraSmall = TextStyle(
-            fontSize = 9.sp,
-            lineHeight = 1.4.em,
-            fontWeight = FontWeight.Medium,
+        bodyExtraSmall = TextStyle(
+            fontSize = 10.sp,
+            lineHeight = 1.6.em,
+            fontWeight = FontWeight.Normal,
             lineHeightStyle = LineHeightStyle(
                 alignment = LineHeightStyle.Alignment.Center,
                 trim = LineHeightStyle.Trim.None
             )
         ),
-        markSmall = TextStyle(
-            fontSize = 10.sp,
+        markLarge = TextStyle(
+            fontSize = 12.sp,
             lineHeight = 1.4.em,
             fontWeight = FontWeight.Medium,
             lineHeightStyle = LineHeightStyle(
@@ -194,8 +175,17 @@ val ZithianTypography.Companion.compat: ZithianTypography
                 trim = LineHeightStyle.Trim.None
             )
         ),
-        markLarge = TextStyle(
-            fontSize = 12.sp,
+        markSmall = TextStyle(
+            fontSize = 10.sp,
+            lineHeight = 1.4.em,
+            fontWeight = FontWeight.Medium,
+            lineHeightStyle = LineHeightStyle(
+                alignment = LineHeightStyle.Alignment.Center,
+                trim = LineHeightStyle.Trim.None
+            )
+        ),
+        markExtraSmall = TextStyle(
+            fontSize = 9.sp,
             lineHeight = 1.4.em,
             fontWeight = FontWeight.Medium,
             lineHeightStyle = LineHeightStyle(
