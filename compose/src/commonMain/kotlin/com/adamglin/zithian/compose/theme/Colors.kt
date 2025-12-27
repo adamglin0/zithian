@@ -104,7 +104,7 @@ val ZithianColors.Companion.light
         text14 = GrayColors.gray1,
         text15 = GrayColors.white,
         // Functional colors
-        success = Color(0xFF2ba471), // Same as primary green
+        success = Color(0xFF3EFE9E), // Same as primary green
         onSuccess = Color.White,
         error = Color(0xFFd54941), // redColors.red6
         onError = Color.White,
