@@ -64,9 +64,11 @@ class WheelPickerState(
                 val offset = infiniteCenter % count
                 initialScrollIndex = infiniteCenter - offset + initialIndex
             } else {
-                // In finite mode, items map directly (contentPadding handles edge spacing)
-                virtualCount = count
-                initialScrollIndex = initialIndex.coerceIn(0, count - 1)
+                // In finite mode, add spacer items at beginning and end
+                // to allow first/last items to scroll to center
+                virtualCount = count + 2  // +2 for top and bottom spacers
+                // Position the initial item at the center (offset by 1 for top spacer)
+                initialScrollIndex = initialIndex.coerceIn(0, count - 1) + 1
             }
         }
     }
@@ -91,7 +93,10 @@ class WheelPickerState(
             return if (isInfiniteMode) {
                 virtualIndex % itemCount
             } else {
-                virtualIndex.coerceIn(0, itemCount - 1)
+                // In finite mode, virtualIndex includes spacers at start (1) and end
+                // Map virtualIndex [0, count+1] to actualIndex [0, count-1]
+                val adjustedIndex = virtualIndex - 1  // Offset for top spacer
+                adjustedIndex.coerceIn(0, itemCount - 1)
             }
         }
 
@@ -110,7 +115,8 @@ class WheelPickerState(
 
             listState.scrollToItem(currentVirtual + diff)
         } else {
-            listState.scrollToItem(index.coerceIn(0, itemCount - 1))
+            // In finite mode, offset by 1 for the top spacer
+            listState.scrollToItem(index.coerceIn(0, itemCount - 1) + 1)
         }
     }
 
@@ -128,7 +134,8 @@ class WheelPickerState(
 
             listState.animateScrollToItem(currentVirtual + diff)
         } else {
-            listState.animateScrollToItem(index.coerceIn(0, itemCount - 1))
+            // In finite mode, offset by 1 for the top spacer
+            listState.animateScrollToItem(index.coerceIn(0, itemCount - 1) + 1)
         }
     }
 }
@@ -345,12 +352,10 @@ fun WheelPicker(
     }
 
     BoxWithConstraints(modifier = modifier) {
-        // Calculate content padding for finite mode to center first/last items
-        val contentPadding = if (!isInfinite) {
-            PaddingValues(vertical = maxHeight / 2)
-        } else {
-            PaddingValues()
-        }
+        // In finite mode, spacers are used instead of content padding
+        val contentPadding = PaddingValues()
+        // Capture maxHeight for use in item lambda
+        val pickerHeight = maxHeight
 
         // Selector layer - centered in the picker
         if (selector != null) {
@@ -403,16 +408,39 @@ fun WheelPicker(
                             index
                         }
                     } else {
-                        // In finite mode, use index directly
+                        // In finite mode, include offset for spacers in key
                         index
                     }
                 }
             ) { virtualIndex ->
+                // In finite mode, handle spacer items
+                if (!isInfinite) {
+                    // First item is top spacer, last item is bottom spacer
+                    if (virtualIndex == 0 || virtualIndex == state.virtualCount - 1) {
+                        // Spacer item - provide half-height spacing to center first/last items
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = when (horizontalAlignment) {
+                                Alignment.Start -> Alignment.CenterStart
+                                Alignment.End -> Alignment.CenterEnd
+                                else -> Alignment.Center
+                            }
+                        ) {
+                            // Use Spacer to take up half the viewport height
+                            // This allows first/actual items to scroll to center
+                            Spacer(
+                                modifier = Modifier.height(pickerHeight / 2)
+                            )
+                        }
+                        return@items
+                    }
+                }
+
                 // Calculate the actual index
                 val actualIndex = if (isInfinite) {
                     virtualIndex % count
                 } else {
-                    virtualIndex
+                    virtualIndex - 1  // Offset for top spacer
                 }
                 val item = itemsData[actualIndex]
 
