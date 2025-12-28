@@ -9,9 +9,6 @@ import kotlinx.coroutines.runBlocking
 fun main() {
     Composer.setDiagnosticStackTraceMode(ComposeStackTraceMode.SourceInformation)
     runBlocking {
-//        launch {
-//            pointerApplication()
-//        }
         touchApplication()
     }
 }
