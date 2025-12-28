@@ -78,6 +78,10 @@ fun ApplicationScope.EmulatorTable(
                 text = "Config"
             ) {
                 Item(
+                    text = System.getProperty("java.home").toString(),
+                    onClick = {},
+                )
+                Item(
                     text = "Always on Top",
                     icon = if (alwaysOnTop) checkIconPainter else null,
                     onClick = { alwaysOnTop = !alwaysOnTop },
