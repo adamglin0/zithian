@@ -232,7 +232,7 @@ fun Inputs() {
             OutlinedTextField(
                 state = textState1,
                 modifier = Modifier.fillMaxWidth(),
-                placeholdText = "Enter your name...",
+                placeholderText = "Enter your name...",
             )
 
             val textState2 = rememberTextFieldState("Pre-filled content")
