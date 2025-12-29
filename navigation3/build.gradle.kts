@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.multiplatform.android.library)
     alias(libs.plugins.compose.multiplatform)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.mavenPublish)
@@ -27,7 +27,7 @@ kotlin {
     @Suppress("UnstableApiUsage")
     androidLibrary {
         namespace = "com.adamglin.zithian.navigation3"
-        compileSdk = libs.versions.androidCompileSdk.get().toInt()
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = 29
 
         compilerOptions {
@@ -113,9 +113,4 @@ tasks.withType<Detekt>().configureEach {
 }
 tasks.withType<DetektCreateBaselineTask>().configureEach {
     jvmTarget = JvmTarget.JVM_1_8.target
-}
-
-dependencies {
-    detektPlugins(libs.detekt.formatting)
-    detektPlugins(libs.detekt.rules.compose)
 }
