@@ -77,19 +77,19 @@ fun OutlinedTextField(
     dimens: TextFieldDimens = TextFieldDefaults.dimens(),
 ) {
     BasicTextField(
-        state,
-        modifier,
-        enabled,
-        readOnly,
-        inputTransformation,
-        textStyle,
-        keyboardOptions,
-        onKeyboardAction,
-        lineLimits,
-        onTextLayout,
-        interactionSource,
-        cursorBrush,
-        outputTransformation,
+        state = state,
+        modifier = modifier,
+        enabled = enabled,
+        readOnly = readOnly,
+        inputTransformation = inputTransformation,
+        textStyle = textStyle,
+        keyboardOptions = keyboardOptions,
+        onKeyboardAction = onKeyboardAction,
+        lineLimits = lineLimits,
+        onTextLayout = onTextLayout,
+        interactionSource = interactionSource,
+        cursorBrush = cursorBrush,
+        outputTransformation = outputTransformation,
         decorator = {
             val shape = ContinuousRoundedCornerShape(20.dp)
             Box(

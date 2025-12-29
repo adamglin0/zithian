@@ -54,9 +54,9 @@ fun PasswordTextField(
     var isPasswordVisible by retain { mutableStateOf(false) }
     val mTextObfuscationMode = if (isPasswordVisible) TextObfuscationMode.Visible else textObfuscationMode
     BasicSecureTextField(
-        state,
-        modifier,
-        enabled,
+        state = state,
+        modifier = modifier,
+        enabled = enabled,
         onKeyboardAction = onKeyboardAction,
         onTextLayout = onTextLayout,
         interactionSource = interactionSource,
