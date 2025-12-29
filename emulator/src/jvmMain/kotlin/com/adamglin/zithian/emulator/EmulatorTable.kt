@@ -52,12 +52,14 @@ fun ApplicationScope.EmulatorTable(
         alwaysOnTop = alwaysOnTop,
     ) {
         LaunchedEffect(Unit) {
-            with(Dispatchers.Main.immediate) {
-                JBR.getRoundedCornersManager().setRoundedCorners(window, 10f)
-                JBR.getWindowDecorations().setCustomTitleBar(
-                    window,
-                    JBR.getWindowDecorations().createCustomTitleBar().apply { height = 32f }
-                )
+            runCatching {
+                with(Dispatchers.Main.immediate) {
+                    JBR.getRoundedCornersManager().setRoundedCorners(window, 10f)
+                    JBR.getWindowDecorations().setCustomTitleBar(
+                        window,
+                        JBR.getWindowDecorations().createCustomTitleBar().apply { height = 32f }
+                    )
+                }
             }
         }
 
