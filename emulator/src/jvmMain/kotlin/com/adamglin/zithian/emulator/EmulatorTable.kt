@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.runtime.*
 import androidx.compose.runtime.retain.retain
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
@@ -93,11 +92,7 @@ fun ApplicationScope.EmulatorTable(
         }
 
         WindowDraggableArea {
-            Box(modifier = Modifier.fillMaxSize().background(Color.LightGray)) {
-                FpsMonitor(
-                    modifier = Modifier.align(Alignment.TopEnd)
-                )
-            }
+            Box(modifier = Modifier.fillMaxSize().background(Color.LightGray))
         }
 
         Box(
