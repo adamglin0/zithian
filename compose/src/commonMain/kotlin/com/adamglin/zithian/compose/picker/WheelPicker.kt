@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -20,15 +21,19 @@ import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @Composable
-fun rememberWheelPickerState(initialIndex: Int = 0): WheelPickerState {
-    return rememberSaveable(saver = WheelPickerState.Saver) {
-        WheelPickerState(initialIndex)
+fun rememberWheelPickerState(
+    initialIndex: Int = 0,
+    onIndexChange: (index: Int) -> Unit = {}
+): WheelPickerState {
+    return rememberSaveable(saver = WheelPickerState.Saver(onIndexChange)) {
+        WheelPickerState(initialIndex, onIndexChange)
     }
 }
 
 @Stable
 class WheelPickerState(
-    private val initialIndex: Int = 0
+    private val initialIndex: Int = 0,
+    val onIndexChange: (index: Int) -> Unit = {}
 ) {
     internal var _lazyListState: LazyListState? = null
     val lazyListState: LazyListState
@@ -39,12 +44,13 @@ class WheelPickerState(
     internal companion object {
         const val VIRTUAL_MULTIPLIER = 10000
 
-        val Saver = androidx.compose.runtime.saveable.Saver<WheelPickerState, Int>(
-            save = {
-                it.currentIndex
-            },
-            restore = { WheelPickerState(it) }
-        )
+        fun Saver(onIndexChange: (index: Int) -> Unit) =
+            androidx.compose.runtime.saveable.Saver<WheelPickerState, Int>(
+                save = {
+                    it.currentIndex
+                },
+                restore = { WheelPickerState(it, onIndexChange) }
+            )
     }
 
     // Calculated in attach to ensure alignment
@@ -322,6 +328,14 @@ fun WheelPicker(
             }
     }
 
+    // Invoke onIndexChange callback
+    LaunchedEffect(state) {
+        snapshotFlow { state.currentIndex }
+            .collect { index ->
+                state.onIndexChange(index)
+            }
+    }
+
     // Handle scroll finished callback
     LaunchedEffect(listState, state, onScrollFinished) {
         var wasInProgress = listState.isScrollInProgress
@@ -464,6 +478,13 @@ fun WheelPicker(
 
                                 // Normalize distance based on viewport half-height
                                 val normalizedDistance = distance / (layoutInfo.viewportEndOffset / 2f)
+
+                                // Transform origin should match horizontal alignment
+                                transformOrigin = when (horizontalAlignment) {
+                                    Alignment.Start -> TransformOrigin(0f, 0.5f)
+                                    Alignment.End -> TransformOrigin(1f, 0.5f)
+                                    else -> TransformOrigin(0.5f, 0.5f)
+                                }
 
                                 // 1. Rotation X - creates the cylinder effect
                                 rotationX = -effect.maxRotationX * normalizedDistance
