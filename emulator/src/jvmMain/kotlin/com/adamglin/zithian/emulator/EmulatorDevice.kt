@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposePanel
 import androidx.compose.ui.awt.SwingPanel
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.overridePlatformWindowInsets
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalPlatformWindowInsets
 import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerShape
@@ -48,6 +49,7 @@ fun EmulatorDevice(
 
                     Box(
                         modifier = Modifier
+                            .overridePlatformWindowInsets(innerAdjustedDevice)
                             .fillMaxSize()
                             .background(Color.Black)
                     ) {
