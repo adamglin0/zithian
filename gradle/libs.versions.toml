@@ -33,7 +33,7 @@ sqliteBundled = "2.6.2"
 runtimeAndroid = "1.10.0"
 
 # ========== Compose ==========
-composeMultiplatform = "1.10.0-rc02"
+composeMultiplatform = "1.11.0-alpha02+dev3425"
 composeHotReload = "1.1.0-alpha03"
 composePaging = "3.3.0-alpha02-0.5.1"
 composePhosphorIcon = "1.0.0"
