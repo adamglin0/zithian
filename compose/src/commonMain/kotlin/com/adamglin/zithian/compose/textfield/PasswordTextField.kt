@@ -64,7 +64,6 @@ fun PasswordTextField(
         textStyle = textStyle,
         inputTransformation = inputTransformation,
         decorator = {
-
             val shape = ContinuousRoundedCornerShape(20.dp)
             Row(
                 modifier = Modifier
