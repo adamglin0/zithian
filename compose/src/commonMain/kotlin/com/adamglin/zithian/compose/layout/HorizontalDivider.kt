@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.adamglin.zithian.compose.theme.ZithianTheme
 
@@ -14,10 +15,11 @@ import com.adamglin.zithian.compose.theme.ZithianTheme
 fun HorizontalDivider(
     modifier: Modifier = Modifier,
     color: Color = ZithianTheme.colors.divider,
+    height: Dp = 1.dp
 ) {
     Spacer(
         modifier = modifier
-            .height(1.dp)
+            .height(height)
             .fillMaxWidth()
             .background(color)
     )
