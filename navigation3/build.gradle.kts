@@ -1,8 +1,6 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
 import com.android.build.api.dsl.androidLibrary
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -13,7 +11,6 @@ plugins {
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.mavenPublish)
     alias(libs.plugins.binaryCompatibilityValidator)
-    alias(libs.plugins.detekt)
     alias(libs.plugins.compose.hotReload)
 }
 
@@ -95,22 +92,4 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xcontext-parameters")
     }
-}
-
-detekt {
-    buildUponDefaultConfig = true
-    allRules = false
-    config.setFrom("$rootDir/.detekt/config.yml") // point to your custom config defining rules to run, overwriting default behavior
-    baseline = file("$rootDir/.detekt/baseline.xml") // a way of suppressing issues before introducing detekt
-}
-tasks.withType<Detekt>().configureEach {
-    reports {
-        md.required.set(true)
-    }
-}
-tasks.withType<Detekt>().configureEach {
-    jvmTarget = JvmTarget.JVM_1_8.target
-}
-tasks.withType<DetektCreateBaselineTask>().configureEach {
-    jvmTarget = JvmTarget.JVM_1_8.target
 }
