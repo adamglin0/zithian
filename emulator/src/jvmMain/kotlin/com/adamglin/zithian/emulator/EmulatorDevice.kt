@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.InternalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.ComposePanel
@@ -20,6 +21,7 @@ import com.adamglin.composecontinuousroundedcornershape.ContinuousRoundedCornerS
 import com.adamglin.zithian.compose.utils.LocalWindowRoundedCornerSize
 import com.adamglin.zithian.compose.utils.inverseClip
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun EmulatorDevice(
     device: DeviceSpec,
@@ -39,6 +41,7 @@ fun EmulatorDevice(
             .size(device.width, device.height),
         factory = {
             ComposePanel().apply {
+                isClearFocusOnMouseDownEnabled = false
                 setContent {
                     // Get the actual density inside the SwingPanel
                     // This may be different from the outer density!
@@ -57,7 +60,9 @@ fun EmulatorDevice(
                             LocalPlatformWindowInsets provides innerAdjustedDevice,
                             LocalWindowRoundedCornerSize provides currentDevice.roundedCornerSize
                         ) {
-                            currentContent()
+                            SystemKeyboardWrapper {
+                                currentContent()
+                            }
                         }
                     }
                 }
