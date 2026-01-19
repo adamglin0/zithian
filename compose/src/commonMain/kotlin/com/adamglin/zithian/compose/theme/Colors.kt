@@ -70,7 +70,7 @@ data class ZithianColors(
 val ZithianColors.Companion.light
     get() = ZithianColors(
         // Background
-        background = GrayColors.gray2,
+        background = Color(0xfff5f5f5),
         onBackground = GrayColors.gray14,
         surface = Color(0xFFFAFAFA),
         onSurface = GrayColors.gray14,
