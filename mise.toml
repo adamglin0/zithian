@@ -1,2 +1,26 @@
 [tools]
 gradle = "latest"
+
+[tasks.publish-to-maven-local]
+depends = ["ptml-compose", "ptml-emulator", "ptml-navigation3"]
+
+[tasks.ptml-compose]
+run = """
+cd compose
+../gradlew publishKotlinMultiplatformPublicationToMavenLocal
+../gradlew publishToMavenLocal --no-configuration-cache
+"""
+
+[tasks.ptml-emulator]
+run = """
+cd emulator
+../gradlew publishKotlinMultiplatformPublicationToMavenLocal
+../gradlew publishToMavenLocal --no-configuration-cache
+"""
+
+[tasks.ptml-navigation3]
+run = """
+cd navigation3
+../gradlew publishKotlinMultiplatformPublicationToMavenLocal
+../gradlew publishToMavenLocal --no-configuration-cache
+"""

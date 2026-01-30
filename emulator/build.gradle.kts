@@ -65,3 +65,35 @@ compose {
         nameOfResClass = "EmulatorResources"
     }
 }
+mavenPublishing {
+    coordinates(
+        groupId = "com.adamglin.zithian",
+        artifactId = "emulator",
+        version = "1.0.0"
+    )
+    pom {
+        name.set("zithian")
+        description.set("Zithian theme for Compose Multiplatform.")
+        url.set("https://github.com/adamglin0/zithian")
+        licenses {
+            license {
+                name.set("MIT")
+                url.set("https://opensource.org/licenses/MIT")
+            }
+        }
+        developers {
+            developer {
+                name.set("adamglin")
+                email.set("dev@adamglin.com")
+            }
+        }
+        issueManagement {
+            system.set("Github")
+            url.set("https://github.com/adamglin0/zithian/issues")
+        }
+        scm {
+            connection.set("https://github.com/adamglin0/zithian.git")
+            url.set("https://github.com/adamglin0/zithian")
+        }
+    }
+}

@@ -108,11 +108,10 @@ compose {
     }
 }
 
-
 mavenPublishing {
     coordinates(
-        groupId = "com.adamglin",
-        artifactId = "zithian",
+        groupId = "com.adamglin.zithian",
+        artifactId = "compose",
         version = "1.0.0"
     )
     pom {
@@ -140,5 +139,4 @@ mavenPublishing {
             url.set("https://github.com/adamglin0/zithian")
         }
     }
-//    signAllPublications()
 }
